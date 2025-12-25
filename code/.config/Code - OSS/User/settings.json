@@ -75,6 +75,6 @@
     "explorer.confirmDragAndDrop": false,
     "supermaven.otherWarning": false,
     "editor.formatOnSave": true,
-    "workbench.colorTheme": "Monokai",
+    "workbench.colorTheme": "Catppuccin Mocha",
     "editor.fontFamily": "'Droid Sans Mono', 'monospace', monospace, 'Symbols Nerd Font'",
 }

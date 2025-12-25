@@ -1,9 +1,17 @@
-- increase Hz of monitor (xrandr only shows 60Hz)
-- set yazi editor correctly to nano
-- fix kitty theme (can't seem to import theme.conf)
 - set up tmux
 - remove dolphin once yazi is fully up and working
-- switch yazi q and Q keybinds
-- make easy swtich to light theme in waybar
+- kitty
+    - change font
+- yazi
+    - switch yazi q and Q keybinds
+    - set yazi editor correctly to nano or vscode
+- waybar
+    - make easy swtich to light theme in waybar
+    - add waybar buttons to change Hz? (test in game first? can vsync also work at 60fps if monitor is set to 120?)
+    - add waybar buttons to swithc JBL vs Razer
+    - add tooltip to workspace showing the active workspaces in a 3x3 grid? if possible even an overview mode but that seems quite complicated
+    - add scrolling to workspaces (shift is horizontal)
+- theme
+    - automate theme switching (waybar)
 
 - finally: convert laptop to arch when dotfiles are ready

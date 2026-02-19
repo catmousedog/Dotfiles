@@ -4,3 +4,7 @@ backgrounds/.config/backgrounds/*.png
 
 # quickshell
 quickshell/.config/quickshell/.qmlls.ini
+
+# hyprland
+hyprland/.config/hypr/local/*
+!hyprland/.config/hypr/local/

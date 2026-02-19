@@ -77,4 +77,5 @@
     "comment-driver.lineFiller": " ",
     "comment-driver.mainHeaderFiller": "=",
     "comment-driver.subheaderFiller": "-",
+    "terminal.integrated.initialHint": false,
 }

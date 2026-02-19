@@ -1,5 +1,5 @@
 # Variables
-STOW_PKGS := backgrounds themes watrix hyprland awww hypridle fish kitty yazi wofi code wireplumber quickshell
+STOW_PKGS := backgrounds themes watrix hyprland awww hypridle fish kitty yazi rofi code wireplumber quickshell
 SYS_STOW_PKGS := greetd bluetooth
 
 .PHONY: all install user system clean

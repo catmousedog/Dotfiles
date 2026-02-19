@@ -70,7 +70,6 @@ PanelWindow {
             }
 
             Bartext {
-
                 function trayStatusText() {
                     let len = TrayService.items.length;
                     text = "";

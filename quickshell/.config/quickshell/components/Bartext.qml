@@ -2,11 +2,11 @@
 
 import Quickshell
 import QtQuick
-import qs.config
+import qs.services
 
 Text {
-    color: Config.barFontColor
-    font.pointSize: Config.barFontSize
-    font.family: Config.barFontFamily
-    font.weight: Config.barFontWeight
+    color: ConfigService.getColor("common.font.color")
+    font.pointSize: ConfigService.get("common.font.size")
+    font.family: ConfigService.get("common.font.family")
+    font.weight: ConfigService.get("common.font.weight")
 }

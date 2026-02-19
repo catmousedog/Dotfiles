@@ -1,0 +1,36 @@
+{
+	"common": {
+		"theme": {
+			"background": "base",
+			"borderColor": "mauve",
+			"borderWidth": 3
+		},
+		"font": {
+			"family": "Noto Sans Mono",
+			"size": 13.5,
+			"color": "text",
+			"weight": 700
+		},
+		"layout": {
+			"marginTop": 5,
+			"marginSide": 10,
+			"heightFactor": 0.02
+		}
+	},
+	"left": {},
+	"center": {
+		"clock": {
+			"format": "dddd dd MMM | hh:mm",
+			"widthFactor": 0.1
+		}
+	},
+	"right": {
+		"audio": {
+			"widthFactor": 0.05,
+			"scrollInterval": 1
+		},
+		"systray": {
+			"iconSize": 18
+		}
+	}
+}

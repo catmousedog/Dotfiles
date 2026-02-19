@@ -4,7 +4,6 @@ import Quickshell
 import QtQuick
 import QtQuick.Layouts
 import qs.services
-import qs.config
 import qs.components
 
 PanelWindow {
@@ -15,24 +14,24 @@ PanelWindow {
         top: true
     }
 
-    margins.top: Config.barMarginTop
+    margins.top: ConfigService.get("common.layout.marginTop")
 
     color: "transparent"
 
-    implicitHeight: screen.height * Config.barHeightFactor
-    implicitWidth: screen.width - Config.barMarginSide * 2
+    implicitHeight: screen.height * ConfigService.get("common.layout.heightFactor")
+    implicitWidth: screen.width - 2 * ConfigService.get("common.layout.marginSide")
 
     /* ========================================================================================== */
     /*                                            Clock                                           */
     /* ========================================================================================== */
     Barbox {
         implicitHeight: parent.height
-        implicitWidth: parent.width * Config.clockBarWidthFactor
+        implicitWidth: parent.width * ConfigService.get("center.clock.widthFactor")
         anchors.centerIn: parent
 
         Bartext {
             anchors.centerIn: parent
-            text: TimeService.format(Config.clockFormat)
+            text: TimeService.format(ConfigService.get("center.clock.format"))
         }
     }
 
@@ -93,13 +92,13 @@ PanelWindow {
     /* ---------------------------------------- Sound Bar --------------------------------------- */
     Barbox {
         implicitHeight: parent.height
-        implicitWidth: parent.width * Config.soundBarWidthFactor
+        implicitWidth: parent.width * ConfigService.get("right.audio.widthFactor")
         anchors.right: parent.right
 
         RowLayout {
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            anchors.rightMargin: Config.barMarginSide
+            anchors.rightMargin: ConfigService.get("common.layout.marginSide")
             layoutDirection: Qt.RightToLeft
             spacing: 10
 
@@ -109,7 +108,7 @@ PanelWindow {
                     onWheel: event => {
                         const delta = event.angleDelta.y > 0 ? 1 : -1;
                         var volume = SoundService.getVolume();
-                        volume = Math.min(1, Math.max(0, volume + delta * Config.soundScrollInterval / 100));
+                        volume = Math.min(1, Math.max(0, volume + delta * ConfigService.get("right.audio.scrollInterval") / 100));
                         SoundService.setVolume(volume);
                     }
                 }

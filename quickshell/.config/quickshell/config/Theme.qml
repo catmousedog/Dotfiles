@@ -14,6 +14,10 @@ Singleton {
         return Qt.rgba(color.r, color.g, color.b, alpha);
     }
 
+    function getColor(name: string): string {
+        return json[name] ?? "";
+    }
+
     property string rosewater: json.rosewater
     property string flamingo: json.flamingo
     property string pink: json.pink

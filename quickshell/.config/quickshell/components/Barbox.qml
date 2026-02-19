@@ -3,11 +3,12 @@
 import Quickshell
 import QtQuick
 import qs.config
+import qs.services
 
 Rectangle {
     id: root
 
-    property int borderWidth: 3
+    property int borderWidth: ConfigService.get("common.theme.borderWidth")
 
     /* ---------------------------------- Position and Size --------------------------------- */
     radius: implicitHeight / 2

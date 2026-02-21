@@ -17,7 +17,6 @@ Barbox {
 
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        anchors.rightMargin: ConfigService.get("common.layout.marginSide")
         layoutDirection: Qt.RightToLeft
         spacing: ConfigService.get("right.spacing")
 

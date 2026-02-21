@@ -13,6 +13,7 @@ IconText {
 
     iconSize: ConfigService.get("right.audio.iconSize")
     iconYOffset: ConfigService.get("right.audio.iconYOffset")
+    spacing: ConfigService.get("right.audio.spacing")
 
     WheelHandler {
         acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad

@@ -17,6 +17,7 @@ Loader {
 
         iconSize: ConfigService.get("right.battery.iconSize")
         iconYOffset: ConfigService.get("right.battery.iconYOffset")
+        spacing: ConfigService.get("right.battery.spacing")
 
         function getIcon() {
             if (BatteryService.discharging) {

@@ -29,16 +29,19 @@
 		"spacing": 12,
 		"battery": {
 			"iconSize": 13.5,
-			"iconYOffset": -1
+			"iconYOffset": -1,
+			"spacing": 3
 		},
 		"audio": {
 			"scrollInterval": 1,
 			"iconSize": 13.5,
-			"iconYOffset": -2
+			"iconYOffset": -2,
+			"spacing": 4
 		},
 		"bluetooth": {
 			"iconSize": 13.5,
-			"iconYOffset": -2
+			"iconYOffset": -2,
+			"spacing": 4
 		}
 	}
 }

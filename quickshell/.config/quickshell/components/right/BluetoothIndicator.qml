@@ -12,7 +12,7 @@ IconText {
 
     iconSize: ConfigService.get("right.bluetooth.iconSize")
     iconYOffset: ConfigService.get("right.bluetooth.iconYOffset")
-    spacing: 4
+    spacing: ConfigService.get("right.bluetooth.spacing")
 
     function getIcon() {
         if (BluetoothService.enabled) {

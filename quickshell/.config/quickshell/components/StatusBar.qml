@@ -14,7 +14,7 @@ PanelWindow {
     screen: modelData
 
     implicitHeight: screen.height * ConfigService.get("common.layout.heightFactor")
-    implicitWidth: screen.width - 2 * ConfigService.get("common.layout.marginSide")
+    implicitWidth: screen.width - 2 * HyprlandService.gapsOut
 
     anchors.top: true
     // margins.top: ConfigService.get("common.layout.marginTop")

@@ -17,9 +17,13 @@ PanelWindow {
     implicitWidth: screen.width - 2 * ConfigService.get("common.layout.marginSide")
 
     anchors.top: true
-    margins.top: ConfigService.get("common.layout.marginTop")
-    margins.right: ConfigService.get("common.layout.marginSide")
-    margins.left: ConfigService.get("common.layout.marginSide")
+    // margins.top: ConfigService.get("common.layout.marginTop")
+    // margins.right: ConfigService.get("common.layout.marginSide")
+    // margins.left: ConfigService.get("common.layout.marginSide")
+
+    margins.top: HyprlandService.gapsOut
+    margins.right: HyprlandService.gapsOut
+    margins.left: HyprlandService.gapsOut
     color: "transparent"
 
     Left {}

@@ -12,8 +12,6 @@
 			"weight": 500
 		},
 		"layout": {
-			"marginTop": 5,
-			"marginSide": 10,
 			"heightFactor": 0.02
 		}
 	},
@@ -26,6 +24,7 @@
 	},
 	"right": {
 		"widthFactor": 0.05,
+		"margin": 0,
 		"spacing": 12,
 		"battery": {
 			"iconSize": 13.5,

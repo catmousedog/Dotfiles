@@ -16,5 +16,9 @@ Singleton {
     readonly property var defaultSink: Pipewire.defaultAudioSink
     readonly property var defaultAudio: defaultSink?.audio ?? null
     readonly property var icon: defaultSink.properties["device.icon-name"]
-    property real volume: defaultAudio.volume
+    readonly property real volume: defaultAudio.volume
+
+    function setVolume(volume) {
+        defaultAudio.volume = volume;
+    }
 }

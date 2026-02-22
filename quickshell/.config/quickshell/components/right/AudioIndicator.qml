@@ -21,7 +21,7 @@ IconText {
             const delta = event.angleDelta.y > 0 ? 1 : -1;
             var volume = AudioService.volume;
             volume = Math.min(1, Math.max(0, volume + delta * ConfigService.get("right.audio.scrollInterval") / 100));
-            AudioService.volume = volume;
+            AudioService.setVolume(volume);
         }
     }
 

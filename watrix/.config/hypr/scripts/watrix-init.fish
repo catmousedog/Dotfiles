@@ -4,7 +4,7 @@ set matrix 3
 set num_workspaces (math "$matrix * $matrix")
 
 function get_num_monitors
-    count hyprctl monitors
+    hyprctl monitors -j | jq 'length'
 end
 
 # Loop over all monitors
@@ -14,10 +14,12 @@ for mon in (seq 0 (math (get_num_monitors) - 1))
         set -l mid (math "$id + $mon * $num_workspaces + 1")
 
         if test $id -eq 4 # Set middle 
-            hyprctl keyword workspace "$mid, monitor:$mon, default:true"
-            hyprctl dispatch workspace "$mid"
+            # hyprctl keyword workspace "$mid, monitor:$mon, default:true"
+            # hyprctl dispatch workspace "$mid"
+            echo "middle $mid $mon"
         else
-            hyprctl keyword workspace "$mid, monitor:$mon"
+            # hyprctl keyword workspace "$mid, monitor:$mon"
+            echo "$mid $mon"
         end
     end
 end

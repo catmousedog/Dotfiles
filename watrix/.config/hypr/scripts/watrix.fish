@@ -50,7 +50,7 @@ function move_workspaces
     set -l id $argv[1]
 
     # Total number of monitors
-    set num_monitors (count hyprctl monitors)
+    set num_monitors (hyprctl monitors -j | jq 'length')
 
     # All hyprland dispatch commands appended
     set -l hypr_disp ""

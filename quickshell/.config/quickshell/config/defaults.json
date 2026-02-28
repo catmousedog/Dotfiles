@@ -9,10 +9,10 @@
 			"family": "Noto Sans Mono",
 			"size": 13.5,
 			"color": "text",
-			"weight": 500
+			"weight": 700
 		},
 		"layout": {
-			"heightFactor": 0.02
+			"heightFactor": 0.022
 		}
 	},
 	"left": {},
@@ -39,7 +39,7 @@
 		},
 		"bluetooth": {
 			"iconSize": 13.5,
-			"iconYOffset": -2,
+			"iconYOffset": -1,
 			"spacing": 4
 		}
 	}

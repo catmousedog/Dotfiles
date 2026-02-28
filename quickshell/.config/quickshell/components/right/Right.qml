@@ -9,7 +9,7 @@ import qs.components.generic
 
 Barbox {
     implicitHeight: parent.height
-    implicitWidth: row.implicitWidth
+    implicitWidth: parent.width * ConfigService.get("right.widthFactor")
     anchors.right: parent.right
 
     RowLayout {

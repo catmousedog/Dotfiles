@@ -163,7 +163,7 @@
         "when": "textInputFocus && !editorReadonly"
     },
     {
-        "key": "ctrl+shift+k",
+        "key": "ctrl+shift+l",
         "command": "workbench.action.tasks.runTask"
     },
     {
@@ -539,5 +539,29 @@
     {
         "key": "shift+f6",
         "command": "-workbench.action.focusPreviousPart"
+    },
+    {
+        "key": "ctrl+shift+l",
+        "command": "-notebook.selectAllFindMatches",
+        "when": "config.notebook.multiCursor.enabled && notebookFindWidgetFocused || config.notebook.multiCursor.enabled && notebookCellEditorFocused && activeEditor == 'workbench.editor.notebook'"
+    },
+    {
+        "key": "ctrl+shift+l",
+        "command": "-selectAllSearchEditorMatches",
+        "when": "inSearchEditor"
+    },
+    {
+        "key": "ctrl+shift+l",
+        "command": "-editor.action.selectHighlights",
+        "when": "editorFocus"
+    },
+    {
+        "key": "ctrl+shift+l",
+        "command": "-addCursorsAtSearchResults",
+        "when": "fileMatchOrMatchFocus && searchViewletVisible"
+    },
+    {
+        "key": "ctrl+shift+k",
+        "command": "workbench.action.tasks.test"
     },
 ]

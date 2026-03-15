@@ -17,6 +17,7 @@ Singleton {
     readonly property var defaultAudio: defaultSink?.audio ?? null
     readonly property var icon: defaultSink.properties["device.icon-name"]
     readonly property real volume: defaultAudio.volume
+    readonly property bool muted: defaultAudio.muted
 
     function setVolume(volume) {
         defaultAudio.volume = volume;

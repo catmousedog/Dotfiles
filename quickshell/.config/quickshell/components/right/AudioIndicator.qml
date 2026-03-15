@@ -26,6 +26,10 @@ IconText {
     }
 
     function getIcon() {
+        var muted = AudioService.muted;
+        if (muted) {
+            return "󰖁";
+        }
         var deviceIcon = AudioService.icon;
         if (deviceIcon == "audio-card-analog") {
             return "";

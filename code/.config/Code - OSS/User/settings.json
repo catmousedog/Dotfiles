@@ -1,85 +1,80 @@
 {
-    // ========== Fonts ========== //
-    "editor.fontSize": 16,
-    "terminal.integrated.fontSize": 16,
-    "debug.console.fontSize": 12,
-    // ========== Editor ========== //
-    "editor.stickyScroll.maxLineCount": 3,
-    "editor.formatOnSave": true,
-    "editor.fontFamily": "'Droid Sans Mono', 'monospace', monospace, 'Symbols Nerd Font'",
-    "editor.inlayHints.enabled": "off", // inline variable names 
-    "editor.cursorSurroundingLines": 20,
-    "editor.insertSpaces": false,
-    "editor.tabSize": 4,
-    "editor.unicodeHighlight.allowedCharacters": {
-        "’": true
-    },
-    // ========== Terminal ========== //
-    "terminal.integrated.commandsToSkipShell": [
-        "workbench.debug.action.focusRepl", // allows to focus debug console while terminal is focused
-        "workbench.debug.action.focusWatchView"
-    ],
-    // ========== File Explorer ========== //
-    "explorer.autoReveal": false,
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    // ========== Window & Workbench ========== //
-    "window.commandCenter": false,
-    "window.customMenuBarAltFocus": false,
-    "workbench.panel.opensMaximized": "never",
-    "workbench.secondarySideBar.defaultVisibility": "hidden",
-    "workbench.colorTheme": "Catppuccin Mocha",
-    // ========== Debugging ========== //
-    "debug.inlineValues": "on",
-    "debug.onTaskErrors": "abort",
-    "debug.openDebug": "neverOpen",
-    "lldb.showDisassembly": "never",
-    // ========== Tasks ========== //
-    "task.autoDetect": "off",
-    // ========== Git ========== //
-    "git.blame.editorDecoration.enabled": false,
-    "git.blame.statusBarItem.enabled": true,
-    "git.openRepositoryInParentFolders": "never",
-    // ========== Language-Specific ========== //
-    // Python
-    "python.terminal.executeInFileDir": true,
-    // "python.defaultInterpreterPath": "~/.venvs/script/bin/python",
-    // C/C++
-    "clangd.path": "/usr/bin/clangd",
-    "[cpp]": {
-        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
-    },
-    // LaTeX
-    "latex-workshop.latex.outDir": "pdf",
-    "latex-workshop.latex.auxDir": "build",
-    "latex-workshop.latex.bibDirs": "build",
-    "latex-workshop.latex.texDirs": "build",
-    "latex-workshop.latex.autoBuild.run": "onSave",
-    "latex-workshop.view.pdf.color.dark.backgroundColor": "#1e1e2e", // base
-    "latex-workshop.view.pdf.color.dark.pageBorderColor": "#45475a", // surface1
-    "latex-workshop.formatting.latex": "tex-fmt",
-    // "latex-workshop.view.pdf.color.dark.pageColorsForeground": "#cdd6f4", // text
-    "latex-workshop.view.pdf.color.dark.pageColorsBackground": "#181825", // mantle
-    // QML
-    "qt-qml.qmlls.useQmlImportPathEnvVar": true,
-    "qt-core.additionalQtPaths": [
-        {
-            "name": "Qt-5.15.18-linux-g++_from_PATH",
-            "path": "/usr/bin/qmake"
-        }
-    ],
-    "qt-qml.doNotAskForQmllsDownload": true,
-    "qmlFormat.command": "/usr/lib/qt6/bin/qmlformat",
-    // ========== SuperMaven ========== // 
-    "supermaven.otherWarning": false,
-    "chat.viewTitle.enabled": false,
-    // ========== Newly Added ========== // 
-    "comment-driver.length": 100,
-    "comment-driver.shouldLengthIncludeIndent": true,
-    "comment-driver.lineFiller": " ",
-    "comment-driver.mainHeaderFiller": "=",
-    "comment-driver.subheaderFiller": "-",
-    "terminal.integrated.initialHint": false,
-    "security.workspace.trust.untrustedFiles": "open",
-    "keyboard.dispatch": "keyCode"
+	// ========== Fonts ========== //
+	"editor.fontSize": 16,
+	"terminal.integrated.fontSize": 16,
+	"debug.console.fontSize": 12,
+	// ========== Editor ========== //
+	"editor.stickyScroll.maxLineCount": 3,
+	"editor.formatOnSave": true,
+	"editor.fontFamily": "'Droid Sans Mono', 'monospace', monospace, 'Symbols Nerd Font'",
+	"editor.inlayHints.enabled": "off", // inline variable names 
+	"editor.cursorSurroundingLines": 20,
+	"editor.insertSpaces": false,
+	"editor.tabSize": 4,
+	"editor.unicodeHighlight.allowedCharacters": {
+		"’": true
+	},
+	// ========== Terminal ========== //
+	"terminal.integrated.commandsToSkipShell": [
+		"workbench.debug.action.focusRepl", // allows to focus debug console while terminal is focused
+		"workbench.debug.action.focusWatchView"
+	],
+	// ========== File Explorer ========== //
+	"explorer.autoReveal": false,
+	"explorer.confirmDelete": false,
+	"explorer.confirmDragAndDrop": false,
+	// ========== Window & Workbench ========== //
+	"window.commandCenter": false,
+	"window.customMenuBarAltFocus": false,
+	"workbench.panel.opensMaximized": "never",
+	"workbench.secondarySideBar.defaultVisibility": "hidden",
+	"workbench.colorTheme": "Catppuccin Mocha",
+	// ========== Debugging ========== //
+	"debug.inlineValues": "on",
+	"debug.onTaskErrors": "abort",
+	"debug.openDebug": "neverOpen",
+	"lldb.showDisassembly": "never",
+	// ========== Tasks ========== //
+	"task.autoDetect": "off",
+	// ========== Git ========== //
+	"git.blame.editorDecoration.enabled": false,
+	"git.blame.statusBarItem.enabled": true,
+	"git.openRepositoryInParentFolders": "never",
+	// ========== Language-Specific ========== //
+	// Python
+	"python.terminal.executeInFileDir": true,
+	// "python.defaultInterpreterPath": "~/.venvs/script/bin/python",
+	// C/C++
+	"clangd.path": "/usr/bin/clangd",
+	"[cpp]": {
+		"editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+	},
+	// LaTeX
+	"latex-workshop.latex.outDir": "pdf",
+	"latex-workshop.latex.auxDir": "build",
+	"latex-workshop.latex.bibDirs": "build",
+	"latex-workshop.latex.texDirs": "build",
+	"latex-workshop.latex.autoBuild.run": "onSave",
+	"latex-workshop.view.pdf.color.dark.backgroundColor": "#1e1e2e", // base
+	"latex-workshop.view.pdf.color.dark.pageBorderColor": "#45475a", // surface1
+	"latex-workshop.formatting.latex": "tex-fmt",
+	// "latex-workshop.view.pdf.color.dark.pageColorsForeground": "#cdd6f4", // text
+	"latex-workshop.view.pdf.color.dark.pageColorsBackground": "#181825", // mantle
+	// QML
+	"qt-qml.qmlls.useQmlImportPathEnvVar": true,
+	"qt-core.additionalQtPaths": [
+		{
+			"name": "Qt-5.15.18-linux-g++_from_PATH",
+			"path": "/usr/bin/qmake"
+		}
+	],
+	"qt-qml.doNotAskForQmllsDownload": true,
+	"qmlFormat.command": "/usr/lib/qt6/bin/qmlformat",
+	// ========== SuperMaven ========== // 
+	"supermaven.otherWarning": false,
+	"chat.viewTitle.enabled": false,
+	// ========== Newly Added ========== // 
+	"terminal.integrated.initialHint": false,
+	"security.workspace.trust.untrustedFiles": "open",
+	"keyboard.dispatch": "keyCode"
 }

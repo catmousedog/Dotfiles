@@ -34,7 +34,7 @@ PanelWindow {
     margins.top: HyprlandService.gapsOut
     margins.right: HyprlandService.gapsOut
     margins.left: HyprlandService.gapsOut
-    margins.bottom: HyprlandService.gapsIn
+    // margins.bottom: HyprlandService.gapsIn
     color: "transparent"
 
     Left {}

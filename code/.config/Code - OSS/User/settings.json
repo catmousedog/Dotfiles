@@ -76,5 +76,6 @@
 	// ========== Newly Added ========== // 
 	"terminal.integrated.initialHint": false,
 	"security.workspace.trust.untrustedFiles": "open",
-	"keyboard.dispatch": "keyCode"
+	"keyboard.dispatch": "keyCode",
+	"workbench.startupEditor": "none"
 }

@@ -10,6 +10,7 @@
 	"editor.inlayHints.enabled": "off", // inline variable names 
 	"editor.cursorSurroundingLines": 20,
 	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
 	"editor.tabSize": 4,
 	"editor.unicodeHighlight.allowedCharacters": {
 		"’": true
@@ -29,6 +30,8 @@
 	"workbench.panel.opensMaximized": "never",
 	"workbench.secondarySideBar.defaultVisibility": "hidden",
 	"workbench.colorTheme": "Catppuccin Mocha",
+	"workbench.startupEditor": "none",
+	"workbench.tree.indent": 16,
 	// ========== Debugging ========== //
 	"debug.inlineValues": "on",
 	"debug.onTaskErrors": "abort",
@@ -77,5 +80,4 @@
 	"terminal.integrated.initialHint": false,
 	"security.workspace.trust.untrustedFiles": "open",
 	"keyboard.dispatch": "keyCode",
-	"workbench.startupEditor": "none"
 }

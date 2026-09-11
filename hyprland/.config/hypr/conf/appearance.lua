@@ -1,23 +1,18 @@
 -- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
 
--- NOTE: your original col.* values referenced $blue/$red/$mauve from
--- ~/.config/themes/theme.conf, which wasn't included in what you gave me.
--- Replace these placeholders with your real theme colors (or require()
--- a theme.lua module that returns them).
-local blue = "rgba(89b4faee)"
-local red = "rgba(f38ba8ee)"
-local mauve = "rgba(cba6f7aa)"
+local home = os.getenv("HOME")
+local theme = loadfile(home .. "/.config/themes/theme.lua")()
 
 hl.config({
     general = {
         gaps_in = 4,
         gaps_out = 6,
-        border_size = 2,
+        border_size = 3,
         col = {
-            active_border = { colors = { blue, red }, angle = 0 },
-            inactive_border = mauve,
-            nogroup_border = red,
-            nogroup_border_active = blue,
+            active_border = { colors = { theme.blue, theme.red }, angle = 0 },
+            inactive_border = theme.mauve,
+            nogroup_border = theme.red,
+            nogroup_border_active = theme.blue,
         },
         resize_on_border = true,
         allow_tearing = false,
@@ -32,12 +27,12 @@ hl.config({
             enabled = true,
             range = 4,
             render_power = 3,
-            color = 0xee1a1a1a, -- was rgba(1a1a1aee); Lua form is 0xAARRGGBB
+            color = theme.mantle,
         },
         blur = {
             enabled = true,
-            size = 3,
-            passes = 1,
+            size = 2,
+            passes = 2,
             vibrancy = 0.1696,
         },
     },

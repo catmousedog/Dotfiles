@@ -14,9 +14,7 @@ hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix-reset.
 hl.bind(mainMod .. " + H", hl.dsp.exec_cmd('grim -g "$(slurp)" - | satty --filename -'))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.config/hypr/scripts/theme-toggle.sh"))
 
--- cyclenext + alterzorder top combo (verify hl.dsp.window naming against
--- the wiki for your installed version — this dispatcher was renamed
--- more than once during the hyprlang -> lua migration)
+-- Cyclenext + alterzorder top combo
 hl.bind(mainMod .. " + Tab", function()
     hl.dispatch(hl.dsp.window.cycle_next())
     hl.dispatch(hl.dsp.window.bring_to_top())
@@ -61,13 +59,13 @@ end
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
--- Move active window to a workspace (your custom script-driven version)
+-- Move active window to a workspace
 hl.bind("CTRL + SHIFT + " .. mainMod .. " + left", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish movetoworkspace left"))
 hl.bind("CTRL + SHIFT + " .. mainMod .. " + right", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish movetoworkspace right"))
 hl.bind("CTRL + SHIFT + " .. mainMod .. " + up", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish movetoworkspace up"))
 hl.bind("CTRL + SHIFT + " .. mainMod .. " + down", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish movetoworkspace down"))
 
--- Special workspace (scratchpad)
+-- Special workspace
 hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 

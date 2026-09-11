@@ -7,7 +7,6 @@ require("conf.input")
 require("conf.keybinds")
 require("conf.misc")
 
--- Your old hyprland.conf globbed ~/.config/hypr/local/*.conf for overrides.
--- require() doesn't support globbing, so list any local override files here
--- explicitly, e.g.:
+-- require() doesn't support globbing, so list any local override files here:
 require("local.hardware")
+require("local.input")

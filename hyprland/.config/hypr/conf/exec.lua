@@ -1,6 +1,6 @@
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 
--- Runs once, at Hyprland startup (old exec-once)
+-- Runs once, at Hyprland startup
 hl.on("hyprland.start", function()
     hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
     hl.exec_cmd("quickshell")
@@ -10,5 +10,5 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("~/.config/hypr/watrix-init.fish")
 end)
 
--- Runs every time the config (re)loads (old plain exec)
+-- Runs every time the config (re)loads
 hl.exec_cmd("~/.config/hypr/watrix-init.fish")

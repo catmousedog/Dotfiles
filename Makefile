@@ -16,7 +16,7 @@ STOW := stow --no-folding --target=$(HOME)
 # Symlinks pointing into this repo look like ../../Dotfiles/dotfiles/common/...
 REPO_LINK := */$(notdir $(patsubst %/,%,$(dir $(CURDIR))))/$(notdir $(CURDIR))/*
 
-.PHONY: install link unlink prune system theme pkglist pkgdiff check
+.PHONY: install link unlink prune git-filters system theme pkglist pkgdiff check
 
 install: link theme
 
@@ -25,7 +25,7 @@ check:
 	@test -d hosts/$(HOST) || { echo "hosts/$(HOST) does not exist"; exit 1; }
 
 # Create/refresh all symlinks in $HOME, and drop links to files that are gone
-link: check prune
+link: check prune git-filters
 	$(STOW) --dir=common --restow $(COMMON_PKGS)
 	$(STOW) --dir=hosts/$(HOST) --restow $(HOST_PKGS)
 
@@ -33,6 +33,12 @@ link: check prune
 unlink: check
 	$(STOW) --dir=common --delete $(COMMON_PKGS)
 	$(STOW) --dir=hosts/$(HOST) --delete $(HOST_PKGS)
+
+# `theme` rewrites VS Code's color theme in settings.json; this filter commits
+# it as the default so toggling the theme doesn't show up as a change.
+git-filters:
+	@git config filter.vscode-theme.clean "common/themes/.local/bin/theme vscode-clean"
+	@git config filter.vscode-theme.smudge cat
 
 # Remove symlinks into this repo whose target no longer exists (a file was
 # deleted, renamed or moved between packages). Stow can't do this itself: it

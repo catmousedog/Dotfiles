@@ -1,0 +1,2 @@
+# theme toggles change the VS Code color theme; commit it as the default
+common/code/**/settings.json filter=vscode-theme

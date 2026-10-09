@@ -12,10 +12,16 @@ to $XDG_STATE_HOME/theme/current/, which the configs read from:
     hypr.lua       hyprland (reloaded with hyprctl reload)
     hyprlock.conf  hyprlock ($name / $nameAlpha variables)
 
-Usage: theme [init | toggle | current | list | <flavor>]
+VS Code gets its color theme written straight into settings.json; its own
+"follow the system theme" option doesn't work reliably here. A git clean
+filter (`theme vscode-clean`, set up by the Makefile) keeps that line at the
+default in the repo, so toggling doesn't leave settings.json modified.
+
+Usage: theme [init | toggle | current | list | <flavor> | vscode-clean]
 """
 
 import json
+import re
 import os
 import shutil
 import subprocess
@@ -29,6 +35,10 @@ CURRENT = STATE / "current"
 FLAVOR_FILE = STATE / "flavor"
 DEFAULT = "mocha"
 TOGGLE = {"mocha": "latte", "latte": "mocha"}
+
+VSCODE_SETTINGS = Path.home() / ".config/Code - OSS/User/settings.json"
+VSCODE_THEMES = {"mocha": "Catppuccin Mocha", "latte": "Catppuccin Latte"}
+VSCODE_KEY = re.compile(r'("workbench\.colorTheme"\s*:\s*)"[^"]*"')
 
 
 def load(flavor):
@@ -110,7 +120,25 @@ def run(*cmd):
         subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-def apply(p):
+def set_vscode_theme(text, flavor):
+    name = VSCODE_THEMES.get(flavor)
+    return VSCODE_KEY.sub(lambda m: f'{m.group(1)}"{name}"', text) if name else text
+
+
+def vscode(flavor):
+    try:
+        text = VSCODE_SETTINGS.read_text()
+    except FileNotFoundError:
+        return
+    new = set_vscode_theme(text, flavor)
+    if new != text:
+        # write through the symlink, in place; VS Code picks it up live
+        with open(VSCODE_SETTINGS, "w") as f:
+            f.write(new)
+
+
+def apply(flavor, p):
+    vscode(flavor)
     dark = is_dark(p)
     run("gsettings", "set", "org.gnome.desktop.interface", "color-scheme", "prefer-dark" if dark else "prefer-light")
     run("gsettings", "set", "org.gnome.desktop.interface", "gtk-theme", "Adwaita-dark" if dark else "Adwaita")
@@ -129,9 +157,13 @@ def main(args):
     elif cmd == "init":
         write(current())
     elif cmd == "toggle":
-        apply(write(TOGGLE.get(current(), DEFAULT)))
+        flavor = TOGGLE.get(current(), DEFAULT)
+        apply(flavor, write(flavor))
     elif cmd in flavors:
-        apply(write(cmd))
+        apply(cmd, write(cmd))
+    elif cmd == "vscode-clean":
+        # git clean filter: stdin -> stdout with the default theme
+        sys.stdout.write(set_vscode_theme(sys.stdin.read(), DEFAULT))
     else:
         print(__doc__.strip().splitlines()[-1], file=sys.stderr)
         print("flavors: " + ", ".join(flavors), file=sys.stderr)

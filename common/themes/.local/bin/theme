@@ -11,6 +11,15 @@ to $XDG_STATE_HOME/theme/current/, which the configs read from:
     kitty.conf     kitty (reloaded with SIGUSR1)
     hypr.lua       hyprland (reloaded with hyprctl reload)
     hyprlock.conf  hyprlock ($name / $nameAlpha variables)
+    dunst.conf     dunst, linked as ~/.config/dunst/dunstrc.d/90-theme.conf
+    qt6ct.conf     Qt palette (Dolphin etc.), used by ~/.config/qt6ct/qt6ct.conf
+    eza/theme.yml  eza (EZA_CONFIG_DIR points here, see config.fish)
+
+Some programs can't read from another location, so their files are written
+directly (they aren't in the repo, edit this script instead):
+
+    ~/.config/qt6ct/qt6ct.conf  palette path, icon theme, widget style
+    ~/.config/kdeglobals        KDE color groups, merged; other keys are kept
 
 VS Code gets its color theme written straight into settings.json; its own
 "follow the system theme" option doesn't work reliably here. A git clean
@@ -30,13 +39,18 @@ from pathlib import Path
 
 # resolved via the script itself so it also works straight from the repo, before stowing
 PALETTES = Path(__file__).resolve().parents[2] / ".config/themes/palettes"
+CONFIG = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
 STATE = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "theme"
 CURRENT = STATE / "current"
 FLAVOR_FILE = STATE / "flavor"
 DEFAULT = "mocha"
 TOGGLE = {"mocha": "latte", "latte": "mocha"}
 
-VSCODE_SETTINGS = Path.home() / ".config/Code - OSS/User/settings.json"
+VSCODE_SETTINGS = CONFIG / "Code - OSS/User/settings.json"
+DUNST_DROPIN = CONFIG / "dunst/dunstrc.d/90-theme.conf"
+QT6CT_CONF = CONFIG / "qt6ct/qt6ct.conf"
+KDEGLOBALS = CONFIG / "kdeglobals"
+BREEZE_STYLE = Path("/usr/lib/qt6/plugins/styles/breeze6.so")
 VSCODE_THEMES = {"mocha": "Catppuccin Mocha", "latte": "Catppuccin Latte"}
 VSCODE_KEY = re.compile(r'("workbench\.colorTheme"\s*:\s*)"[^"]*"')
 
@@ -87,6 +101,94 @@ def kitty(p):
     return "".join(f"{k} {v}\n" for k, v in lines.items())
 
 
+def dunst(p):
+    def urgency(name, fg, frame, highlight):
+        return (f"[urgency_{name}]\n    background = \"{p['base']}\"\n    foreground = \"{fg}\"\n"
+                f"    frame_color = \"{frame}\"\n    highlight = \"{highlight}\"\n")
+    # the progress bar uses the same red -> blue gradient as the bar's borders
+    return (urgency("low", p["subtext0"], p["overlay0"], p["overlay1"])
+            + urgency("normal", p["text"], p["blue"], f"{p['red']}, {p['blue']}")
+            + urgency("critical", p["text"], p["red"], p["red"]))
+
+
+def qt6ct_colors(p):
+    dark = is_dark(p)
+    # one entry per QPalette::ColorRole, in enum order
+    roles = [
+        p["text"],                                # WindowText
+        p["surface0"],                            # Button
+        p["surface2"] if dark else p["base"],     # Light
+        p["surface1"] if dark else p["mantle"],   # Midlight
+        p["crust"] if dark else p["surface2"],    # Dark
+        p["mantle"] if dark else p["surface1"],   # Mid
+        p["text"],                                # Text
+        p["red"],                                 # BrightText
+        p["text"],                                # ButtonText
+        p["base"],                                # Base
+        p["mantle"],                              # Window
+        p["crust"],                               # Shadow
+        p["blue"],                                # Highlight
+        p["base"],                                # HighlightedText
+        p["blue"],                                # Link
+        p["mauve"],                               # LinkVisited
+        p["mantle"],                              # AlternateBase
+        p["base"],                                # NoRole
+        p["crust"],                               # ToolTipBase
+        p["text"],                                # ToolTipText
+        p["overlay0"],                            # PlaceholderText
+        p["blue"],                                # Accent
+    ]
+    disabled = list(roles)
+    for i in (0, 6, 8):  # WindowText, Text, ButtonText
+        disabled[i] = p["overlay0"]
+    disabled[12] = p["surface1"]
+
+    def row(colors):
+        return ", ".join("#ff" + c[1:] for c in colors)
+    return (f"[ColorScheme]\nactive_colors={row(roles)}\n"
+            f"inactive_colors={row(roles)}\ndisabled_colors={row(disabled)}\n")
+
+
+def eza(p):
+    def c(color, bold=False):
+        return "{foreground: \"%s\"%s}" % (p[color], ", is_bold: true" if bold else "")
+    sections = {
+        "filekinds": {"normal": c("text"), "directory": c("blue", True), "symlink": c("teal"),
+                      "pipe": c("overlay1"), "block_device": c("peach"), "char_device": c("peach"),
+                      "socket": c("overlay1"), "special": c("pink"), "executable": c("green", True),
+                      "mount_point": c("sapphire", True)},
+        "perms": {"user_read": c("yellow"), "user_write": c("red"), "user_execute_file": c("green"),
+                  "user_execute_other": c("green"), "group_read": c("yellow"), "group_write": c("red"),
+                  "group_execute": c("green"), "other_read": c("yellow"), "other_write": c("red"),
+                  "other_execute": c("green"), "special_user_file": c("mauve"),
+                  "special_other": c("overlay1"), "attribute": c("overlay1")},
+        "size": {"major": c("subtext0"), "minor": c("lavender"), "number_byte": c("text"),
+                 "number_kilo": c("text"), "number_mega": c("blue"), "number_giga": c("mauve"),
+                 "number_huge": c("red"), "unit_byte": c("overlay1"), "unit_kilo": c("overlay1"),
+                 "unit_mega": c("overlay1"), "unit_giga": c("overlay1"), "unit_huge": c("overlay1")},
+        "users": {"user_you": c("text"), "user_root": c("red"), "user_other": c("mauve"),
+                  "group_yours": c("subtext1"), "group_other": c("overlay1"), "group_root": c("red")},
+        "links": {"normal": c("sky"), "multi_link_file": c("sky", True)},
+        "git": {"new": c("green"), "modified": c("yellow"), "deleted": c("red"), "renamed": c("teal"),
+                "typechange": c("pink"), "ignored": c("overlay0"), "conflicted": c("maroon")},
+        "git_repo": {"branch_main": c("text"), "branch_other": c("mauve"), "git_clean": c("green"),
+                     "git_dirty": c("red")},
+        "file_type": {"image": c("yellow"), "video": c("red"), "music": c("green"),
+                      "lossless": c("teal"), "crypto": c("overlay2"), "document": c("text"),
+                      "compressed": c("pink"), "temp": c("maroon"), "compiled": c("lavender"),
+                      "build": c("overlay2"), "source": c("peach")},
+    }
+    out = "colourful: true\n"
+    for section, entries in sections.items():
+        out += f"{section}:\n" + "".join(f"  {k}: {v}\n" for k, v in entries.items())
+    for key, color in [("punctuation", "overlay0"), ("date", "teal"), ("inode", "subtext0"),
+                       ("blocks", "subtext0"), ("octal", "overlay2"), ("symlink_path", "sky"),
+                       ("control_char", "sapphire"), ("broken_symlink", "red"),
+                       ("broken_path_overlay", "surface2")]:
+        out += f"{key}: {c(color)}\n"
+    return out + "header: {foreground: \"%s\", is_underline: true}\n" % p["text"]
+
+
 RENDERERS = {
     "colors.json": lambda p: json.dumps(p, indent=4) + "\n",
     "colors.rasi": lambda p: "* {\n" + "".join(f"    {k}: {v};\n" for k, v in p.items()) + "}\n",
@@ -94,6 +196,9 @@ RENDERERS = {
     "kitty.conf": kitty,
     "hypr.lua": lambda p: "return {\n" + "".join(f'    {k} = "{v[1:]}",\n' for k, v in p.items()) + "}\n",
     "hyprlock.conf": lambda p: "".join(f"${k} = rgb({v[1:]})\n${k}Alpha = {v[1:]}\n" for k, v in p.items()),
+    "dunst.conf": dunst,
+    "qt6ct.conf": qt6ct_colors,
+    "eza/theme.yml": eza,
 }
 
 
@@ -106,8 +211,8 @@ def current():
 
 def write(flavor):
     p = load(flavor)
-    CURRENT.mkdir(parents=True, exist_ok=True)
     for name, render in RENDERERS.items():
+        (CURRENT / name).parent.mkdir(parents=True, exist_ok=True)
         # overwrite in place (same inode) so file watchers see a change
         with open(CURRENT / name, "w") as f:
             f.write(render(p))
@@ -137,8 +242,87 @@ def vscode(flavor):
             f.write(new)
 
 
-def apply(flavor, p):
+def link(path, target):
+    if path.is_symlink() and path.readlink() == target:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.unlink(missing_ok=True)
+    path.symlink_to(target)
+
+
+def qt6ct(p):
+    # qt6ct.conf has no includes and wants absolute paths, so it's generated whole
+    dark = is_dark(p)
+    QT6CT_CONF.parent.mkdir(parents=True, exist_ok=True)
+    QT6CT_CONF.write_text(
+        "# generated by ~/.local/bin/theme, edit that instead\n"
+        "[Appearance]\n"
+        f"color_scheme_path={CURRENT / 'qt6ct.conf'}\n"
+        "custom_palette=true\n"
+        f"icon_theme={'breeze-dark' if dark else 'breeze'}\n"
+        "standard_dialogs=default\n"
+        # Breeze looks better if it's installed (pacman -S breeze), Fusion is built into Qt
+        f"style={'Breeze' if BREEZE_STYLE.exists() else 'Fusion'}\n")
+
+
+def kdeglobals(p):
+    """KDE apps (Dolphin) take some colors from kdeglobals instead of the Qt palette."""
+    def rgb(name):
+        return ",".join(str(int(p[name][i:i + 2], 16)) for i in (1, 3, 5))
+
+    def group(bg, alt, fg, inactive):
+        return {"BackgroundNormal": rgb(bg), "BackgroundAlternate": rgb(alt),
+                "ForegroundNormal": rgb(fg), "ForegroundInactive": rgb(inactive),
+                "ForegroundActive": rgb("peach"), "ForegroundLink": rgb("blue"),
+                "ForegroundVisited": rgb("mauve"), "ForegroundNegative": rgb("red"),
+                "ForegroundNeutral": rgb("yellow"), "ForegroundPositive": rgb("green"),
+                "DecorationFocus": rgb("blue"), "DecorationHover": rgb("lavender")}
+    ours = {
+        "Colors:View": group("base", "mantle", "text", "subtext0"),
+        "Colors:Window": group("mantle", "crust", "text", "subtext0"),
+        "Colors:Button": group("surface0", "surface1", "text", "subtext0"),
+        "Colors:Selection": group("blue", "sapphire", "base", "mantle"),
+        "Colors:Tooltip": group("crust", "mantle", "text", "subtext0"),
+        "Colors:Complementary": group("crust", "mantle", "text", "subtext0"),
+        "Colors:Header": group("mantle", "crust", "text", "subtext0"),
+        # not a color, but kdeglobals can't be stowed: KDE rewrites it
+        "General": {"TerminalApplication": "kitty"},
+    }
+
+    # small merge instead of configparser, which mangles KDE's key[$e] syntax
+    try:
+        lines = KDEGLOBALS.read_text().splitlines()
+    except FileNotFoundError:
+        lines = []
+    sections, order, name = {}, [], None
+    for line in lines:
+        if line.startswith("[") and line.rstrip().endswith("]"):
+            name = line.strip()[1:-1]
+            order.append(name)
+            sections[name] = {}
+        elif name is not None and "=" in line:
+            key, value = line.split("=", 1)
+            sections[name][key] = value
+    for name, values in ours.items():
+        if name not in sections:
+            order.append(name)
+            sections[name] = {}
+        sections[name].update(values)
+    KDEGLOBALS.write_text("\n".join(
+        f"[{n}]\n" + "".join(f"{k}={v}\n" for k, v in sections[n].items()) for n in order))
+
+
+def export(flavor, p):
+    """Write the files that live outside $XDG_STATE_HOME/theme."""
     vscode(flavor)
+    link(DUNST_DROPIN, CURRENT / "dunst.conf")
+    qt6ct(p)
+    kdeglobals(p)
+
+
+def apply(flavor, p):
+    export(flavor, p)
+    run("dunstctl", "reload")
     dark = is_dark(p)
     run("gsettings", "set", "org.gnome.desktop.interface", "color-scheme", "prefer-dark" if dark else "prefer-light")
     run("gsettings", "set", "org.gnome.desktop.interface", "gtk-theme", "Adwaita-dark" if dark else "Adwaita")
@@ -155,7 +339,8 @@ def main(args):
     elif cmd == "list":
         print("\n".join(flavors))
     elif cmd == "init":
-        write(current())
+        flavor = current()
+        export(flavor, write(flavor))
     elif cmd == "toggle":
         flavor = TOGGLE.get(current(), DEFAULT)
         apply(flavor, write(flavor))

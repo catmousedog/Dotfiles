@@ -15,6 +15,10 @@ hl.bind(mainMod .. " + H", hl.dsp.exec_cmd('grim -g "$(slurp)" - | satty --filen
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.local/bin/theme toggle"))
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd(vars.clipboard))
 
+-- Notifications
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("dunstctl close"))
+hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("dunstctl history-pop"))
+
 -- Cycle windows and raise the newly focused one
 hl.bind(mainMod .. " + Tab", function()
     hl.dispatch(hl.dsp.window.cycle_next())

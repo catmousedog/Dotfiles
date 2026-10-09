@@ -11,3 +11,7 @@ hl.env("XCURSOR_SIZE", "24")
 hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
 hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Classic")
 hl.env("HYPRCURSOR_SIZE", "24")
+
+-- Qt apps (Dolphin) take palette, icons and style from qt6ct, whose config
+-- ~/.local/bin/theme generates. Needs the qt6ct package.
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")

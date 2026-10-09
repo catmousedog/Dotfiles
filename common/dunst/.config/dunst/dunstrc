@@ -1,0 +1,71 @@
+# Layout only. Colors come from the theme: ~/.local/bin/theme links
+# dunstrc.d/90-theme.conf to its generated dunst.conf and runs dunstctl reload.
+# See `man 5 dunst`.
+
+[global]
+    monitor = 0
+    follow = mouse
+
+    # top right, under the quickshell bar (gaps_out = 6)
+    origin = top-right
+    offset = (6, 50)
+    width = (250, 420)
+    height = (0, 250)
+    notification_limit = 5
+    gap_size = 6
+
+    # same look as the bar: rounded, thin frame, bold mono font
+    corner_radius = 18
+    frame_width = 2
+    separator_height = 2
+    separator_color = frame
+    padding = 10
+    horizontal_padding = 14
+    text_icon_padding = 12
+    font = Noto Sans Mono Bold 10
+    line_height = 2
+
+    progress_bar = true
+    progress_bar_height = 8
+    progress_bar_frame_width = 0
+    progress_bar_corner_radius = 4
+    progress_bar_min_width = 150
+    progress_bar_max_width = 400
+
+    icon_theme = "breeze-dark, Adwaita"
+    enable_recursive_icon_lookup = true
+    icon_position = left
+    min_icon_size = 32
+    max_icon_size = 48
+    icon_corner_radius = 8
+
+    markup = full
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    ellipsize = end
+    show_age_threshold = 60
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = yes
+    sort = yes
+    indicate_hidden = yes
+
+    history_length = 30
+    sticky_history = yes
+    browser = /usr/bin/xdg-open
+    dmenu = /usr/bin/rofi -dmenu -p dunst
+
+    # left: open / run default action, middle: close, right: close all
+    mouse_left_click = do_action, close_current
+    mouse_middle_click = close_current
+    mouse_right_click = close_all
+
+[urgency_low]
+    timeout = 4
+
+[urgency_normal]
+    timeout = 8
+
+[urgency_critical]
+    timeout = 0

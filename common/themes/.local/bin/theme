@@ -12,15 +12,17 @@ to $XDG_STATE_HOME/theme/current/, which the configs read from:
     hypr.lua       hyprland (reloaded with hyprctl reload)
     hyprlock.conf  hyprlock ($name / $nameAlpha variables)
     dunst.conf     dunst, linked as ~/.config/dunst/dunstrc.d/90-theme.conf
-    qt6ct.conf     Qt palette (Dolphin etc.), used by ~/.config/qt6ct/qt6ct.conf
+    qt6ct.conf     Qt palette, used by ~/.config/qt6ct/qt6ct.conf
     eza/theme.yml  eza (EZA_CONFIG_DIR points here, see config.fish)
     yazi.toml      yazi, linked as ~/.config/yazi/theme.toml (read on start)
 
 Some programs can't read from another location, so their files are written
 directly (they aren't in the repo, edit this script instead):
 
-    ~/.config/qt6ct/qt6ct.conf  palette path, icon theme, widget style
-    ~/.config/kdeglobals        KDE color groups, merged; other keys are kept
+    ~/.config/qt6ct/qt6ct.conf             palette path, icon theme, widget style
+    ~/.local/share/themes/Theme-<flavor>/  GTK 3 theme: adw-gtk3 recolored. GTK apps
+                                           (Thunar, file dialogs) restyle live when
+                                           the gtk-theme setting switches to it
 
 VS Code gets its color theme written straight into settings.json; its own
 "follow the system theme" option doesn't work reliably here. A git clean
@@ -51,10 +53,8 @@ VSCODE_SETTINGS = CONFIG / "Code - OSS/User/settings.json"
 DUNST_DROPIN = CONFIG / "dunst/dunstrc.d/90-theme.conf"
 YAZI_THEME = CONFIG / "yazi/theme.toml"
 QT6CT_CONF = CONFIG / "qt6ct/qt6ct.conf"
-KDEGLOBALS = CONFIG / "kdeglobals"
 DATA = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
-KDE_SCHEME = "Theme"  # one name for every flavor, so the selection stays valid
-KDE_SCHEME_FILE = DATA / f"color-schemes/{KDE_SCHEME}.colors"
+ADW_GTK3 = Path("/usr/share/themes")  # adw-gtk3 and adw-gtk3-dark, from adw-gtk-theme
 BREEZE_STYLE = Path("/usr/lib/qt6/plugins/styles/breeze6.so")
 VSCODE_THEMES = {"mocha": "Catppuccin Mocha", "latte": "Catppuccin Latte"}
 VSCODE_KEY = re.compile(r'("workbench\.colorTheme"\s*:\s*)"[^"]*"')
@@ -338,58 +338,45 @@ def qt6ct(p):
         f"style={'Breeze' if BREEZE_STYLE.exists() else 'Fusion'}\n")
 
 
-def kdeglobals(p):
-    """KDE apps (Dolphin) replace the Qt palette with a KDE color scheme, BreezeLight
-    unless told otherwise. So write the palette as a color scheme, make it the
-    default in kdeglobals and copy its colors there too."""
-    def rgb(name):
-        return ",".join(str(int(p[name][i:i + 2], 16)) for i in (1, 3, 5))
+def gtk_theme_name(flavor):
+    return f"Theme-{flavor}"
 
-    def group(bg, alt, fg, inactive):
-        return {"BackgroundNormal": rgb(bg), "BackgroundAlternate": rgb(alt),
-                "ForegroundNormal": rgb(fg), "ForegroundInactive": rgb(inactive),
-                "ForegroundActive": rgb("peach"), "ForegroundLink": rgb("blue"),
-                "ForegroundVisited": rgb("mauve"), "ForegroundNegative": rgb("red"),
-                "ForegroundNeutral": rgb("yellow"), "ForegroundPositive": rgb("green"),
-                "DecorationFocus": rgb("blue"), "DecorationHover": rgb("lavender")}
+
+def gtk(flavor, p):
+    """adw-gtk3 takes libadwaita's named colors, so a theme is an import plus overrides.
+    Each flavor gets its own theme name: GTK only reloads when the name changes."""
+    dark = is_dark(p)
+    base = ADW_GTK3 / ("adw-gtk3-dark" if dark else "adw-gtk3") / "gtk-3.0/gtk.css"
+    if not base.exists():
+        return False
+    shade = "rgba(0, 0, 0, 0.36)" if dark else "rgba(0, 0, 0, 0.07)"
     colors = {
-        "Colors:View": group("base", "mantle", "text", "subtext0"),
-        "Colors:Window": group("mantle", "crust", "text", "subtext0"),
-        "Colors:Button": group("surface0", "surface1", "text", "subtext0"),
-        "Colors:Selection": group("blue", "sapphire", "base", "mantle"),
-        "Colors:Tooltip": group("crust", "mantle", "text", "subtext0"),
-        "Colors:Complementary": group("crust", "mantle", "text", "subtext0"),
-        "Colors:Header": group("mantle", "crust", "text", "subtext0"),
+        "accent_color": p["blue"], "accent_bg_color": p["blue"], "accent_fg_color": p["base"],
+        "destructive_color": p["red"], "destructive_bg_color": p["red"], "destructive_fg_color": p["base"],
+        "success_color": p["green"], "success_bg_color": p["green"], "success_fg_color": p["base"],
+        "warning_color": p["yellow"], "warning_bg_color": p["yellow"], "warning_fg_color": p["base"],
+        "error_color": p["red"], "error_bg_color": p["red"], "error_fg_color": p["base"],
+        "window_bg_color": p["base"], "window_fg_color": p["text"],
+        "view_bg_color": p["base"], "view_fg_color": p["text"],
+        "headerbar_bg_color": p["mantle"], "headerbar_fg_color": p["text"],
+        "headerbar_border_color": p["surface0"], "headerbar_backdrop_color": p["base"],
+        "headerbar_shade_color": shade,
+        "sidebar_bg_color": p["mantle"], "sidebar_fg_color": p["text"],
+        "sidebar_backdrop_color": p["mantle"], "sidebar_shade_color": shade,
+        "card_bg_color": p["surface0"], "card_fg_color": p["text"], "card_shade_color": shade,
+        "dialog_bg_color": p["base"], "dialog_fg_color": p["text"],
+        "popover_bg_color": p["mantle"], "popover_fg_color": p["text"],
+        "shade_color": shade, "scrollbar_outline_color": p["crust"],
     }
-    KDE_SCHEME_FILE.parent.mkdir(parents=True, exist_ok=True)
-    KDE_SCHEME_FILE.write_text(f"[General]\nName={KDE_SCHEME}\nColorScheme={KDE_SCHEME}\n\n" + "\n".join(
-        f"[{n}]\n" + "".join(f"{k}={v}\n" for k, v in values.items()) for n, values in colors.items()))
-
-    ours = dict(colors)
-    # TerminalApplication isn't a color, but kdeglobals can't be stowed: KDE rewrites it
-    ours["General"] = {"ColorScheme": KDE_SCHEME, "TerminalApplication": "kitty"}
-
-    # small merge instead of configparser, which mangles KDE's key[$e] syntax
-    try:
-        lines = KDEGLOBALS.read_text().splitlines()
-    except FileNotFoundError:
-        lines = []
-    sections, order, name = {}, [], None
-    for line in lines:
-        if line.startswith("[") and line.rstrip().endswith("]"):
-            name = line.strip()[1:-1]
-            order.append(name)
-            sections[name] = {}
-        elif name is not None and "=" in line:
-            key, value = line.split("=", 1)
-            sections[name][key] = value
-    for name, values in ours.items():
-        if name not in sections:
-            order.append(name)
-            sections[name] = {}
-        sections[name].update(values)
-    KDEGLOBALS.write_text("\n".join(
-        f"[{n}]\n" + "".join(f"{k}={v}\n" for k, v in sections[n].items()) for n in order))
+    theme = DATA / "themes" / gtk_theme_name(flavor)
+    (theme / "gtk-3.0").mkdir(parents=True, exist_ok=True)
+    (theme / "index.theme").write_text(
+        f"[Desktop Entry]\nType=X-GNOME-Metatheme\nName={gtk_theme_name(flavor)}\n"
+        "Comment=generated by ~/.local/bin/theme\n")
+    (theme / "gtk-3.0/gtk.css").write_text(
+        f'/* generated by ~/.local/bin/theme */\n@import url("file://{base}");\n\n'
+        + "".join(f"@define-color {k} {v};\n" for k, v in colors.items()))
+    return True
 
 
 def export(flavor, p):
@@ -398,7 +385,6 @@ def export(flavor, p):
     link(DUNST_DROPIN, CURRENT / "dunst.conf")
     link(YAZI_THEME, CURRENT / "yazi.toml")
     qt6ct(p)
-    kdeglobals(p)
 
 
 def apply(flavor, p):
@@ -406,7 +392,9 @@ def apply(flavor, p):
     run("dunstctl", "reload")
     dark = is_dark(p)
     run("gsettings", "set", "org.gnome.desktop.interface", "color-scheme", "prefer-dark" if dark else "prefer-light")
-    run("gsettings", "set", "org.gnome.desktop.interface", "gtk-theme", "Adwaita-dark" if dark else "Adwaita")
+    fallback = "Adwaita-dark" if dark else "Adwaita"
+    run("gsettings", "set", "org.gnome.desktop.interface", "gtk-theme",
+        gtk_theme_name(flavor) if gtk(flavor, p) else fallback)
     run("pkill", "-USR1", "-x", "kitty")
     if os.environ.get("HYPRLAND_INSTANCE_SIGNATURE"):
         run("hyprctl", "reload")

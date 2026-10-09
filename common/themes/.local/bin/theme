@@ -49,8 +49,7 @@ CURRENT = STATE / "current"
 FLAVOR_FILE = STATE / "flavor"
 DEFAULT = "mocha"
 # dark -> light partner for `theme toggle`; going back uses the last dark one
-LIGHT = {"mocha": "latte", "macchiato": "latte", "frappe": "latte",
-         "rose-pine": "rose-pine-dawn", "rose-pine-moon": "rose-pine-dawn",
+LIGHT = {"mocha": "latte", "rose-pine": "rose-pine-dawn", "rose-pine-moon": "rose-pine-dawn",
          "everforest": "everforest-light"}
 LAST_DARK_FILE = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "theme/last-dark"
 SWATCHES = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "theme/swatches"
@@ -61,8 +60,7 @@ YAZI_THEME = CONFIG / "yazi/theme.toml"
 DATA = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
 ADW_GTK3 = Path("/usr/share/themes")  # adw-gtk3 and adw-gtk3-dark, from adw-gtk-theme
 # from the Catppuccin extension; other palettes fall back to Mocha / Latte
-VSCODE_THEMES = {"mocha": "Catppuccin Mocha", "macchiato": "Catppuccin Macchiato",
-                 "frappe": "Catppuccin Frappé", "latte": "Catppuccin Latte"}
+VSCODE_THEMES = {"mocha": "Catppuccin Mocha", "latte": "Catppuccin Latte"}
 VSCODE_KEY = re.compile(r'("workbench\.colorTheme"\s*:\s*)"[^"]*"')
 
 

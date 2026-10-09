@@ -73,8 +73,8 @@ theme init        # regenerate the current flavor (after editing a palette)
 
 Hyprland, kitty, rofi, quickshell, dunst, eza, yazi and hyprlock (laptop only) read
 the generated files. GTK apps (Thunar, file dialogs) get a recolored adw-gtk3
-theme per flavor and switch live. VS Code gets its color theme written directly. Palettes: Catppuccin (mocha, macchiato, frappe, latte), Rosé Pine (main, moon,
-dawn), Everforest (dark, light) and Nord. To add one, drop a JSON with the same
+theme per flavor and switch live. VS Code gets its color theme written directly. Palettes, each with a light partner: Catppuccin (mocha / latte), Rosé Pine
+(main and moon / dawn) and Everforest (dark / light). To add one, drop a JSON with the same
 26 Catppuccin color names next to the others and add its light partner to
 `LIGHT` in the script. Run `python preview.py` to render the palette PNGs.
 

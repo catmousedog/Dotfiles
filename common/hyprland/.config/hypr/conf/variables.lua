@@ -3,7 +3,7 @@ local M = {}
 M.terminal = "kitty"
 M.fileManager = "thunar"
 M.browser = "firefox"
-M.menu = "rofi -show drun"
+M.menu = "rofi -show apps"
 M.clipboard = "cliphist list | rofi -dmenu -p clipboard | cliphist decode | wl-copy"
 M.mainMod = "SUPER"
 return M

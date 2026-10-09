@@ -1,0 +1,20 @@
+# Apps shown by SUPER+R, one desktop entry id per line (the .desktop file name).
+# Missing ones are skipped, so this list works on every machine.
+# List what's installed: ls /usr/share/applications ~/.local/share/applications \
+#     /var/lib/flatpak/exports/share/applications
+# Anything else: switch to the Run tab (shift+arrow) and type the command.
+
+firefox
+kitty
+thunar
+code-oss
+steam
+com.discordapp.Discord
+com.spotify.Client
+at.vintagestory.VintageStory
+org.prismlauncher.PrismLauncher
+com.modrinth.ModrinthApp
+ckan
+eldenring
+openxcom
+com.cisco.secureclient.gui

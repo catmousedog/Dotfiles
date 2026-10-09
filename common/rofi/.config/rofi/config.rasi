@@ -1,10 +1,12 @@
 configuration {
-    modi:                       "drun,run";
-    show-icons:                 true;
-    display-drun:               "Apps";
-    display-run:                "Run";
-    drun-display-format:        "{name}";
-    font:                       "JetBrainsMono Nerd Font 11";
+    // apps: only the ones in apps.txt (scripts/apps.py), run: any command
+    modes:               "apps:~/.config/rofi/scripts/apps.py,run";
+    show-icons:          true;
+    display-apps:        "Apps";
+    display-run:         "Run";
+    font:                "Noto Sans Mono Bold 11";
+    kb-mode-next:        "Shift+Right,Control+Tab";
+    kb-mode-previous:    "Shift+Left,Control+ISO_Left_Tab";
 }
 
 @theme "catppuccin"

@@ -75,6 +75,12 @@ the generated files. GTK apps (Thunar, file dialogs) get a recolored adw-gtk3
 theme per flavor and switch live. VS Code gets its color theme written directly. To add a flavor, drop a new palette
 JSON next to the others. Run `python preview.py` to render the palette PNGs.
 
+## App launcher
+
+SUPER+R shows only the apps listed in `common/rofi/.config/rofi/apps.txt`
+(desktop entry ids; Steam games and tool entries stay out). Edit the list to add
+one. The Run tab (shift+arrow) still runs any command.
+
 ## Status bar
 
 | item       | scroll            | left click             | right click     |

@@ -32,7 +32,7 @@ inputbar {
 
 prompt {
     text-color:  @mauve;
-    font:        "JetBrainsMono Nerd Font Bold 11";
+    font:        "Noto Sans Mono Bold 11";
 }
 
 entry {

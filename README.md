@@ -80,7 +80,7 @@ Hyprland, kitty, rofi, quickshell, dunst, eza, yazi and hyprlock (laptop only) r
 the generated files. GTK apps (Thunar, file dialogs) get a recolored adw-gtk3
 theme per flavor and switch live. VS Code gets its color theme written directly. Thunar's folder icons take the theme's accent color. For a wallpaper per theme, put
 `<theme>-<dark|light>.png` (or `<theme>.png`) in `~/.config/backgrounds/`; otherwise
-`background.png` is used. Themes: Catppuccin and Rosé Pine. To add one, drop `<name>-dark.json`
+`background.png` is used. Themes: Catppuccin, Rosé Pine, Tokyo Night, Kanagawa, Gruvbox and Flexoki. To add one, drop `<name>-dark.json`
 and `<name>-light.json` next to the others with the same roles. Run
 `python preview.py` to render the palette PNGs (every role and where it comes from).
 

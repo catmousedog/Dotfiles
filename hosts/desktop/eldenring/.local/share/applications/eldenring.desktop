@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Elden Ring (me3 launcher)
+Comment=Pick a me3 profile and executable, then launch
+Exec=/home/arno/.local/bin/me3-rofi-launch.fish
+Icon=steam_icon_1245620
+Terminal=false
+Categories=Game;

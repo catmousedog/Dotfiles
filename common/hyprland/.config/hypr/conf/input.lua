@@ -14,4 +14,15 @@ hl.config({
 })
 
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Gestures/
-hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
+-- Three finger swipes move through the watrix grid. Content follows the fingers
+-- like natural scrolling: swiping left brings in the workspace on the right.
+local swipes = { left = "right", right = "left", up = "down", down = "up" }
+for swipe, dir in pairs(swipes) do
+    hl.gesture({
+        fingers = 3,
+        direction = swipe,
+        action = function()
+            hl.exec_cmd("~/.config/hypr/scripts/watrix.fish workspace " .. dir)
+        end,
+    })
+end

@@ -32,7 +32,7 @@ Anything that differs per machine lives in `hosts/<host>/` and is committed:
 ## Setup
 
 ```sh
-git clone <repo> ~/Dotfiles/dotfiles && cd ~/Dotfiles/dotfiles
+git clone <repo> ~/Dotfiles && cd ~/Dotfiles
 echo desktop > .host           # or laptop; picks hosts/<host>/
 sudo pacman -S --needed - < hosts/desktop/pkglist.txt
 yay -S --needed - < hosts/desktop/pkglist-aur.txt

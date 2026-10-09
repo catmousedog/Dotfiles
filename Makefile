@@ -13,8 +13,8 @@ HOST_PKGS   := $(notdir $(patsubst %/,%,$(wildcard hosts/$(HOST)/*/)))
 # files that programs write themselves (fish_variables, ...) out of the repo.
 STOW := stow --no-folding --target=$(HOME)
 
-# Symlinks pointing into this repo look like ../../Dotfiles/dotfiles/common/...
-REPO_LINK := */$(notdir $(patsubst %/,%,$(dir $(CURDIR))))/$(notdir $(CURDIR))/*
+# Symlinks into this repo are relative, e.g. ../../Dotfiles/common/kitty/...
+REPO := $(notdir $(CURDIR))
 
 .PHONY: install link unlink prune git-filters system theme pkglist pkgdiff check
 
@@ -44,7 +44,7 @@ git-filters:
 # deleted, renamed or moved between packages). Stow can't do this itself: it
 # only looks at files that still exist in the package.
 prune:
-	@find $(HOME)/.config $(HOME)/.local -xtype l -lname '$(REPO_LINK)' -print -delete 2>/dev/null || true
+	@find $(HOME)/.config $(HOME)/.local -xtype l \( -lname '*/$(REPO)/common/*' -o -lname '*/$(REPO)/hosts/*' \) -print -delete 2>/dev/null || true
 
 # Files outside $HOME are copied, not symlinked: root-owned services (greetd)
 # should not depend on files inside a user's private home directory.

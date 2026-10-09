@@ -11,7 +11,7 @@ HOST_PKGS   := $(notdir $(patsubst %/,%,$(wildcard hosts/$(HOST)/*/)))
 # --no-folding: always link individual files, never whole directories. This lets
 # common/ and hosts/ packages share a directory (e.g. ~/.config/hypr) and keeps
 # files that programs write themselves (fish_variables, ...) out of the repo.
-STOW := stow --no-folding --target=$(HOME)
+STOW := stow --no-folding --target=$(HOME) --ignore='__pycache__'
 
 # Symlinks into this repo are relative, e.g. ../../Dotfiles/common/kitty/...
 REPO := $(notdir $(CURDIR))

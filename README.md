@@ -72,8 +72,7 @@ theme init        # regenerate the current flavor (after editing a palette)
 
 Hyprland, kitty, rofi, quickshell, dunst, eza, yazi and hyprlock (laptop only) read
 the generated files. GTK apps (Thunar, file dialogs) get a recolored adw-gtk3
-theme per flavor and switch live. VS Code and Qt apps (qt6ct) get their config
-written directly; Qt apps only pick up a new flavor after a restart. To add a flavor, drop a new palette
+theme per flavor and switch live. VS Code gets its color theme written directly. To add a flavor, drop a new palette
 JSON next to the others. Run `python preview.py` to render the palette PNGs.
 
 ## Status bar

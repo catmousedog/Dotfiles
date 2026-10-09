@@ -32,7 +32,7 @@
     progress_bar_min_width = 150
     progress_bar_max_width = 400
 
-    icon_theme = "breeze-dark, Adwaita"
+    icon_theme = "Adwaita"
     enable_recursive_icon_lookup = true
     icon_position = left
     min_icon_size = 32

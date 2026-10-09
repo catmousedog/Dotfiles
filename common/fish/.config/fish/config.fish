@@ -1,10 +1,9 @@
-if status is-interactive
-	set fish_greeting
-end
+# Host specific config and secrets go in conf.d/*.fish, which fish loads
+# automatically before this file (see hosts/<host>/... and .gitignore).
 
-# Load all scripts from local/
-if test -d ~/.config/fish/local
-    for f in ~/.config/fish/local/*.fish
-        source $f
-    end
+fish_add_path ~/.local/bin
+
+if status is-interactive
+    set fish_greeting
+    abbr -a wlc wl-copy
 end

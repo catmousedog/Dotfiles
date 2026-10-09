@@ -67,7 +67,9 @@ ADWAITA_FOLDER = "#62a0ea"  # main color of Adwaita's folder icons
 HEX = re.compile(r"#[0-9a-fA-F]{6}\b")
 BACKGROUNDS = CONFIG / "backgrounds"
 # from the Catppuccin extension; other palettes fall back to Mocha / Latte
-VSCODE_THEMES = {"catppuccin-dark": "Catppuccin Mocha", "catppuccin-light": "Catppuccin Latte"}
+# labels of installed VS Code themes (Catppuccin, Pastel, Rosé Pine extensions)
+VSCODE_THEMES = {"catppuccin-dark": "Catppuccin Mocha", "catppuccin-light": "Catppuccin Latte",
+                 "rose-pine-dark": "Pastel - Theme", "rose-pine-light": "Rosé Pine Dawn"}
 VSCODE_KEY = re.compile(r'("workbench\.colorTheme"\s*:\s*)"[^"]*"')
 
 

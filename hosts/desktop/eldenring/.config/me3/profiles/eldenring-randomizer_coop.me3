@@ -1,0 +1,18 @@
+profileVersion = "v1"
+
+[[supports]]
+game = "eldenring"
+
+[[package]]
+id = "randomizer"
+path = "/home/arno/.config/me3/profiles/eldenring-mods/randomizer_coop"
+
+[[package]]
+id = "UI"
+path = "/home/arno/.config/me3/profiles/eldenring-mods/UI"
+
+[[native]]
+path = "/home/arno/.config/me3/profiles/eldenring-mods/UltrawideFix/UltrawideFix.dll"
+
+[[native]]
+path = "/home/arno/.config/me3/profiles/eldenring-mods/SeamlessCoop/ersc.dll"

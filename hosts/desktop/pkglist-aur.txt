@@ -1,0 +1,8 @@
+awww-git
+cisco-secure-client
+ds9-bin
+openxcom-extended
+tex-fmt
+ttf-ms-fonts
+yay
+yay-debug

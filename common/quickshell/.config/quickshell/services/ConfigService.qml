@@ -21,7 +21,7 @@ Singleton {
 
     FileView {
         id: localConfig
-        path: StandardPaths.writableLocation(StandardPaths.ConfigLocation) + "/quickshell/local/config.json"
+        path: StandardPaths.writableLocation(StandardPaths.ConfigLocation) + "/quickshell/host/config.json"
         watchChanges: false
         blockLoading: true
     }

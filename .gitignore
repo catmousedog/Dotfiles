@@ -1,18 +1,13 @@
-# background images
-backgrounds/.config/backgrounds/*
-!background/.config/background/.gitkeep
+# Which host this checkout is (see Makefile)
+/.host
 
-# quickshell
-quickshell/.config/quickshell/local/*
-!quickshell/.config/quickshell/local/.gitkeep
+# Secrets: never commit these. Put them next to the config that needs them,
+# e.g. common/fish/.config/fish/conf.d/secrets.fish or hosts/<host>/.../secrets.*
+secrets.*
+*.secret
 
-# hyprland
-hyprland/.config/hypr/local/*
-!hyprland/.config/hypr/local/.gitkeep
+# Wallpapers (large binaries)
+common/backgrounds/.config/backgrounds/*
 
-# hypridle
-hypridle/.config/hypr/hypridle.conf
-
-# fish
-fish/.config/fish/local/*
-!fish/.config/fish/local/.gitkeep
+# Theme preview scratch output
+__pycache__/

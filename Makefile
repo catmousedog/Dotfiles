@@ -1,23 +1,57 @@
-# Variables
-STOW_PKGS := awww backgrounds code fish hypridle hyprland kitty quickshell rofi themes watrix yazi 
-SYS_STOW_PKGS := greetd
+SHELL := /bin/bash
 
-.PHONY: all install user system clean
+# Which machine this checkout belongs to: a directory name under hosts/.
+# Stored in the (gitignored) .host file, override with `make HOST=laptop ...`.
+HOST ?= $(shell cat .host 2>/dev/null)
 
-# Stow to $HOME and root
-user:
-	stow --target=$(HOME) --restow $(STOW_PKGS)
+# Every directory in common/ and hosts/$(HOST)/ is a stow package.
+COMMON_PKGS := $(notdir $(patsubst %/,%,$(wildcard common/*/)))
+HOST_PKGS   := $(notdir $(patsubst %/,%,$(wildcard hosts/$(HOST)/*/)))
 
+# --no-folding: always link individual files, never whole directories. This lets
+# common/ and hosts/ packages share a directory (e.g. ~/.config/hypr) and keeps
+# files that programs write themselves (fish_variables, ...) out of the repo.
+STOW := stow --no-folding --target=$(HOME)
+
+.PHONY: install link unlink system theme pkglist pkgdiff check
+
+install: link theme
+
+check:
+	@test -n "$(HOST)" || { echo "No host set: echo <name> > .host  (one of: $(notdir $(wildcard hosts/*)))"; exit 1; }
+	@test -d hosts/$(HOST) || { echo "hosts/$(HOST) does not exist"; exit 1; }
+
+# Create/refresh all symlinks in $HOME
+link: check
+	$(STOW) --dir=common --restow $(COMMON_PKGS)
+	$(STOW) --dir=hosts/$(HOST) --restow $(HOST_PKGS)
+
+# Remove all symlinks from $HOME
+unlink: check
+	$(STOW) --dir=common --delete $(COMMON_PKGS)
+	$(STOW) --dir=hosts/$(HOST) --delete $(HOST_PKGS)
+
+# Files outside $HOME are copied, not symlinked: root-owned services (greetd)
+# should not depend on files inside a user's private home directory.
 system:
-	sudo stow --target=/ --restow $(SYS_STOW_PKGS)
+	cd system && find . -type f -path './*/*' | while read -r f; do \
+		dest="/$${f#./*/}"; \
+		echo "install $$f -> $$dest"; \
+		sudo install -Dm644 "$$f" "$$dest"; \
+	done
 
-user-delete:
-	stow --target=$(HOME) $(STOW_PKGS) -D
+# Generate the theme files and apply the current (or default) theme
+theme:
+	common/themes/.local/bin/theme init
 
-system-delete:
-	sudo stow --target=/ $(SYS_STOW_PKGS) -D
+# Snapshot explicitly installed packages for this host
+pkglist: check
+	pacman -Qqen > hosts/$(HOST)/pkglist.txt
+	pacman -Qqem > hosts/$(HOST)/pkglist-aur.txt
 
-# Unstow everything
-clean:
-	stow --target=$(HOME) -D $(STOW_PKGS)
-	sudo stow --target=/ -D $(SYS_STOW_PKGS)
+# Show packages in the snapshot that are not installed (and vice versa)
+pkgdiff: check
+	@echo "--- in pkglist, not installed:"
+	@comm -23 <(sort -u hosts/$(HOST)/pkglist*.txt) <(pacman -Qqe | sort -u) || true
+	@echo "--- installed, not in pkglist:"
+	@comm -13 <(sort -u hosts/$(HOST)/pkglist*.txt) <(pacman -Qqe | sort -u) || true

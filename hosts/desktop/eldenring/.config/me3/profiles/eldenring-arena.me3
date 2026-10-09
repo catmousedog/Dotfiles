@@ -1,0 +1,24 @@
+profileVersion = "v1"
+savefile = "BossArenaProgression.sl2"
+
+[[supports]]
+game = "eldenring"
+
+[[package]]
+id = "ERBossArenaProgression"
+path = '/home/arno/.config/me3/profiles/eldenring-mods/arena/mod'
+
+[[package]]
+id = "UI"
+path = "/home/arno/.config/me3/profiles/eldenring-mods/UI"
+
+[[native]]
+path = "/home/arno/.config/me3/profiles/eldenring-mods/UltrawideFix/UltrawideFix.dll"
+
+[[native]]
+path = "/home/arno/.config/me3/profiles/eldenring-mods/IncreaseAnimationDistance/IncreaseAnimationDistance.dll"
+
+[[native]]
+load_early = true
+initializer = { function = "unlock_the_fps_init" }
+path = "/home/arno/.config/me3/profiles/eldenring-mods/UnlockTheFps/UnlockTheFps.dll"

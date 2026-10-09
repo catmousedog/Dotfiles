@@ -16,13 +16,14 @@ Singleton {
     readonly property var connected: devices.filter(d => d.connected)
     readonly property var enabled: adapter ? adapter.enabled : false
 
+    // [{ "name": ..., "mac": ... }] from host/bluetooth_devices.json
     property var knownDevices: []
 
     Component.onCompleted: root.loadKnown()
 
     FileView {
         id: devicesFile
-        path: StandardPaths.writableLocation(StandardPaths.ConfigLocation) + "/quickshell/local/bluetooth_devices.json"
+        path: StandardPaths.writableLocation(StandardPaths.ConfigLocation) + "/quickshell/host/bluetooth_devices.json"
         watchChanges: false
         blockLoading: true
     }

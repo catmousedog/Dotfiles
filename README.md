@@ -40,10 +40,24 @@ make                           # stow everything + generate the theme
 make system                    # copy system/ files into / (sudo)
 ```
 
-Other targets: `make unlink`, `make pkglist` (snapshot installed packages),
-`make pkgdiff` (compare installed packages with the snapshot).
+## Day to day
 
-After adding a **new file** to a package, run `make` again to link it.
+| situation                                         | run                  |
+| ------------------------------------------------- | -------------------- |
+| added, deleted, renamed or moved a file/package   | `make`               |
+| only edited an existing file                      | nothing (it's a link) |
+| edited something in `system/`                     | `make system`        |
+| edited a palette                                  | `theme init`         |
+| remove every link from `$HOME`                    | `make unlink`        |
+| installed/removed packages                        | `make pkglist`       |
+
+`make` re-stows everything and prunes links whose file no longer exists in the
+repo. If stow refuses because a real file is in the way, move that file aside
+(or merge it into the repo) and run `make` again.
+
+`system/` is copied instead of symlinked on purpose: greetd runs as root and
+its config decides which command runs as which user. A symlink into this repo
+would let anything running as my user rewrite that, i.e. become root.
 
 ## Theme
 
@@ -57,7 +71,7 @@ theme latte       # pick one
 theme init        # regenerate the current flavor (after editing a palette)
 ```
 
-Hyprland, kitty, rofi, quickshell and hyprlock read the generated files; GTK and
+Hyprland, kitty, rofi, quickshell and hyprlock (laptop only) read the generated files; GTK and
 VS Code follow the system `color-scheme`. To add a flavor, drop a new palette
 JSON next to the others. Run `python preview.py` to render the palette PNGs.
 

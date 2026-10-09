@@ -64,6 +64,11 @@ end
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
+-- The bar never sees modifiers (layer surfaces don't get keyboard focus), so tell
+-- it shift is held right before a scroll reaches it. Non-consuming: apps still get it.
+hl.bind("SHIFT + mouse_down", hl.dsp.global("quickshell:shiftScroll"), { non_consuming = true })
+hl.bind("SHIFT + mouse_up", hl.dsp.global("quickshell:shiftScroll"), { non_consuming = true })
+
 -- Move active window through the watrix grid
 hl.bind("CTRL + SHIFT + " .. mainMod .. " + left", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish movetoworkspace left"))
 hl.bind("CTRL + SHIFT + " .. mainMod .. " + right", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish movetoworkspace right"))

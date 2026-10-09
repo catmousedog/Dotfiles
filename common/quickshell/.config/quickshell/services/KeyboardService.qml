@@ -11,6 +11,17 @@ Singleton {
     id: root
     property string layout
 
+    // Time of the last shift + scroll, sent by a Hyprland bind (see keybinds.lua)
+    // because the bar itself never receives keyboard modifiers
+    property real shiftScrollAt: 0
+
+    GlobalShortcut {
+        appid: "quickshell"
+        name: "shiftScroll"
+        description: "Sent on shift + scroll, for the workspace indicator"
+        onPressed: root.shiftScrollAt = Date.now()
+    }
+
     Process {
         id: initFetch
         command: ["hyprctl", "-j", "devices"]

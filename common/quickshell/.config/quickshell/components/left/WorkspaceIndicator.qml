@@ -12,8 +12,7 @@ Barbox {
     implicitHeight: parent.height
     implicitWidth: parent.height * 1.1
 
-    // a MouseArea, because WheelHandler only takes one orientation and Qt turns
-    // shift + scroll into horizontal scrolling
+    // a MouseArea, because WheelHandler only takes one orientation
     MouseArea {
         property real last: 0
 
@@ -24,7 +23,7 @@ Barbox {
             if (Date.now() - last < 250)
                 return;
             last = Date.now();
-            const horizontal = wheel.angleDelta.y === 0 || (wheel.modifiers & Qt.ShiftModifier);
+            const horizontal = wheel.angleDelta.y === 0 || KeyboardService.shiftScrollAt > Date.now() - 150;
             const delta = wheel.angleDelta.y !== 0 ? wheel.angleDelta.y : wheel.angleDelta.x;
             const dir = horizontal ? (delta > 0 ? "left" : "right") : (delta > 0 ? "up" : "down");
             Quickshell.execDetached([Quickshell.env("HOME") + "/.config/hypr/scripts/watrix.fish", "workspace", dir]);

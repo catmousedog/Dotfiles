@@ -26,12 +26,10 @@ function normalize_workspace -a wid
     math "(($wid - 1) % $num_workspaces) + 1"
 end
 
-# Assign the workspace keyword rules for every monitor and focus each monitor's
-# center workspace, ending focused back on the first (primary) monitor.
-# This is the actual "make everything line up" step — used by both init and reset.
-function watrix_sync
+# Assign the workspace rules for every monitor. Safe to run at any time: it
+# doesn't move any monitor, so it's what runs after a config reload.
+function watrix_rules
     set -l monitors (get_monitors)
-    set -l hypr_disp ""
 
     for i in (seq 1 (count $monitors))
         set -l mon_name $monitors[$i]
@@ -45,8 +43,17 @@ function watrix_sync
                 hyprctl eval "hl.workspace_rule({ workspace = '$mid', monitor = '$mon_name' })"
             end
         end
+    end
+end
 
-        set -l center (logical_to_actual $center_id $mon)
+# Focus each monitor's center workspace, ending focused on the first monitor.
+function watrix_center
+    set -l monitors (get_monitors)
+    set -l hypr_disp ""
+
+    for i in (seq 1 (count $monitors))
+        set -l mon_name $monitors[$i]
+        set -l center (logical_to_actual $center_id (math "$i - 1"))
         set hypr_disp "$hypr_disp eval hl.dispatch(hl.dsp.focus({ monitor = '$mon_name' })) ; eval hl.dispatch(hl.dsp.focus({ workspace = '$center' })) ; "
     end
 
@@ -55,4 +62,11 @@ function watrix_sync
     end
 
     hyprctl --batch $hypr_disp
+end
+
+# Rules + jump to the center: the full "make everything line up" step, used at
+# startup and by watrix-reset.
+function watrix_sync
+    watrix_rules
+    watrix_center
 end

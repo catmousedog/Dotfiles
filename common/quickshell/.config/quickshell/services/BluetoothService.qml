@@ -4,74 +4,46 @@ pragma Singleton
 
 import Quickshell
 import Quickshell.Bluetooth
-import Quickshell.Io
 import QtQuick
-import QtCore
 
 Singleton {
     id: root
 
-    readonly property var adapter: Bluetooth?.defaultAdapter ?? null
+    readonly property var adapter: Bluetooth.defaultAdapter
+    readonly property bool enabled: adapter?.enabled ?? false
     readonly property var devices: adapter ? adapter.devices.values : []
     readonly property var connected: devices.filter(d => d.connected)
-    readonly property var enabled: adapter ? adapter.enabled : false
 
-    // [{ "name": ..., "mac": ... }] from host/bluetooth_devices.json
-    property var knownDevices: []
+    // Devices paired before (with bluetoothctl), connected ones first
+    readonly property var paired: devices.filter(d => d.paired || d.bonded).sort((a, b) => (b.connected - a.connected) || a.name.localeCompare(b.name))
 
-    Component.onCompleted: root.loadKnown()
-
-    FileView {
-        id: devicesFile
-        path: StandardPaths.writableLocation(StandardPaths.ConfigLocation) + "/quickshell/host/bluetooth_devices.json"
-        watchChanges: false
-        blockLoading: true
+    function setEnabled(on) {
+        if (adapter)
+            adapter.enabled = on;
     }
 
-    function loadKnown() {
-        try {
-            root.knownDevices = JSON.parse(devicesFile.text());
-        } catch (e) {
-            console.error("[BluetoothService] Failed to parse bluetooth_devices.json:", e);
-        }
+    function toggleDevice(device) {
+        if (device.connected)
+            device.disconnect();
+        else
+            device.connect();
     }
 
-    function device(mac) {
-        return devices.find(d => d.address === mac) ?? null;
+    function busy(device) {
+        return device.state === BluetoothDeviceState.Connecting || device.state === BluetoothDeviceState.Disconnecting;
     }
 
-    function connectKnown(name) {
-        var mac = root.knownDevices.find(d => d.name === name)?.mac ?? null;
-        if (!mac) {
-            console.warn("[BluetoothService] Unknown device:", name);
-            return;
-        }
-        root.connectDevice(mac);
-    }
-
-    function connectDevice(mac) {
-        const dev = device(mac);
-        if (!dev) {
-            console.warn("[BluetoothService] Device not found:", mac);
-            return;
-        }
-        if (dev.connected) {
-            console.info("[BluetoothService] Device already connected:", mac);
-            return;
-        }
-        dev.connect();
-    }
-
-    function disconnectDevice(mac) {
-        const dev = device(mac);
-        if (!dev) {
-            console.warn("[BluetoothService] Device not found:", mac);
-            return;
-        }
-        if (!dev.connected) {
-            console.info("[BluetoothService] Device already disconnected:", mac);
-            return;
-        }
-        dev.disconnect();
+    function icon(device) {
+        const icons = {
+            "audio-headset": "󰋋",
+            "audio-headphones": "󰋋",
+            "audio-card": "󰓃",
+            "input-mouse": "󰍽",
+            "input-keyboard": "󰌌",
+            "input-gaming": "󰊴",
+            "phone": "󰏲",
+            "computer": "󰟀"
+        };
+        return icons[device.icon] ?? "󰂯";
     }
 }

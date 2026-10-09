@@ -23,7 +23,6 @@ Anything that differs per machine lives in `hosts/<host>/` and is committed:
 | monitors, keyboard, ... | `hyprland/.config/hypr/host.lua` (loaded last)          |
 | idle / lock / suspend   | `hypridle/.config/hypr/hypridle.conf`                   |
 | status bar overrides    | `quickshell/.config/quickshell/host/config.json`        |
-| bluetooth quick-connect | `quickshell/.config/quickshell/host/bluetooth_devices.json` |
 | fish                    | `fish/.config/fish/conf.d/*.fish`                       |
 
 **Secrets** (tokens, API keys) go in a file named `secrets.*` (e.g.
@@ -71,9 +70,27 @@ theme latte       # pick one
 theme init        # regenerate the current flavor (after editing a palette)
 ```
 
-Hyprland, kitty, rofi, quickshell and hyprlock (laptop only) read the generated files; GTK and
-VS Code follow the system `color-scheme`. To add a flavor, drop a new palette
+Hyprland, kitty, rofi, quickshell, dunst, eza and hyprlock (laptop only) read
+the generated files. GTK follows the system `color-scheme`. VS Code, Qt/KDE apps
+(qt6ct, `kdeglobals`) get their config written directly. Dolphin and other Qt apps
+only pick up a new flavor after a restart. To add a flavor, drop a new palette
 JSON next to the others. Run `python preview.py` to render the palette PNGs.
+
+## Status bar
+
+| item       | scroll            | left click             | right click     |
+| ---------- | ----------------- | ---------------------- | --------------- |
+| workspace  | move in the grid (shift: sideways) |       |                 |
+| volume     | volume            | pick output device     | mute            |
+| bluetooth  |                   | connect paired devices | power on / off  |
+| battery    |                   | cycle power profile    |                 |
+
+Devices are paired once with `bluetoothctl` (`scan on`, `pair <mac>`, `trust <mac>`);
+after that they show up in the bluetooth menu. Output devices can get nicer
+names with `right.audio.names` in the host's `config.json`, e.g.
+`{"right": {"audio": {"names": {"JBL": "Speaker"}}}}` (part of the device name -> label).
+On the laptop the volume menu also lists HDMI card profiles (`right.audio.profiles`),
+which is what `pactl set-card-profile` did before.
 
 ## Adding a machine
 

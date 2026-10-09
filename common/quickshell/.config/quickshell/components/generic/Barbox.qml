@@ -31,7 +31,7 @@ Rectangle {
 
         implicitHeight: parent.height - 2 * root.borderWidth
         implicitWidth: parent.width - 2 * root.borderWidth
-        radius: implicitHeight / 2
+        radius: Math.max(0, root.radius - root.borderWidth)
 
         color: Theme.base
         enabled: false

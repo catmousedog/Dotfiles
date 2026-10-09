@@ -20,4 +20,14 @@ Singleton {
     // Time remaining in seconds — 0 if not applicable
     readonly property real timeToEmpty: device.timeToEmpty
     readonly property real timeToFull: device.timeToFull
+
+    // Power profile, needs power-profiles-daemon (laptop only)
+    readonly property var profile: PowerProfiles.profile
+
+    function cycleProfile() {
+        const order = [PowerProfile.PowerSaver, PowerProfile.Balanced];
+        if (PowerProfiles.hasPerformanceProfile)
+            order.push(PowerProfile.Performance);
+        PowerProfiles.profile = order[(order.indexOf(profile) + 1) % order.length];
+    }
 }

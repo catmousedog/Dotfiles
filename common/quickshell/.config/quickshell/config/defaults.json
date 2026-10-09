@@ -39,6 +39,9 @@
 		},
 		"audio": {
 			"scrollInterval": 1,
+			"names": {},
+			"profiles": false,
+			"profilePattern": "hdmi|^output:analog-stereo\\+input:analog-stereo$",
 			"iconSize": 13.5,
 			"iconYOffset": -2,
 			"spacing": 4

@@ -8,7 +8,8 @@ import qs.services
 Rectangle {
     id: root
 
-    property int borderWidth: ConfigService.get("common.theme.borderWidth")
+    // same as Hyprland's window borders; the config value is used until hyprctl answers
+    property int borderWidth: HyprlandService.borderSize || ConfigService.get("common.theme.borderWidth")
 
     /* ---------------------------------- Position and Size --------------------------------- */
     radius: implicitHeight / 2

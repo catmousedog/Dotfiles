@@ -1,4 +1,5 @@
 // KeyBoardIndicator.qml
+// Click: next keyboard layout (same as SUPER+space)
 
 import QtQuick
 import Quickshell
@@ -14,5 +15,11 @@ Bartext {
         if (KeyboardService.layout.includes("Russian"))
             return "RU";
         return KeyboardService.layout;
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onClicked: Quickshell.execDetached(["hyprctl", "switchxkblayout", "all", "next"])
     }
 }

@@ -19,8 +19,10 @@ Singleton {
     readonly property real volume: defaultAudio?.volume ?? 0
     readonly property bool muted: defaultAudio?.muted ?? false
 
-    // Hardware outputs (speakers, headsets, HDMI, bluetooth), not app streams
-    readonly property var sinks: Pipewire.nodes.values.filter(n => n.audio && n.isSink && !n.isStream)
+    // Hardware outputs (speakers, headsets, HDMI, bluetooth), not app streams, minus the
+    // ones matching "right.audio.hidden" (parts of the device name or description)
+    readonly property var hidden: (ConfigService.get("right.audio.hidden") ?? []).map(h => h.toLowerCase())
+    readonly property var sinks: Pipewire.nodes.values.filter(n => n.audio && n.isSink && !n.isStream && !hidden.some(h => `${n.name} ${n.description}`.toLowerCase().includes(h)))
 
     function setVolume(volume) {
         if (defaultAudio)

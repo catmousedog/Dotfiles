@@ -9,15 +9,14 @@ import qs.components.generic
 
 Barbox {
     implicitHeight: parent.height
-    implicitWidth: parent.width * ConfigService.get("right.widthFactor")
+    // at least widthFactor of the screen, wider when the items need it
+    implicitWidth: Math.max(parent.width * ConfigService.get("right.widthFactor"), row.implicitWidth + implicitHeight)
     anchors.right: parent.right
 
     RowLayout {
         id: row
 
-        anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.rightMargin: ConfigService.get("right.rightPadding")
+        anchors.centerIn: parent
         layoutDirection: Qt.RightToLeft
         spacing: ConfigService.get("right.spacing")
 
@@ -26,6 +25,8 @@ Barbox {
         AudioIndicator {}
 
         BluetoothIndicator {}
+
+        NetworkIndicator {}
 
         KeyBoardIndicator {}
     }

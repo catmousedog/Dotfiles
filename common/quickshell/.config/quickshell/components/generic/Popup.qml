@@ -3,6 +3,8 @@
 //
 //     Popup { id: popup; anchorItem: someItem; title: "..."; MenuRow { ... } }
 //     popup.toggle()
+//
+// With interactive: false it takes no focus, for tooltips opened on hover.
 
 import Quickshell
 import QtQuick
@@ -17,13 +19,14 @@ PopupWindow {
     property string title: ""
     property int padding: 10
     property int minWidth: 220
+    property bool interactive: true
     default property alias content: column.data
 
     // distance from the top of anchorItem to just below the bar, set on open
     property real dropHeight: anchorItem.height
 
     color: "transparent"
-    grabFocus: true
+    grabFocus: interactive
 
     anchor.item: anchorItem
     anchor.rect.width: anchorItem.width
@@ -35,10 +38,17 @@ PopupWindow {
     implicitHeight: box.implicitHeight
 
     function toggle() {
-        if (visible) {
-            visible = false;
-            return;
-        }
+        if (visible)
+            close();
+        else
+            open();
+    }
+
+    function close() {
+        visible = false;
+    }
+
+    function open() {
         let bar = anchorItem;
         while (bar.parent)
             bar = bar.parent;

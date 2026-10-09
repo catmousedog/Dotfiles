@@ -37,7 +37,10 @@
 	// ========== Workbench ========== //
 	"workbench.panel.opensMaximized": "never",
 	"workbench.secondarySideBar.defaultVisibility": "hidden",
-	"workbench.colorTheme": "Catppuccin Mocha",
+	// follows the system color-scheme set by ~/.local/bin/theme
+	"window.autoDetectColorScheme": true,
+	"workbench.preferredDarkColorTheme": "Catppuccin Mocha",
+	"workbench.preferredLightColorTheme": "Catppuccin Latte",
 	"workbench.startupEditor": "none",
 	"workbench.tree.indent": 16,
 	"workbench.list.smoothScrolling": true,

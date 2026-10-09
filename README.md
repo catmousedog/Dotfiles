@@ -70,7 +70,7 @@ theme latte       # pick one
 theme init        # regenerate the current flavor (after editing a palette)
 ```
 
-Hyprland, kitty, rofi, quickshell, dunst, eza and hyprlock (laptop only) read
+Hyprland, kitty, rofi, quickshell, dunst, eza, yazi and hyprlock (laptop only) read
 the generated files. GTK follows the system `color-scheme`. VS Code, Qt/KDE apps
 (qt6ct, `kdeglobals`) get their config written directly. Dolphin and other Qt apps
 only pick up a new flavor after a restart. To add a flavor, drop a new palette

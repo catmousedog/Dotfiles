@@ -16,7 +16,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("~/.config/hypr/scripts/watrix-init.fish")
     hl.exec_cmd("awww-daemon")
     -- wait for the daemon socket instead of guessing with a fixed sleep
-    hl.exec_cmd("sh -c 'until awww query >/dev/null 2>&1; do sleep 0.05; done; awww img ~/.config/backgrounds/background.png'")
+    hl.exec_cmd("sh -c 'until awww query >/dev/null 2>&1; do sleep 0.05; done; ~/.local/bin/theme wallpaper'")
 end)
 
 -- Runs on every config (re)load: a reload drops the workspace rules watrix

@@ -73,7 +73,9 @@ theme init        # regenerate the current flavor (after editing a palette)
 
 Hyprland, kitty, rofi, quickshell, dunst, eza, yazi and hyprlock (laptop only) read
 the generated files. GTK apps (Thunar, file dialogs) get a recolored adw-gtk3
-theme per flavor and switch live. VS Code gets its color theme written directly. Themes: Catppuccin, Rosé Pine and Everforest. To add one, drop `<name>-dark.json`
+theme per flavor and switch live. VS Code gets its color theme written directly. Thunar's folder icons take the theme's accent color. For a wallpaper per theme, put
+`<theme>-<dark|light>.png` (or `<theme>.png`) in `~/.config/backgrounds/`; otherwise
+`background.png` is used. Themes: Catppuccin, Rosé Pine and Everforest. To add one, drop `<name>-dark.json`
 and `<name>-light.json` with the same 26 Catppuccin color names next to the others. Run `python preview.py` to render the palette PNGs.
 
 ## App launcher

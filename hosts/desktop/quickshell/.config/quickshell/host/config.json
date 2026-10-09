@@ -6,11 +6,9 @@
 	},
 	"right": {
 		"audio": {
-			"hidden": ["hdmi", "S/PDIF"],
+			"hidden": ["hdmi", "USB Audio"],
 			"names": {
-				"Kraken": "Razer Kraken",
-				"USB Audio Speakers": "Speakers",
-				"Front Headphones": "Front jack"
+				"Kraken": "Razer Kraken"
 			}
 		}
 	}

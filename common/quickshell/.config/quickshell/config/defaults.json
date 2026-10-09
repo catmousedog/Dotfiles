@@ -15,6 +15,9 @@
 			"weight": 700
 		}
 	},
+	"popup": {
+		"opacity": 0.85
+	},
 	"left": {
 		"tray": {
 			"iconSize": 20,

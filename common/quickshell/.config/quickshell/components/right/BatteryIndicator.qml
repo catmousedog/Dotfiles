@@ -11,6 +11,8 @@ import qs.components.generic
 
 Loader {
     active: BatteryService.hasBattery
+    // hidden, not just empty, so the row doesn't keep spacing for it on the desktop
+    visible: active
 
     sourceComponent: Item {
         implicitWidth: row.implicitWidth

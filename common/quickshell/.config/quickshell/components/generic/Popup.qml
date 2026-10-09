@@ -117,7 +117,7 @@ PopupWindow {
             anchors.fill: parent
             anchors.margins: box.borderWidth
             radius: box.radius - box.borderWidth
-            color: Qt.alpha(Theme.base, 0.85)
+            color: Qt.alpha(Theme.base, ConfigService.get("popup.opacity"))
         }
 
         focus: true

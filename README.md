@@ -65,15 +65,18 @@ Colors come from one place: `common/themes/.config/themes/palettes/<flavor>.json
 `~/.local/state/theme/current/` and reloads what it can:
 
 ```sh
-theme toggle      # mocha <-> latte   (also SUPER+T)
-theme latte       # pick one
+theme toggle      # dark <-> light version of the palette   (also SUPER+T)
+theme menu        # pick a palette with rofi              (also SUPER+SHIFT+T)
+theme rose-pine   # or pick one by name; `theme list` shows them all
 theme init        # regenerate the current flavor (after editing a palette)
 ```
 
 Hyprland, kitty, rofi, quickshell, dunst, eza, yazi and hyprlock (laptop only) read
 the generated files. GTK apps (Thunar, file dialogs) get a recolored adw-gtk3
-theme per flavor and switch live. VS Code gets its color theme written directly. To add a flavor, drop a new palette
-JSON next to the others. Run `python preview.py` to render the palette PNGs.
+theme per flavor and switch live. VS Code gets its color theme written directly. Palettes: Catppuccin (mocha, macchiato, frappe, latte), Rosé Pine (main, moon,
+dawn), Everforest (dark, light) and Nord. To add one, drop a JSON with the same
+26 Catppuccin color names next to the others and add its light partner to
+`LIGHT` in the script. Run `python preview.py` to render the palette PNGs.
 
 ## App launcher
 

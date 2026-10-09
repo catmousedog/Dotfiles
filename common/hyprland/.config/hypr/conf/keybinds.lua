@@ -13,6 +13,7 @@ hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ action = "toggle" }))
 hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix-reset.fish"))
 hl.bind(mainMod .. " + H", hl.dsp.exec_cmd('grim -g "$(slurp)" - | satty --filename -'))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.local/bin/theme toggle"))
+hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("~/.local/bin/theme menu"))
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd(vars.clipboard))
 
 -- Notifications

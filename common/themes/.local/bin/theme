@@ -22,12 +22,15 @@ directly (they aren't in the repo, edit this script instead):
                                            (Thunar, file dialogs) restyle live when
                                            the gtk-theme setting switches to it
 
+`theme toggle` (SUPER+T) switches between a palette's dark and light version,
+`theme menu` (SUPER+SHIFT+T) picks any palette with rofi.
+
 VS Code gets its color theme written straight into settings.json; its own
 "follow the system theme" option doesn't work reliably here. A git clean
 filter (`theme vscode-clean`, set up by the Makefile) keeps that line at the
 default in the repo, so toggling doesn't leave settings.json modified.
 
-Usage: theme [init | toggle | current | list | <flavor> | vscode-clean]
+Usage: theme [init | toggle | menu | current | list | <flavor> | vscode-clean]
 """
 
 import json
@@ -45,14 +48,21 @@ STATE = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "
 CURRENT = STATE / "current"
 FLAVOR_FILE = STATE / "flavor"
 DEFAULT = "mocha"
-TOGGLE = {"mocha": "latte", "latte": "mocha"}
+# dark -> light partner for `theme toggle`; going back uses the last dark one
+LIGHT = {"mocha": "latte", "macchiato": "latte", "frappe": "latte",
+         "rose-pine": "rose-pine-dawn", "rose-pine-moon": "rose-pine-dawn",
+         "everforest": "everforest-light"}
+LAST_DARK_FILE = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "theme/last-dark"
+SWATCHES = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "theme/swatches"
 
 VSCODE_SETTINGS = CONFIG / "Code - OSS/User/settings.json"
 DUNST_DROPIN = CONFIG / "dunst/dunstrc.d/90-theme.conf"
 YAZI_THEME = CONFIG / "yazi/theme.toml"
 DATA = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
 ADW_GTK3 = Path("/usr/share/themes")  # adw-gtk3 and adw-gtk3-dark, from adw-gtk-theme
-VSCODE_THEMES = {"mocha": "Catppuccin Mocha", "latte": "Catppuccin Latte"}
+# from the Catppuccin extension; other palettes fall back to Mocha / Latte
+VSCODE_THEMES = {"mocha": "Catppuccin Mocha", "macchiato": "Catppuccin Macchiato",
+                 "frappe": "Catppuccin Frappé", "latte": "Catppuccin Latte"}
 VSCODE_KEY = re.compile(r'("workbench\.colorTheme"\s*:\s*)"[^"]*"')
 
 
@@ -256,7 +266,7 @@ def run(*cmd):
 
 
 def set_vscode_theme(text, flavor):
-    name = VSCODE_THEMES.get(flavor)
+    name = VSCODE_THEMES.get(flavor) or VSCODE_THEMES[DEFAULT if is_dark(load(flavor)) else "latte"]
     return VSCODE_KEY.sub(lambda m: f'{m.group(1)}"{name}"', text) if name else text
 
 
@@ -341,6 +351,43 @@ def apply(flavor, p):
         run("hyprctl", "reload")
 
 
+def toggle():
+    flavor = current()
+    if is_dark(load(flavor)):
+        LAST_DARK_FILE.write_text(flavor + "\n")
+        return LIGHT.get(flavor, flavor)
+    try:
+        return LAST_DARK_FILE.read_text().strip()
+    except FileNotFoundError:
+        return next((dark for dark, light in LIGHT.items() if light == flavor), DEFAULT)
+
+
+def swatch(flavor):
+    """Small SVG of a palette for the rofi menu: background with five accents."""
+    p = load(flavor)
+    dots = "".join(f'<circle cx="{14 + i * 18}" cy="32" r="7" fill="{p[c]}"/>'
+                   for i, c in enumerate(["red", "peach", "green", "blue", "mauve"]))
+    SWATCHES.mkdir(parents=True, exist_ok=True)
+    path = SWATCHES / f"{flavor}.svg"
+    path.write_text(f'<svg xmlns="http://www.w3.org/2000/svg" width="100" height="64">'
+                    f'<rect width="100" height="64" rx="12" fill="{p["base"]}" stroke="{p["surface1"]}" '
+                    f'stroke-width="2"/>{dots}</svg>')
+    return path
+
+
+def menu(flavors):
+    """Pick a palette with rofi; returns the flavor or None."""
+    cur = current()
+    rows = "".join(f"{f}\0icon\x1f{swatch(f)}\n" for f in flavors)
+    result = subprocess.run(
+        ["rofi", "-dmenu", "-i", "-p", "theme", "-show-icons", "-no-custom",
+         "-selected-row", str(flavors.index(cur) if cur in flavors else 0),
+         "-theme-str", "element-icon { size: 40px; }"],
+        input=rows, capture_output=True, text=True)
+    choice = result.stdout.strip()
+    return choice if choice in flavors else None
+
+
 def main(args):
     cmd = args[0] if args else "current"
     flavors = sorted(f.stem for f in PALETTES.glob("*.json"))
@@ -352,8 +399,15 @@ def main(args):
         flavor = current()
         export(flavor, write(flavor))
     elif cmd == "toggle":
-        flavor = TOGGLE.get(current(), DEFAULT)
+        flavor = toggle()
         apply(flavor, write(flavor))
+    elif cmd == "menu":
+        flavor = menu(flavors)
+        if flavor:
+            if is_dark(load(flavor)):
+                LAST_DARK_FILE.parent.mkdir(parents=True, exist_ok=True)
+                LAST_DARK_FILE.write_text(flavor + "\n")
+            apply(flavor, write(flavor))
     elif cmd in flavors:
         apply(cmd, write(cmd))
     elif cmd == "vscode-clean":

@@ -40,7 +40,8 @@ Singleton {
 
     // "right.audio.names" maps part of a device's name to a nicer one
     function sinkName(node) {
-        const label = node.nickname || node.description || node.name;
+        // description is specific ("USB Audio Speakers"), nickname is per card ("USB Audio")
+        const label = node.description || node.nickname || node.name;
         const names = ConfigService.get("right.audio.names") ?? {};
         for (const key of Object.keys(names)) {
             if (label.includes(key) || node.name.includes(key))

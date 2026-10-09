@@ -78,9 +78,9 @@ IconText {
 
     function getIcon() {
         if (AudioService.muted || AudioService.volume === 0) {
-            return "";
+            return "";
         }
-        return "";
+        return "";
     }
 
     function getText() {

@@ -277,7 +277,8 @@ def yazi(p):
 
 RENDERERS = {
     "colors.json": lambda p: json.dumps(p, indent=4) + "\n",
-    "colors.rasi": lambda p: "* {\n" + "".join(f"    {k}: {v};\n" for k, v in p.items()) + "}\n",
+    # rofi doesn't allow _ in names: bg_alt is @bg-alt there
+    "colors.rasi": lambda p: "* {\n" + "".join(f"    {k.replace('_', '-')}: {v};\n" for k, v in p.items()) + "}\n",
     "colors.css": lambda p: "".join(f"@define-color {k} {v};\n" for k, v in p.items()),
     "kitty.conf": kitty,
     "hypr.lua": lambda p: "return {\n" + "".join(f'    {k} = "{v[1:]}",\n' for k, v in p.items()) + "}\n",
@@ -473,17 +474,18 @@ def apply(flavor, p):
 
 
 def swatch(theme):
-    """Small SVG for the rofi menu: the dark palette on the left, the light one on the right."""
+    """Square SVG for the rofi menu: the dark palette on the left, the light one on the
+    right, each with its accent2, accent and green as dots."""
     halves = ""
     for i, mode in enumerate(MODES):
         p = load(f"{theme}-{mode}")
-        dots = "".join(f'<circle cx="{i * 60 + 15 + j * 15}" cy="32" r="5.5" fill="{p[c]}"/>'
+        dots = "".join(f'<circle cx="{i * 32 + 16}" cy="{14 + j * 18}" r="6" fill="{p[c]}"/>'
                        for j, c in enumerate(["accent2", "accent", "green"]))
-        halves += f'<rect x="{i * 60}" width="60" height="64" fill="{p["bg"]}"/>{dots}'
+        halves += f'<rect x="{i * 32}" width="32" height="64" fill="{p["bg"]}"/>{dots}'
     SWATCHES.mkdir(parents=True, exist_ok=True)
     path = SWATCHES / f"{theme}.svg"
-    path.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="64">'
-                    '<clipPath id="r"><rect width="120" height="64" rx="12"/></clipPath>'
+    path.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">'
+                    '<clipPath id="r"><rect width="64" height="64" rx="12"/></clipPath>'
                     f'<g clip-path="url(#r)">{halves}</g></svg>')
     return path
 

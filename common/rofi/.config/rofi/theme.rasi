@@ -23,7 +23,7 @@ mainbox {
 }
 
 inputbar {
-    background-color:  @bg_alt;
+    background-color:  @bg-alt;
     border-radius:      10px;
     padding:            10px 14px;
     children:          [ prompt, entry ];

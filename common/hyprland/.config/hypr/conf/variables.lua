@@ -6,4 +6,7 @@ M.browser = "firefox"
 M.menu = "rofi -show apps"
 M.clipboard = "cliphist list | rofi -dmenu -p clipboard | cliphist decode | wl-copy"
 M.mainMod = "SUPER"
+-- from the breeze-cursors package (Breeze_Light is the white variant)
+M.cursorTheme = "breeze_cursors"
+M.cursorSize = 24
 return M

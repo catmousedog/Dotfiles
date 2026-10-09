@@ -1,7 +1,12 @@
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 
 -- Runs once, at Hyprland startup
+local vars = require("conf.variables")
+
 hl.on("hyprland.start", function()
+    -- GTK apps read the cursor from gsettings, not XCURSOR_THEME
+    hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-theme " .. vars.cursorTheme)
+    hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-size " .. vars.cursorSize)
     hl.exec_cmd("dbus-update-activation-environment --systemd --all")
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     hl.exec_cmd("quickshell")

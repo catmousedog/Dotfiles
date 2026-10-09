@@ -23,7 +23,7 @@ directly (they aren't in the repo, edit this script instead):
                                            (Thunar, file dialogs) restyle live when
                                            the gtk-theme setting switches to it
 
-Every theme (catppuccin, rose-pine, everforest) has a dark and a light palette.
+Every theme (catppuccin, rose-pine) has a dark and a light palette.
 `theme toggle` (SUPER+T) switches between the two, `theme menu` (SUPER+SHIFT+T)
 picks another theme with rofi and keeps the current mode.
 
@@ -164,6 +164,13 @@ def eza(p):
                        ("control_char", "sapphire"), ("broken_symlink", "red"),
                        ("broken_path_overlay", "surface2")]:
         out += f"{key}: {c(color)}\n"
+    # eza gives these folder names their own icon; use its plain folder icon instead
+    special = [".config", ".git", ".github", ".npm", ".ssh", ".Trash", "build", "config", "Contacts",
+               "cron.d", "cron.daily", "cron.hourly", "cron.monthly", "cron.weekly", "Desktop",
+               "Documents", "Downloads", "etc", "Favorites", "hidden", "home", "include", "Mail",
+               "Movies", "Music", "node_modules", "npm_cache", "pam.d", "Pictures", "src", "ssh",
+               "sudoers.d", "Videos", "xbps.d", "xorg.conf.d"]
+    out += "filenames:\n" + "".join(f'  "{n}": {{icon: {{glyph: "\uf115"}}}}\n' for n in special)
     return out + "header: {foreground: \"%s\", is_underline: true}\n" % p["text"]
 
 
@@ -229,13 +236,9 @@ def yazi(p):
         ('url = "*/", is = "dummy"', st(bg="red")),
         ('url = "*/"', st("blue", bold=1)),
     ]
-    # yazi's own folder icons have fixed colors (#03a9f4, #009688); same glyphs, theme color
-    dirs = {".config": "\ue5fc", ".git": "\ue5fb", ".github": "\ue5fd", ".npm": "\ue5fa",
-            "Desktop": "\uf108", "Development": "\ue70c", "Documents": "\uf401",
-            "Downloads": "\uf498", "Library": "\ueb9c", "Movies": "\uf447", "Music": "\uf025",
-            "Pictures": "\ue244", "Public": "\uf42b", "Videos": "\uf447"}
-    out += "\n[icon]\nprepend_dirs = [\n" + "".join(
-        f'    {{ name = "{n}", text = "{t}", fg = "{p["blue"]}" }},\n' for n, t in dirs.items()) + "]\n"
+    # yazi's folder icons have fixed colors and per-name glyphs (Music, Desktop, ...);
+    # drop the per-name ones and give every folder the plain icon in the theme color
+    out += "\n[icon]\ndirs = []\n"
     out += 'prepend_conds = [\n    { if = "dir", text = "\ue5ff", fg = "%s" },\n]\n' % p["blue"]
     out += "\n[filetype]\nrules = [\n" + "".join(
         f"    {{ {match}, {style[2:-2]} }},\n" for match, style in rules) + "]\n"

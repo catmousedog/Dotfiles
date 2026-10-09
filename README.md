@@ -60,23 +60,21 @@ would let anything running as my user rewrite that, i.e. become root.
 
 ## Theme
 
-Colors come from one place: `common/themes/.config/themes/palettes/<flavor>.json`.
+Colors come from one place: `common/themes/.config/themes/palettes/<theme>-<dark|light>.json`.
 `theme` (in `~/.local/bin`) renders the palette for every program into
 `~/.local/state/theme/current/` and reloads what it can:
 
 ```sh
-theme toggle      # dark <-> light version of the palette   (also SUPER+T)
-theme menu        # pick a palette with rofi              (also SUPER+SHIFT+T)
-theme rose-pine   # or pick one by name; `theme list` shows them all
+theme toggle      # dark <-> light                     (also SUPER+T)
+theme menu        # pick a theme with rofi            (also SUPER+SHIFT+T)
+theme rose-pine   # or by name, keeps dark/light; `theme list` shows them all
 theme init        # regenerate the current flavor (after editing a palette)
 ```
 
 Hyprland, kitty, rofi, quickshell, dunst, eza, yazi and hyprlock (laptop only) read
 the generated files. GTK apps (Thunar, file dialogs) get a recolored adw-gtk3
-theme per flavor and switch live. VS Code gets its color theme written directly. Palettes, each with a light partner: Catppuccin (mocha / latte), Rosé Pine
-(main and moon / dawn) and Everforest (dark / light). To add one, drop a JSON with the same
-26 Catppuccin color names next to the others and add its light partner to
-`LIGHT` in the script. Run `python preview.py` to render the palette PNGs.
+theme per flavor and switch live. VS Code gets its color theme written directly. Themes: Catppuccin, Rosé Pine and Everforest. To add one, drop `<name>-dark.json`
+and `<name>-light.json` with the same 26 Catppuccin color names next to the others. Run `python preview.py` to render the palette PNGs.
 
 ## App launcher
 

@@ -6,7 +6,10 @@
 	},
 	"right": {
 		"audio": {
-			"hidden": ["hdmi", "USB Audio"],
+			"hidden": [
+				"hdmi",
+				"USB Audio"
+			],
 			"names": {
 				"Kraken": "Razer Kraken"
 			}

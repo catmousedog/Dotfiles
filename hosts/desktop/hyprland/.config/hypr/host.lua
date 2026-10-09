@@ -15,3 +15,10 @@ hl.config({
         sensitivity = -0.8,
     },
 })
+
+-- appearance.lua --
+hl.config({
+    general = {
+        border_size = 3
+	}
+})

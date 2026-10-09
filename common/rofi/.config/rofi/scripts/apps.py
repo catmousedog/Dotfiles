@@ -43,10 +43,14 @@ def main():
         return
     print("\0no-custom\x1ftrue")
     for line in (CONFIG / "rofi/apps.txt").read_text().splitlines():
-        app_id = line.split("#", 1)[0].strip()
-        found = app_id and entry(app_id)
+        words = line.split("#", 1)[0].split()
+        if not words:
+            continue
+        app_id, options = words[0], dict(w.split("=", 1) for w in words[1:] if "=" in w)
+        found = entry(app_id)
         if found:
             name, icon = found
+            icon = options.get("icon", icon)
             print(f"{name}\0icon\x1f{icon}\x1finfo\x1f{app_id}")
 
 

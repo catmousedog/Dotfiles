@@ -3,11 +3,10 @@
 # List what's installed: ls /usr/share/applications ~/.local/share/applications \
 #     /var/lib/flatpak/exports/share/applications
 # Anything else: switch to the Run tab (shift+arrow) and type the command.
+# Optional: icon=<icon name or path> after the id replaces the app's own icon.
 
 firefox
-kitty
-thunar
-code-oss
+code-oss icon=visual-studio-code
 steam
 com.discordapp.Discord
 com.spotify.Client

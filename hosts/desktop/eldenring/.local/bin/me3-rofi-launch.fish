@@ -11,12 +11,5 @@ if test -z "$profile"
 end
 set profile_path (find "$PROFILE_DIR" -maxdepth 2 -name "$profile" | head -n1)
 
-# 2. pick an executable (any eldenring*.exe in the game dir)
-set exe (find "$GAME_DIR" -maxdepth 1 -iname 'eldenring*.exe' -printf '%f\n' | sort | rofi -dmenu -i -p "executable")
-if test -z "$exe"
-    exit 0
-end
-set exe_path "$GAME_DIR/$exe"
-
 # 3. launch
-me3 launch -p "$profile_path" --exe "$exe_path"
+~/.local/bin/me3 launch --profile "$profile_path"

@@ -94,4 +94,9 @@
 	"terminal.integrated.initialHint": false,
 	"security.workspace.trust.untrustedFiles": "open",
 	"keyboard.dispatch": "keyCode",
+	"workbench.editorAssociations": {
+		"{git,gitlens,chat-editing-snapshot-text-model,copilot,git-graph,git-graph-3}:/**/*.qrc": "default",
+		"*.qrc": "qt-core.qrcEditor"
+	},
+	"claudeCode.hideOnboarding": true,
 }

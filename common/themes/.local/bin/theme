@@ -50,6 +50,9 @@ VSCODE_SETTINGS = CONFIG / "Code - OSS/User/settings.json"
 DUNST_DROPIN = CONFIG / "dunst/dunstrc.d/90-theme.conf"
 QT6CT_CONF = CONFIG / "qt6ct/qt6ct.conf"
 KDEGLOBALS = CONFIG / "kdeglobals"
+DATA = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
+KDE_SCHEME = "Theme"  # one name for every flavor, so the selection stays valid
+KDE_SCHEME_FILE = DATA / f"color-schemes/{KDE_SCHEME}.colors"
 BREEZE_STYLE = Path("/usr/lib/qt6/plugins/styles/breeze6.so")
 VSCODE_THEMES = {"mocha": "Catppuccin Mocha", "latte": "Catppuccin Latte"}
 VSCODE_KEY = re.compile(r'("workbench\.colorTheme"\s*:\s*)"[^"]*"')
@@ -266,7 +269,9 @@ def qt6ct(p):
 
 
 def kdeglobals(p):
-    """KDE apps (Dolphin) take some colors from kdeglobals instead of the Qt palette."""
+    """KDE apps (Dolphin) replace the Qt palette with a KDE color scheme, BreezeLight
+    unless told otherwise. So write the palette as a color scheme, make it the
+    default in kdeglobals and copy its colors there too."""
     def rgb(name):
         return ",".join(str(int(p[name][i:i + 2], 16)) for i in (1, 3, 5))
 
@@ -277,7 +282,7 @@ def kdeglobals(p):
                 "ForegroundVisited": rgb("mauve"), "ForegroundNegative": rgb("red"),
                 "ForegroundNeutral": rgb("yellow"), "ForegroundPositive": rgb("green"),
                 "DecorationFocus": rgb("blue"), "DecorationHover": rgb("lavender")}
-    ours = {
+    colors = {
         "Colors:View": group("base", "mantle", "text", "subtext0"),
         "Colors:Window": group("mantle", "crust", "text", "subtext0"),
         "Colors:Button": group("surface0", "surface1", "text", "subtext0"),
@@ -285,9 +290,14 @@ def kdeglobals(p):
         "Colors:Tooltip": group("crust", "mantle", "text", "subtext0"),
         "Colors:Complementary": group("crust", "mantle", "text", "subtext0"),
         "Colors:Header": group("mantle", "crust", "text", "subtext0"),
-        # not a color, but kdeglobals can't be stowed: KDE rewrites it
-        "General": {"TerminalApplication": "kitty"},
     }
+    KDE_SCHEME_FILE.parent.mkdir(parents=True, exist_ok=True)
+    KDE_SCHEME_FILE.write_text(f"[General]\nName={KDE_SCHEME}\nColorScheme={KDE_SCHEME}\n\n" + "\n".join(
+        f"[{n}]\n" + "".join(f"{k}={v}\n" for k, v in values.items()) for n, values in colors.items()))
+
+    ours = dict(colors)
+    # TerminalApplication isn't a color, but kdeglobals can't be stowed: KDE rewrites it
+    ours["General"] = {"ColorScheme": KDE_SCHEME, "TerminalApplication": "kitty"}
 
     # small merge instead of configparser, which mangles KDE's key[$e] syntax
     try:

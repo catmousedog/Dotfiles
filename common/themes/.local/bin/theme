@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Generate and switch the desktop color theme.
 
-The single source of truth is ~/.config/themes/palettes/<theme>-<dark|light>.json. This
-script renders it into every format the desktop needs and writes the result
-to $XDG_STATE_HOME/theme/current/, which the configs read from:
+The single source of truth is ~/.config/themes/palettes/<theme>-<dark|light>.json:
+the theme's own colors under their own names, plus "roles" saying which of them
+each part of the desktop uses (see ROLES). Everything below only uses roles, so
+a theme decides its own look. This script renders the roles into every format
+the desktop needs and writes the result to $XDG_STATE_HOME/theme/current/,
+which the configs read from:
 
     colors.json    quickshell (watched, reloads by itself)
     colors.rasi    rofi
@@ -73,98 +76,123 @@ VSCODE_THEMES = {"catppuccin-dark": "Catppuccin Mocha", "catppuccin-light": "Cat
 VSCODE_KEY = re.compile(r'("workbench\.colorTheme"\s*:\s*)"[^"]*"')
 
 
+ROLES = {
+    "bg": "main background",
+    "bg_alt": "panels, sidebars, inactive tabs",
+    "bg_deep": "the darkest (light: lightest-but-one) background, e.g. the tab bar",
+    "surface": "raised elements, hovered rows",
+    "surface_alt": "borders, selected rows",
+    "surface_hi": "strong borders",
+    "overlay": "hints, punctuation, inactive things",
+    "muted": "secondary details",
+    "subtle": "secondary text",
+    "fg": "text",
+    "accent": "main highlight: active borders, selection, folders",
+    "accent2": "second highlight: start of the border gradient",
+    "red": "errors", "orange": "", "yellow": "warnings", "green": "success",
+    "cyan": "", "blue": "", "purple": "", "pink": "",
+}
+
+
 def load(flavor):
-    return json.loads((PALETTES / f"{flavor}.json").read_text())
+    """The palette's roles as a {role: "#rrggbb"} dict."""
+    palette = json.loads((PALETTES / f"{flavor}.json").read_text())
+    colors = palette["colors"]
+    roles = {}
+    for role in ROLES:
+        value = palette["roles"][role]
+        roles[role] = value if value.startswith("#") else colors[value]
+    return roles
 
 
 def is_dark(p):
-    r, g, b = (int(p["base"][i:i + 2], 16) for i in (1, 3, 5))
+    r, g, b = (int(p["bg"][i:i + 2], 16) for i in (1, 3, 5))
     return (0.299 * r + 0.587 * g + 0.114 * b) < 128
 
 
 def kitty(p):
     dark = is_dark(p)
     lines = {
-        "foreground": p["text"],
-        "background": p["base"],
-        "selection_foreground": p["base"],
-        "selection_background": p["rosewater"],
-        "cursor": p["rosewater"],
-        "cursor_text_color": p["base"],
-        "url_color": p["rosewater"],
-        "active_border_color": p["lavender"],
-        "inactive_border_color": p["overlay0"],
+        "foreground": p["fg"],
+        "background": p["bg"],
+        "selection_foreground": p["bg"],
+        "selection_background": p["accent"],
+        "cursor": p["fg"],
+        "cursor_text_color": p["bg"],
+        "url_color": p["accent"],
+        "active_border_color": p["accent"],
+        "inactive_border_color": p["overlay"],
         "bell_border_color": p["yellow"],
         "wayland_titlebar_color": "system",
-        "active_tab_foreground": p["crust"] if dark else p["base"],
-        "active_tab_background": p["mauve"],
-        "inactive_tab_foreground": p["text"],
-        "inactive_tab_background": p["mantle"] if dark else p["overlay0"],
-        "tab_bar_background": p["crust"] if dark else p["surface1"],
-        "mark1_foreground": p["base"],
-        "mark1_background": p["lavender"],
-        "mark2_foreground": p["base"],
-        "mark2_background": p["mauve"],
-        "mark3_foreground": p["base"],
-        "mark3_background": p["sapphire"],
+        "active_tab_foreground": p["bg"],
+        "active_tab_background": p["accent"],
+        "inactive_tab_foreground": p["fg"],
+        "inactive_tab_background": p["bg_alt"] if dark else p["surface_alt"],
+        "tab_bar_background": p["bg_deep"] if dark else p["surface"],
+        "mark1_foreground": p["bg"],
+        "mark1_background": p["accent"],
+        "mark2_foreground": p["bg"],
+        "mark2_background": p["purple"],
+        "mark3_foreground": p["bg"],
+        "mark3_background": p["blue"],
         # black / white slots swap roles between dark and light flavors
-        "color0": p["surface1"] if dark else p["subtext1"],
-        "color8": p["surface2"] if dark else p["subtext0"],
-        "color7": p["subtext1"] if dark else p["surface2"],
-        "color15": p["subtext0"] if dark else p["surface1"],
+        "color0": p["surface_alt"] if dark else p["subtle"],
+        "color8": p["surface_hi"] if dark else p["muted"],
+        "color7": p["subtle"] if dark else p["surface_hi"],
+        "color15": p["fg"] if dark else p["surface_alt"],
     }
     for normal, bright, name in [(1, 9, "red"), (2, 10, "green"), (3, 11, "yellow"),
-                                 (4, 12, "blue"), (5, 13, "pink"), (6, 14, "teal")]:
+                                 (4, 12, "blue"), (5, 13, "purple"), (6, 14, "cyan")]:
         lines[f"color{normal}"] = lines[f"color{bright}"] = p[name]
     return "".join(f"{k} {v}\n" for k, v in lines.items())
 
 
 def dunst(p):
     def urgency(name, fg, frame, highlight):
-        return (f"[urgency_{name}]\n    background = \"{p['base']}\"\n    foreground = \"{fg}\"\n"
+        return (f"[urgency_{name}]\n    background = \"{p['bg']}\"\n    foreground = \"{fg}\"\n"
                 f"    frame_color = \"{frame}\"\n    highlight = \"{highlight}\"\n")
-    # the progress bar uses the same red -> blue gradient as the bar's borders
-    return (urgency("low", p["subtext0"], p["overlay0"], p["overlay1"])
-            + urgency("normal", p["text"], p["blue"], f"{p['red']}, {p['blue']}")
-            + urgency("critical", p["text"], p["red"], p["red"]))
+    # the progress bar uses the same gradient as the bar's borders
+    return (urgency("low", p["subtle"], p["overlay"], p["muted"])
+            + urgency("normal", p["fg"], p["accent"], f"{p['accent2']}, {p['accent']}")
+            + urgency("critical", p["fg"], p["red"], p["red"]))
 
 
 def eza(p):
     def c(color, bold=False):
         return "{foreground: \"%s\"%s}" % (p[color], ", is_bold: true" if bold else "")
     sections = {
-        "filekinds": {"normal": c("text"), "directory": c("blue", True), "symlink": c("teal"),
-                      "pipe": c("overlay1"), "block_device": c("peach"), "char_device": c("peach"),
-                      "socket": c("overlay1"), "special": c("pink"), "executable": c("green", True),
-                      "mount_point": c("sapphire", True)},
+        "filekinds": {"normal": c("fg"), "directory": c("accent", True), "symlink": c("cyan"),
+                      "pipe": c("muted"), "block_device": c("orange"), "char_device": c("orange"),
+                      "socket": c("muted"), "special": c("pink"), "executable": c("green", True),
+                      "mount_point": c("blue", True)},
         "perms": {"user_read": c("yellow"), "user_write": c("red"), "user_execute_file": c("green"),
                   "user_execute_other": c("green"), "group_read": c("yellow"), "group_write": c("red"),
                   "group_execute": c("green"), "other_read": c("yellow"), "other_write": c("red"),
-                  "other_execute": c("green"), "special_user_file": c("mauve"),
-                  "special_other": c("overlay1"), "attribute": c("overlay1")},
-        "size": {"major": c("subtext0"), "minor": c("lavender"), "number_byte": c("text"),
-                 "number_kilo": c("text"), "number_mega": c("blue"), "number_giga": c("mauve"),
-                 "number_huge": c("red"), "unit_byte": c("overlay1"), "unit_kilo": c("overlay1"),
-                 "unit_mega": c("overlay1"), "unit_giga": c("overlay1"), "unit_huge": c("overlay1")},
-        "users": {"user_you": c("text"), "user_root": c("red"), "user_other": c("mauve"),
-                  "group_yours": c("subtext1"), "group_other": c("overlay1"), "group_root": c("red")},
-        "links": {"normal": c("sky"), "multi_link_file": c("sky", True)},
-        "git": {"new": c("green"), "modified": c("yellow"), "deleted": c("red"), "renamed": c("teal"),
-                "typechange": c("pink"), "ignored": c("overlay0"), "conflicted": c("maroon")},
-        "git_repo": {"branch_main": c("text"), "branch_other": c("mauve"), "git_clean": c("green"),
+                  "other_execute": c("green"), "special_user_file": c("purple"),
+                  "special_other": c("muted"), "attribute": c("muted")},
+        "size": {"major": c("subtle"), "minor": c("blue"), "number_byte": c("fg"),
+                 "number_kilo": c("fg"), "number_mega": c("blue"), "number_giga": c("purple"),
+                 "number_huge": c("red"), "unit_byte": c("muted"), "unit_kilo": c("muted"),
+                 "unit_mega": c("muted"), "unit_giga": c("muted"), "unit_huge": c("muted")},
+        "users": {"user_you": c("fg"), "user_root": c("red"), "user_other": c("purple"),
+                  "group_yours": c("subtle"), "group_other": c("muted"), "group_root": c("red")},
+        "links": {"normal": c("cyan"), "multi_link_file": c("cyan", True)},
+        "git": {"new": c("green"), "modified": c("yellow"), "deleted": c("red"), "renamed": c("cyan"),
+                "typechange": c("pink"), "ignored": c("overlay"), "conflicted": c("red")},
+        "git_repo": {"branch_main": c("fg"), "branch_other": c("purple"), "git_clean": c("green"),
                      "git_dirty": c("red")},
         "file_type": {"image": c("yellow"), "video": c("red"), "music": c("green"),
-                      "lossless": c("teal"), "crypto": c("overlay2"), "document": c("text"),
-                      "compressed": c("pink"), "temp": c("maroon"), "compiled": c("lavender"),
-                      "build": c("overlay2"), "source": c("peach")},
+                      "lossless": c("cyan"), "crypto": c("muted"), "document": c("fg"),
+                      "compressed": c("pink"), "temp": c("red"), "compiled": c("blue"),
+                      "build": c("muted"), "source": c("orange")},
     }
     out = "colourful: true\n"
     for section, entries in sections.items():
         out += f"{section}:\n" + "".join(f"  {k}: {v}\n" for k, v in entries.items())
-    for key, color in [("punctuation", "overlay0"), ("date", "teal"), ("inode", "subtext0"),
-                       ("blocks", "subtext0"), ("octal", "overlay2"), ("symlink_path", "sky"),
-                       ("control_char", "sapphire"), ("broken_symlink", "red"),
-                       ("broken_path_overlay", "surface2")]:
+    for key, color in [("punctuation", "overlay"), ("date", "cyan"), ("inode", "subtle"),
+                       ("blocks", "subtle"), ("octal", "muted"), ("symlink_path", "cyan"),
+                       ("control_char", "blue"), ("broken_symlink", "red"),
+                       ("broken_path_overlay", "surface_hi")]:
         out += f"{key}: {c(color)}\n"
     # eza gives these folder names their own icon; use its plain folder icon (\ue5ff, same as yazi)
     special = [".config", ".git", ".github", ".npm", ".ssh", ".Trash", "build", "config", "Contacts",
@@ -173,7 +201,7 @@ def eza(p):
                "Movies", "Music", "node_modules", "npm_cache", "pam.d", "Pictures", "src", "ssh",
                "sudoers.d", "Videos", "xbps.d", "xorg.conf.d"]
     out += "filenames:\n" + "".join(f'  "{n}": {{icon: {{glyph: "\ue5ff"}}}}\n' for n in special)
-    return out + "header: {foreground: \"%s\", is_underline: true}\n" % p["text"]
+    return out + "header: {foreground: \"%s\", is_underline: true}\n" % p["fg"]
 
 
 def yazi(p):
@@ -185,43 +213,43 @@ def yazi(p):
 
     sections = {
         "mgr": {
-            "cwd": st("teal"),
+            "cwd": st("cyan"),
             "find_keyword": st("yellow", bold=1, italic=1),
             "find_position": st("pink", bold=1, italic=1),
             "marker_copied": st("green", "green"),
             "marker_cut": st("red", "red"),
-            "marker_marked": st("teal", "teal"),
-            "marker_selected": st("blue", "blue"),
-            "count_copied": st("base", "green"),
-            "count_cut": st("base", "red"),
-            "count_selected": st("base", "blue"),
-            "border_style": st("surface1"),
+            "marker_marked": st("cyan", "cyan"),
+            "marker_selected": st("accent", "accent"),
+            "count_copied": st("bg", "green"),
+            "count_cut": st("bg", "red"),
+            "count_selected": st("bg", "accent"),
+            "border_style": st("surface_alt"),
         },
-        "tabs": {"active": st("base", "blue", bold=1), "inactive": st("blue", "surface0")},
+        "tabs": {"active": st("bg", "accent", bold=1), "inactive": st("accent", "surface")},
         "mode": {
-            "normal_main": st("base", "blue", bold=1), "normal_alt": st("blue", "surface0"),
-            "select_main": st("base", "mauve", bold=1), "select_alt": st("mauve", "surface0"),
-            "unset_main": st("base", "red", bold=1), "unset_alt": st("red", "surface0"),
+            "normal_main": st("bg", "accent", bold=1), "normal_alt": st("accent", "surface"),
+            "select_main": st("bg", "purple", bold=1), "select_alt": st("purple", "surface"),
+            "unset_main": st("bg", "red", bold=1), "unset_alt": st("red", "surface"),
         },
-        "indicator": {"parent": st("text", "surface1"), "current": st("base", "blue"),
-                      "preview": st("text", "surface0")},
+        "indicator": {"parent": st("fg", "surface_alt"), "current": st("bg", "accent"),
+                      "preview": st("fg", "surface")},
         "status": {
-            "perm_sep": st("overlay0"), "perm_type": st("blue"), "perm_read": st("yellow"),
+            "perm_sep": st("overlay"), "perm_type": st("blue"), "perm_read": st("yellow"),
             "perm_write": st("red"), "perm_exec": st("green"),
-            "progress_label": st("text", bold=1), "progress_normal": st("blue", "surface1"),
-            "progress_error": st("red", "surface1"),
+            "progress_label": st("fg", bold=1), "progress_normal": st("accent", "surface_alt"),
+            "progress_error": st("red", "surface_alt"),
         },
-        "which": {"mask": st(bg="mantle"), "cand": st("teal"), "rest": st("overlay2"),
-                  "desc": st("pink"), "separator_style": st("surface2")},
-        "confirm": {"border": st("blue"), "title": st("blue"), "btn_yes": st("base", "blue")},
-        "spot": {"border": st("blue"), "title": st("blue"), "tbl_col": st("blue"),
-                 "tbl_cell": st("base", "yellow")},
+        "which": {"mask": st(bg="bg_alt"), "cand": st("cyan"), "rest": st("muted"),
+                  "desc": st("pink"), "separator_style": st("surface_hi")},
+        "confirm": {"border": st("accent"), "title": st("accent"), "btn_yes": st("bg", "accent")},
+        "spot": {"border": st("accent"), "title": st("accent"), "tbl_col": st("accent"),
+                 "tbl_cell": st("bg", "yellow")},
         "notify": {"title_info": st("green"), "title_warn": st("yellow"), "title_error": st("red")},
-        "pick": {"border": st("blue"), "active": st("mauve", bold=1)},
-        "input": {"border": st("blue"), "selected": st("base", "blue")},
-        "cmp": {"border": st("blue"), "active": st("base", "blue")},
-        "tasks": {"border": st("blue"), "hovered": st("mauve", bold=1)},
-        "help": {"border": st("blue"), "chord": st("teal"), "hovered": st("base", "blue", bold=1)},
+        "pick": {"border": st("accent"), "active": st("purple", bold=1)},
+        "input": {"border": st("accent"), "selected": st("bg", "accent")},
+        "cmp": {"border": st("accent"), "active": st("bg", "accent")},
+        "tasks": {"border": st("accent"), "hovered": st("purple", bold=1)},
+        "help": {"border": st("accent"), "chord": st("cyan"), "hovered": st("bg", "accent", bold=1)},
     }
     out = "# generated by ~/.local/bin/theme\n"
     for name, entries in sections.items():
@@ -230,18 +258,18 @@ def yazi(p):
         ('mime = "**/image/*"', st("yellow")),
         ('mime = "**/{audio,video}/*"', st("pink")),
         ('mime = "**/application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}"', st("red")),
-        ('mime = "**/application/{pdf,doc,rtf}"', st("teal")),
-        ('mime = "vfs/{absent,stale}"', st("overlay0")),
+        ('mime = "**/application/{pdf,doc,rtf}"', st("cyan")),
+        ('mime = "vfs/{absent,stale}"', st("overlay")),
         ('url = "*", is = "orphan"', st(bg="red")),
         ('url = "*", is = "exec"', st("green")),
         ('url = "*", is = "dummy"', st(bg="red")),
         ('url = "*/", is = "dummy"', st(bg="red")),
-        ('url = "*/"', st("blue", bold=1)),
+        ('url = "*/"', st("accent", bold=1)),
     ]
     # yazi's folder icons have fixed colors and per-name glyphs (Music, Desktop, ...);
     # drop the per-name ones and give every folder the plain icon in the theme color
     out += "\n[icon]\ndirs = []\n"
-    out += 'prepend_conds = [\n    { if = "dir", text = "\ue5ff", fg = "%s" },\n]\n' % p["blue"]
+    out += 'prepend_conds = [\n    { if = "dir", text = "\ue5ff", fg = "%s" },\n]\n' % p["accent"]
     out += "\n[filetype]\nrules = [\n" + "".join(
         f"    {{ {match}, {style[2:-2]} }},\n" for match, style in rules) + "]\n"
     return out
@@ -359,7 +387,7 @@ def icons(flavor, p):
     for svg in ADWAITA_PLACES.glob("*.svg"):
         text = svg.read_text()
         if ADWAITA_FOLDER in text.lower():
-            (places / svg.name).write_text(HEX.sub(lambda m: recolor(m.group(0), p["blue"]), text))
+            (places / svg.name).write_text(HEX.sub(lambda m: recolor(m.group(0), p["accent"]), text))
     (places.parent.parent / "index.theme").write_text(
         f"[Icon Theme]\nName={name}\nComment=generated by ~/.local/bin/theme\n"
         "Inherits=Adwaita,AdwaitaLegacy,hicolor\nDirectories=scalable/places\n\n"
@@ -393,22 +421,22 @@ def gtk(flavor, p):
         return False
     shade = "rgba(0, 0, 0, 0.36)" if dark else "rgba(0, 0, 0, 0.07)"
     colors = {
-        "accent_color": p["blue"], "accent_bg_color": p["blue"], "accent_fg_color": p["base"],
-        "destructive_color": p["red"], "destructive_bg_color": p["red"], "destructive_fg_color": p["base"],
-        "success_color": p["green"], "success_bg_color": p["green"], "success_fg_color": p["base"],
-        "warning_color": p["yellow"], "warning_bg_color": p["yellow"], "warning_fg_color": p["base"],
-        "error_color": p["red"], "error_bg_color": p["red"], "error_fg_color": p["base"],
-        "window_bg_color": p["base"], "window_fg_color": p["text"],
-        "view_bg_color": p["base"], "view_fg_color": p["text"],
-        "headerbar_bg_color": p["mantle"], "headerbar_fg_color": p["text"],
-        "headerbar_border_color": p["surface0"], "headerbar_backdrop_color": p["base"],
+        "accent_color": p["accent"], "accent_bg_color": p["accent"], "accent_fg_color": p["bg"],
+        "destructive_color": p["red"], "destructive_bg_color": p["red"], "destructive_fg_color": p["bg"],
+        "success_color": p["green"], "success_bg_color": p["green"], "success_fg_color": p["bg"],
+        "warning_color": p["yellow"], "warning_bg_color": p["yellow"], "warning_fg_color": p["bg"],
+        "error_color": p["red"], "error_bg_color": p["red"], "error_fg_color": p["bg"],
+        "window_bg_color": p["bg"], "window_fg_color": p["fg"],
+        "view_bg_color": p["bg"], "view_fg_color": p["fg"],
+        "headerbar_bg_color": p["bg_alt"], "headerbar_fg_color": p["fg"],
+        "headerbar_border_color": p["surface"], "headerbar_backdrop_color": p["bg"],
         "headerbar_shade_color": shade,
-        "sidebar_bg_color": p["mantle"], "sidebar_fg_color": p["text"],
-        "sidebar_backdrop_color": p["mantle"], "sidebar_shade_color": shade,
-        "card_bg_color": p["surface0"], "card_fg_color": p["text"], "card_shade_color": shade,
-        "dialog_bg_color": p["base"], "dialog_fg_color": p["text"],
-        "popover_bg_color": p["mantle"], "popover_fg_color": p["text"],
-        "shade_color": shade, "scrollbar_outline_color": p["crust"],
+        "sidebar_bg_color": p["bg_alt"], "sidebar_fg_color": p["fg"],
+        "sidebar_backdrop_color": p["bg_alt"], "sidebar_shade_color": shade,
+        "card_bg_color": p["surface"], "card_fg_color": p["fg"], "card_shade_color": shade,
+        "dialog_bg_color": p["bg"], "dialog_fg_color": p["fg"],
+        "popover_bg_color": p["bg_alt"], "popover_fg_color": p["fg"],
+        "shade_color": shade, "scrollbar_outline_color": p["bg_deep"],
     }
     clean_generated(DATA / "themes", {gtk_theme_name(f) for f in flavors()})
     theme = DATA / "themes" / gtk_theme_name(flavor)
@@ -450,8 +478,8 @@ def swatch(theme):
     for i, mode in enumerate(MODES):
         p = load(f"{theme}-{mode}")
         dots = "".join(f'<circle cx="{i * 60 + 15 + j * 15}" cy="32" r="5.5" fill="{p[c]}"/>'
-                       for j, c in enumerate(["red", "green", "blue"]))
-        halves += f'<rect x="{i * 60}" width="60" height="64" fill="{p["base"]}"/>{dots}'
+                       for j, c in enumerate(["accent2", "accent", "green"]))
+        halves += f'<rect x="{i * 60}" width="60" height="64" fill="{p["bg"]}"/>{dots}'
     SWATCHES.mkdir(parents=True, exist_ok=True)
     path = SWATCHES / f"{theme}.svg"
     path.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="64">'

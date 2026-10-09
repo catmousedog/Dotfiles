@@ -80,11 +80,11 @@ PopupWindow {
                 orientation: Gradient.Horizontal
                 GradientStop {
                     position: 0.0
-                    color: Theme.red
+                    color: Theme.accent2
                 }
                 GradientStop {
                     position: 1.0
-                    color: Theme.blue
+                    color: Theme.accent
                 }
             }
         }
@@ -117,7 +117,7 @@ PopupWindow {
             anchors.fill: parent
             anchors.margins: box.borderWidth
             radius: box.radius - box.borderWidth
-            color: Qt.alpha(Theme.base, ConfigService.get("popup.opacity"))
+            color: Qt.alpha(Theme.bg, ConfigService.get("popup.opacity"))
         }
 
         focus: true
@@ -132,7 +132,7 @@ PopupWindow {
             Bartext {
                 visible: root.title !== ""
                 text: root.title
-                color: Theme.subtext0
+                color: Theme.subtle
                 Layout.leftMargin: 8
                 Layout.bottomMargin: 4
             }

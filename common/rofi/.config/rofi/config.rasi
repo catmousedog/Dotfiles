@@ -10,4 +10,4 @@ configuration {
     kb-mode-previous:    "Shift+Left,Control+ISO_Left_Tab";
 }
 
-@theme "catppuccin"
+@theme "theme"

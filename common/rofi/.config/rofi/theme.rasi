@@ -3,14 +3,14 @@
 
 * {
     background-color:  transparent;
-    text-color:         @text;
+    text-color:         @fg;
 }
 
 window {
     transparency:      "real";
-    background-color:  @base;
+    background-color:  @bg;
     border:             2px;
-    border-color:       @mauve;
+    border-color:       @accent;
     border-radius:      14px;
     width:              600px;
     location:           center;
@@ -23,7 +23,7 @@ mainbox {
 }
 
 inputbar {
-    background-color:  @mantle;
+    background-color:  @bg_alt;
     border-radius:      10px;
     padding:            10px 14px;
     children:          [ prompt, entry ];
@@ -31,14 +31,14 @@ inputbar {
 }
 
 prompt {
-    text-color:  @mauve;
+    text-color:  @accent;
     font:        "Noto Sans Mono Bold 11";
 }
 
 entry {
     placeholder:        "Search...";
-    placeholder-color:  @overlay0;
-    text-color:         @text;
+    placeholder-color:  @overlay;
+    text-color:         @fg;
 }
 
 listview {
@@ -54,12 +54,12 @@ element {
 }
 
 element normal.normal {
-    text-color:  @text;
+    text-color:  @fg;
 }
 
 element selected.normal {
-    background-color:  @surface0;
-    text-color:         @mauve;
+    background-color:  @surface;
+    text-color:         @accent;
 }
 
 element-icon {

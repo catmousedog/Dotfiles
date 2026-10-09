@@ -61,6 +61,11 @@ would let anything running as my user rewrite that, i.e. become root.
 ## Theme
 
 Colors come from one place: `common/themes/.config/themes/palettes/<theme>-<dark|light>.json`.
+Each palette has the theme's own colors under their own names (`colors`) and a
+`roles` map that picks which of them each part of the desktop uses: `bg`, `bg_alt`,
+`surface*`, `fg`, `accent` (borders, selection, folders), `accent2` (start of the
+border gradient) and the terminal colors. Everything reads roles only, so a theme
+decides its own look; the list of roles is `ROLES` in the `theme` script.
 `theme` (in `~/.local/bin`) renders the palette for every program into
 `~/.local/state/theme/current/` and reloads what it can:
 
@@ -76,7 +81,8 @@ the generated files. GTK apps (Thunar, file dialogs) get a recolored adw-gtk3
 theme per flavor and switch live. VS Code gets its color theme written directly. Thunar's folder icons take the theme's accent color. For a wallpaper per theme, put
 `<theme>-<dark|light>.png` (or `<theme>.png`) in `~/.config/backgrounds/`; otherwise
 `background.png` is used. Themes: Catppuccin and Rosé Pine. To add one, drop `<name>-dark.json`
-and `<name>-light.json` with the same 26 Catppuccin color names next to the others. Run `python preview.py` to render the palette PNGs.
+and `<name>-light.json` next to the others with the same roles. Run
+`python preview.py` to render the palette PNGs (every role and where it comes from).
 
 ## App launcher
 

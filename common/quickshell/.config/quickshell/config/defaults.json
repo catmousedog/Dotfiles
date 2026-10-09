@@ -4,14 +4,14 @@
 			"size": 2.2
 		},
 		"theme": {
-			"background": "base",
-			"borderColor": "mauve",
+			"background": "bg",
+			"borderColor": "accent",
 			"borderWidth": 3
 		},
 		"font": {
 			"family": "Noto Sans Mono",
 			"size": 13.5,
-			"color": "text",
+			"color": "fg",
 			"weight": 700
 		}
 	},

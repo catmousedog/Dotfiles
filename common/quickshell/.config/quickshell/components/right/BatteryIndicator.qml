@@ -34,7 +34,7 @@ Loader {
                         return "󰾅";
                     }
                 }
-                color: BatteryService.profile === PowerProfile.Performance ? Theme.peach : BatteryService.profile === PowerProfile.PowerSaver ? Theme.green : ConfigService.getColor("common.font.color")
+                color: BatteryService.profile === PowerProfile.Performance ? Theme.orange : BatteryService.profile === PowerProfile.PowerSaver ? Theme.green : ConfigService.getColor("common.font.color")
             }
 
             IconText {

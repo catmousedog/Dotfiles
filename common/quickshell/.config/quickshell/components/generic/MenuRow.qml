@@ -16,13 +16,13 @@ Rectangle {
 
     signal clicked
 
-    readonly property color foreground: active ? Theme.blue : dimmed ? Theme.overlay1 : Theme.text
+    readonly property color foreground: active ? Theme.accent : dimmed ? Theme.muted : Theme.fg
 
     Layout.fillWidth: true
     implicitWidth: row.implicitWidth + 2 * row.anchors.leftMargin
     implicitHeight: row.implicitHeight + 10
     radius: height / 2
-    color: mouse.containsMouse ? Theme.surface0 : "transparent"
+    color: mouse.containsMouse ? Theme.surface : "transparent"
 
     RowLayout {
         id: row
@@ -49,7 +49,7 @@ Rectangle {
         Bartext {
             visible: root.detail !== ""
             text: root.detail
-            color: Theme.subtext0
+            color: Theme.subtle
         }
     }
 

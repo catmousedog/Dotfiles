@@ -19,11 +19,11 @@ Rectangle {
         orientation: Gradient.Horizontal
         GradientStop {
             position: 0.0
-            color: Theme.red
+            color: Theme.accent2
         }
         GradientStop {
             position: 1.0
-            color: Theme.blue
+            color: Theme.accent
         }
     }
 
@@ -34,7 +34,7 @@ Rectangle {
         implicitWidth: parent.width - 2 * root.borderWidth
         radius: Math.max(0, root.radius - root.borderWidth)
 
-        color: Theme.base
+        color: Theme.bg
         enabled: false
     }
 }

@@ -11,5 +11,5 @@ Rectangle {
     Layout.leftMargin: 8
     Layout.rightMargin: 8
     implicitHeight: 1
-    color: Theme.surface1
+    color: Theme.surface_alt
 }

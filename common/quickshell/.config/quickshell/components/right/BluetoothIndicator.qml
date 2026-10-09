@@ -86,7 +86,7 @@ IconText {
 
     function getColor() {
         if (BluetoothService.connected.length > 0) {
-            return Theme.blue;
+            return Theme.accent;
         }
         return null;
     }

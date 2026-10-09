@@ -5,12 +5,12 @@
 local state = os.getenv("XDG_STATE_HOME") or (os.getenv("HOME") .. "/.local/state")
 local ok, theme = pcall(dofile, state .. "/theme/current/hypr.lua")
 if not ok or type(theme) ~= "table" then
-    theme = { blue = "89b4fa", red = "f38ba8", mauve = "cba6f7" }
+    theme = { accent = "89b4fa", accent2 = "f38ba8", purple = "cba6f7" }
 end
 
-local blue = "rgba(" .. theme.blue .. "ee)"
-local red = "rgba(" .. theme.red .. "ee)"
-local mauve = "rgba(" .. theme.mauve .. "aa)"
+local accent = "rgba(" .. theme.accent .. "ee)"
+local accent2 = "rgba(" .. theme.accent2 .. "ee)"
+local inactive = "rgba(" .. theme.purple .. "aa)"
 
 hl.config({
     general = {
@@ -18,10 +18,10 @@ hl.config({
         gaps_out = 6,
         border_size = 2,
         col = {
-            active_border = { colors = { blue, red }, angle = 0 },
-            inactive_border = mauve,
-            nogroup_border = red,
-            nogroup_border_active = blue,
+            active_border = { colors = { accent, accent2 }, angle = 0 },
+            inactive_border = inactive,
+            nogroup_border = accent2,
+            nogroup_border_active = accent,
         },
         resize_on_border = true,
         allow_tearing = false,

@@ -164,13 +164,13 @@ def eza(p):
                        ("control_char", "sapphire"), ("broken_symlink", "red"),
                        ("broken_path_overlay", "surface2")]:
         out += f"{key}: {c(color)}\n"
-    # eza gives these folder names their own icon; use its plain folder icon instead
+    # eza gives these folder names their own icon; use its plain folder icon (\ue5ff, same as yazi)
     special = [".config", ".git", ".github", ".npm", ".ssh", ".Trash", "build", "config", "Contacts",
                "cron.d", "cron.daily", "cron.hourly", "cron.monthly", "cron.weekly", "Desktop",
                "Documents", "Downloads", "etc", "Favorites", "hidden", "home", "include", "Mail",
                "Movies", "Music", "node_modules", "npm_cache", "pam.d", "Pictures", "src", "ssh",
                "sudoers.d", "Videos", "xbps.d", "xorg.conf.d"]
-    out += "filenames:\n" + "".join(f'  "{n}": {{icon: {{glyph: "\uf115"}}}}\n' for n in special)
+    out += "filenames:\n" + "".join(f'  "{n}": {{icon: {{glyph: "\ue5ff"}}}}\n' for n in special)
     return out + "header: {foreground: \"%s\", is_underline: true}\n" % p["text"]
 
 

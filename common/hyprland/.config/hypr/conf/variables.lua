@@ -4,5 +4,7 @@ M.terminal = "kitty"
 M.fileManager = "dolphin"
 M.browser = "firefox"
 M.menu = "rofi -show drun"
+M.clipboard = "cliphist list | rofi -dmenu -p clipboard | cliphist decode | wl-copy"
+M.lock = "loginctl lock-session"
 M.mainMod = "SUPER"
 return M

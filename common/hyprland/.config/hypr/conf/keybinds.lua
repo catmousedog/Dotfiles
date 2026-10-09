@@ -1,5 +1,5 @@
 -- See https://wiki.hypr.land/Configuring/Basics/Binds/
-local vars = require("conf/variables")
+local vars = require("conf.variables")
 local mainMod = vars.mainMod
 
 -- Main binds
@@ -12,11 +12,11 @@ hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle only
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ action = "toggle" }))
 hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix-reset.fish"))
 hl.bind(mainMod .. " + H", hl.dsp.exec_cmd('grim -g "$(slurp)" - | satty --filename -'))
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.config/hypr/scripts/theme-toggle.sh"))
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.local/bin/theme toggle"))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd(vars.lock))
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd(vars.clipboard))
 
--- cyclenext + alterzorder top combo (verify hl.dsp.window naming against
--- the wiki for your installed version — this dispatcher was renamed
--- more than once during the hyprlang -> lua migration)
+-- Cycle windows and raise the newly focused one
 hl.bind(mainMod .. " + Tab", function()
     hl.dispatch(hl.dsp.window.cycle_next())
     hl.dispatch(hl.dsp.window.bring_to_top())
@@ -42,7 +42,7 @@ hl.bind("SHIFT + " .. mainMod .. " + down", hl.dsp.window.move({ direction = "do
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
--- Switch workspaces (your custom script-driven directional switching)
+-- Switch workspaces in the watrix grid
 hl.bind("CTRL + " .. mainMod .. " + left", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish workspace left"))
 hl.bind("CTRL + " .. mainMod .. " + right", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish workspace right"))
 hl.bind("CTRL + " .. mainMod .. " + up", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish workspace up"))
@@ -61,7 +61,7 @@ end
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
--- Move active window to a workspace (your custom script-driven version)
+-- Move active window through the watrix grid
 hl.bind("CTRL + SHIFT + " .. mainMod .. " + left", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish movetoworkspace left"))
 hl.bind("CTRL + SHIFT + " .. mainMod .. " + right", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish movetoworkspace right"))
 hl.bind("CTRL + SHIFT + " .. mainMod .. " + up", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix.fish movetoworkspace up"))

@@ -4,7 +4,8 @@ source (dirname (status --current-filename))/watrix-common.fish
 
 # Move every window back into monitor 0's workspace range
 set clients (hyprctl clients -j)
-set -l hypr_disp "keyword animation workspaces,1,$speed,almostLinear,fade ; "
+hyprctl eval "hl.animation({ leaf = 'workspaces', enabled = true, speed = $speed, bezier = 'almostLinear', style = 'fade' })"
+set -l hypr_disp ""
 
 echo $clients | jq -c '.[]' | while read -l client
     set addr (echo $client | jq -r '.address')
@@ -16,7 +17,7 @@ echo $clients | jq -c '.[]' | while read -l client
     end
 
     set target (normalize_workspace $wid)
-    set hypr_disp "$hypr_disp dispatch movetoworkspacesilent $target,address:$addr ; "
+    set hypr_disp "$hypr_disp eval hl.dispatch(hl.dsp.window.move({ workspace = '$target', silent = true, window = 'address:$addr' })) ; "
 end
 
 hyprctl --batch $hypr_disp

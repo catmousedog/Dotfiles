@@ -1,7 +1,23 @@
 {
+	"common": {
+		"bar": {
+			"size": 2.0
+		},
+		"font": {
+			"size": 11
+		}
+	},
 	"right": {
+		"battery": {
+			"iconSize": 11
+		},
 		"audio": {
-			"profiles": true
+			"profiles": true,
+			"iconSize": 11,
+			"iconYOffset": -1
+		},
+		"bluetooth": {
+			"iconSize": 11
 		}
 	}
 }

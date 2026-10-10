@@ -27,7 +27,12 @@ Item {
     Bartext {
         id: iconText
         text: root.icon
+        // named explicitly: fontconfig's fallback can pick another font that has
+        // something else at the same private-use codepoint (gsfonts, U+EFCF)
+        font.family: ConfigService.get("common.font.iconFamily")
         anchors.left: root.left
+        // the icon font has its own line height: sit on the text's baseline
+        anchors.baseline: textText.baseline
         transform: Translate {
             x: root.iconXOffset
             y: root.iconYOffset

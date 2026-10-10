@@ -10,6 +10,7 @@
 		},
 		"font": {
 			"family": "Noto Sans Mono",
+			"iconFamily": "Symbols Nerd Font",
 			"size": 13.5,
 			"color": "fg",
 			"weight": 700

@@ -8,11 +8,11 @@ import qs.config
 import qs.services
 import qs.components.generic
 
-Bartext {
+IconText {
     // laptops only, the desktop has no power-profiles-daemon
     visible: BatteryService.hasBattery
 
-    text: {
+    icon: {
         switch (BatteryService.profile) {
         case PowerProfile.PowerSaver:
             return "󰾆";

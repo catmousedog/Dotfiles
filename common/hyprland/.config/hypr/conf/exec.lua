@@ -4,6 +4,8 @@
 local vars = require("conf.variables")
 
 hl.on("hyprland.start", function()
+    -- Hyprland's own cursor (desktop, bar, Wayland apps); XCURSOR_THEME only reaches the apps it starts
+    hl.exec_cmd("hyprctl setcursor " .. vars.cursorTheme .. " " .. vars.cursorSize)
     -- GTK apps read the cursor from gsettings, not XCURSOR_THEME
     hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-theme " .. vars.cursorTheme)
     hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-size " .. vars.cursorSize)

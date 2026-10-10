@@ -97,7 +97,7 @@ one. The Run tab (shift+arrow) still runs any command.
 | workspace  | move in the grid (shift: sideways) |       |                 |
 | volume     | volume            | pick output device     | mute            |
 | bluetooth  |                   | connect paired devices | power on / off  |
-| battery    |                   | cycle power profile    |                 |
+| power profile |                | cycle power profile    |                 |
 
 Devices are paired once with `bluetoothctl` (`scan on`, `pair <mac>`, `trust <mac>`);
 after that they show up in the bluetooth menu. Output devices can get nicer

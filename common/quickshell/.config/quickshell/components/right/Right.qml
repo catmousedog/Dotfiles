@@ -28,6 +28,8 @@ Barbox {
 
         NetworkIndicator {}
 
+        PowerProfileIndicator {}
+
         KeyBoardIndicator {}
     }
 }

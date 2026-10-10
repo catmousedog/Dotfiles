@@ -7,7 +7,7 @@ import qs.services
 Item {
     id: root
 
-    implicitWidth: iconText.implicitWidth + (textText.visible ? spacing + textText.implicitWidth : 0) + Math.max(0, iconXOffset)
+    implicitWidth: iconWidth + (textText.visible ? spacing + textText.implicitWidth : 0) + Math.max(0, iconXOffset)
     implicitHeight: textText.implicitHeight
 
     // shared
@@ -19,6 +19,15 @@ Item {
     property real iconSize: -1
     property real iconXOffset: 0
     property real iconYOffset: 0
+    // every icon this item can show: the widest one sets the width, so the bar
+    // doesn't move when the icon changes (the icon font is not monospace)
+    property var icons: []
+    readonly property real iconWidth: Math.ceil(Math.max(iconText.implicitWidth, ...icons.map(i => iconMetrics.advanceWidth(i))))
+
+    FontMetrics {
+        id: iconMetrics
+        font: iconText.font
+    }
 
     // Text
     property string text: ""
@@ -31,6 +40,8 @@ Item {
         // something else at the same private-use codepoint (gsfonts, U+EFCF)
         font.family: ConfigService.get("common.font.iconFamily")
         anchors.left: root.left
+        width: root.iconWidth
+        horizontalAlignment: Text.AlignHCenter
         // the icon font has its own line height: sit on the text's baseline
         anchors.baseline: textText.baseline
         transform: Translate {

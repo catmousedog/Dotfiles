@@ -8,7 +8,8 @@ import qs.services
 import qs.components.generic
 
 IconText {
-    icon: SunsetService.enabled ? "󰖔" : "󰖙"
+    icons: ["󰖔", "󰖙"]
+    icon: icons[SunsetService.enabled ? 0 : 1]
     iconYOffset: -1
     color: SunsetService.enabled ? Theme.yellow : null
 

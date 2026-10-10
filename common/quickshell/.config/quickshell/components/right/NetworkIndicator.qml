@@ -11,15 +11,16 @@ import qs.components.generic
 IconText {
     id: root
 
+    // wired, wifi by signal strength, disconnected
+    icons: ["󰈀", "󰤯", "󰤟", "󰤢", "󰤥", "󰤨", "󰤮"]
     icon: {
         if (NetworkService.wired)
-            return "󰈀";
-        if (NetworkService.wifi) {
-            const icons = ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"];
-            return icons[Math.min(4, Math.floor(NetworkService.signal * 5))];
-        }
-        return "󰤮";
+            return icons[0];
+        if (NetworkService.wifi)
+            return icons[1 + Math.min(4, Math.floor(NetworkService.signal * 5))];
+        return icons[6];
     }
+    iconYOffset: -1
     color: NetworkService.connected ? ConfigService.getColor("common.font.color") : Theme.red
 
     MouseArea {

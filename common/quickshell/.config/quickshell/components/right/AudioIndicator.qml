@@ -10,6 +10,7 @@ import qs.components.generic
 IconText {
     id: root
 
+    icons: ["", ""]
     icon: getIcon()
     text: getText()
 
@@ -77,10 +78,7 @@ IconText {
     }
 
     function getIcon() {
-        if (AudioService.muted || AudioService.volume === 0) {
-            return "";
-        }
-        return "";
+        return icons[AudioService.muted || AudioService.volume === 0 ? 0 : 1];
     }
 
     function getText() {

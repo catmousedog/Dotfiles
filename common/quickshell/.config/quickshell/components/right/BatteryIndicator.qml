@@ -21,18 +21,17 @@ Loader {
         iconYOffset: ConfigService.get("right.battery.iconYOffset")
         spacing: ConfigService.get("right.battery.spacing")
 
+        readonly property var dischargingIcons: ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+        readonly property var chargingIcons: ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
+        icons: [...dischargingIcons, ...chargingIcons, "󰂑"]
+
         function getIcon() {
-            if (BatteryService.discharging) {
-                const icons = ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"];
-                return icons[Math.floor(BatteryService.percentage * 10)];
-            }
-            if (BatteryService.charging) {
-                const icons = ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"];
-                return icons[Math.floor(BatteryService.percentage * 10)];
-            }
-            if (BatteryService.full) {
+            if (BatteryService.discharging)
+                return dischargingIcons[Math.floor(BatteryService.percentage * 10)];
+            if (BatteryService.charging)
+                return chargingIcons[Math.floor(BatteryService.percentage * 10)];
+            if (BatteryService.full)
                 return "󰁹";
-            }
             return "󰂑";
         }
 

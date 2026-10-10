@@ -10,8 +10,8 @@ import qs.components.generic
 IconText {
     id: root
 
+    icons: ["󰂯", "󰂱", "󰂲"]
     icon: getIcon()
-    text: getText()
     color: getColor()
 
     iconSize: ConfigService.get("right.bluetooth.iconSize")
@@ -68,26 +68,14 @@ IconText {
     }
 
     function getIcon() {
-        if (BluetoothService.enabled) {
-            return "󰂯";
-        } else {
+        if (!BluetoothService.enabled)
             return "󰂲";
-        }
-    }
-
-    function getText() {
-        if (BluetoothService.enabled) {
-            if (BluetoothService.connected.length > 0) {
-                return BluetoothService.connected.length.toString();
-            }
-        }
-        return "";
+        return BluetoothService.connected.length > 0 ? "󰂱" : "󰂯";
     }
 
     function getColor() {
-        if (BluetoothService.connected.length > 0) {
-            return Theme.accent;
-        }
+        if (BluetoothService.enabled && BluetoothService.connected.length > 0)
+            return Theme.blue;
         return null;
     }
 }

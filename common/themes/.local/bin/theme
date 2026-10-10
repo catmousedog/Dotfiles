@@ -14,6 +14,7 @@ which the configs read from:
     kitty.conf     kitty (reloaded with SIGUSR1)
     hypr.lua       hyprland (reloaded with hyprctl reload)
     hyprlock.conf  hyprlock ($name / $nameAlpha variables)
+    wallpaper      link to the current wallpaper
     dunst.conf     dunst, linked as ~/.config/dunst/dunstrc.d/90-theme.conf
     eza/theme.yml  eza (EZA_CONFIG_DIR points here, see config.fish)
     yazi.toml      yazi, linked as ~/.config/yazi/theme.toml (read on start)
@@ -401,6 +402,8 @@ def wallpaper(flavor, transition=True):
     for stem in (flavor, theme, "background"):
         found = sorted(BACKGROUNDS.glob(f"{stem}.*"))
         if found:
+            # a fixed path to the current wallpaper, for hyprlock
+            link(CURRENT / "wallpaper", found[0])
             cmd = ["awww", "img", str(found[0])]
             if transition:
                 cmd += ["--transition-type", "grow", "--transition-pos", "top-right",

@@ -35,10 +35,21 @@ def entry(app_id):
     return None
 
 
+def has_icon(icon):
+    """True if an icon=<name or path> override exists (its icon theme may not be installed)."""
+    if "/" in icon:
+        return Path(icon).expanduser().is_file()
+    dirs = [DATA_HOME] + [Path(d) for d in DATA_DIRS if d]
+    return any(next(d.glob(f"icons/*/*/apps/{icon}.*"), None) or next(d.glob(f"pixmaps/{icon}.*"), None)
+               for d in dirs)
+
+
 def main():
     if os.environ.get("ROFI_RETV") == "1":
         # an entry was picked: launch it detached so it outlives rofi
-        subprocess.Popen(["gtk-launch", os.environ["ROFI_INFO"]], start_new_session=True,
+        # without rofi's ROFI_* variables: this script run from inside the app would launch again
+        env = {k: v for k, v in os.environ.items() if not k.startswith("ROFI_")}
+        subprocess.Popen(["gtk-launch", os.environ["ROFI_INFO"]], start_new_session=True, env=env,
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return
     print("\0no-custom\x1ftrue")
@@ -50,7 +61,8 @@ def main():
         found = entry(app_id)
         if found:
             name, icon = found
-            icon = options.get("icon", icon)
+            if "icon" in options and has_icon(options["icon"]):
+                icon = options["icon"]
             print(f"{name}\0icon\x1f{icon}\x1finfo\x1f{app_id}")
 
 

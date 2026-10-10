@@ -2,7 +2,7 @@ configuration {
     // apps: only the ones in apps.txt (scripts/apps.py), run: any command
     modes:               "apps:~/.config/rofi/scripts/apps.py,run";
     show-icons:          true;
-    icon-theme:          "Papirus-Dark";  // papirus-icon-theme, falls back to the app icons
+    icon-theme:          "Papirus-Dark";  // papirus-icon-theme (optional), falls back to the app icons
     display-apps:        "Apps";
     display-run:         "Run";
     font:                "Noto Sans Mono Bold 11";

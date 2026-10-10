@@ -1,0 +1,5 @@
+awww-git
+cisco-secure-client
+ds9-bin
+tex-fmt-bin
+yay

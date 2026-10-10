@@ -22,6 +22,8 @@ IconText {
             return "󰾅";
         }
     }
+    iconYOffset: -1
+
     color: BatteryService.profile === PowerProfile.Performance ? Theme.orange : BatteryService.profile === PowerProfile.PowerSaver ? Theme.green : ConfigService.getColor("common.font.color")
 
     MouseArea {

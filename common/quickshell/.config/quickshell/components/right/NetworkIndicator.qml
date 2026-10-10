@@ -8,10 +8,10 @@ import qs.config
 import qs.services
 import qs.components.generic
 
-Bartext {
+IconText {
     id: root
 
-    text: {
+    icon: {
         if (NetworkService.wired)
             return "󰈀";
         if (NetworkService.wifi) {

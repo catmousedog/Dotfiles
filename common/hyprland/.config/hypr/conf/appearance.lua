@@ -16,7 +16,7 @@ hl.config({
     general = {
         gaps_in = 4,
         gaps_out = 6,
-        border_size = 2,
+        border_size = 3,
         col = {
             active_border = { colors = { accent, accent2 }, angle = 0 },
             inactive_border = inactive,

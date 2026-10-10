@@ -8,3 +8,11 @@ hl.monitor({
     position = "auto",
     scale = 1,
 })
+
+-- a little more room between windows than the default (4 / 6)
+hl.config({
+    general = {
+        gaps_in = 6,
+        gaps_out = 9,
+    },
+})

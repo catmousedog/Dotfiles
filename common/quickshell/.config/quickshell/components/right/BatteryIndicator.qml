@@ -22,14 +22,15 @@ Loader {
         spacing: ConfigService.get("right.battery.spacing")
 
         readonly property var dischargingIcons: ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
-        readonly property var chargingIcons: ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
-        icons: [...dischargingIcons, ...chargingIcons, "󰂑"]
+        // bolt in the battery: the only charging icon as narrow as the others
+        readonly property string chargingIcon: "󰂄"
+        icons: [...dischargingIcons, chargingIcon, "󰂑"]
 
         function getIcon() {
             if (BatteryService.discharging)
                 return dischargingIcons[Math.floor(BatteryService.percentage * 10)];
             if (BatteryService.charging)
-                return chargingIcons[Math.floor(BatteryService.percentage * 10)];
+                return chargingIcon;
             if (BatteryService.full)
                 return "󰁹";
             return "󰂑";

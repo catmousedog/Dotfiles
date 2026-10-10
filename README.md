@@ -97,6 +97,7 @@ one. The Run tab (shift+arrow) still runs any command.
 | workspace  | move in the grid (shift: sideways) |       |                 |
 | volume     | volume            | pick output device     | mute            |
 | bluetooth  |                   | connect paired devices | power on / off  |
+| night light |                  | on / off (hyprsunset)  |                 |
 | power profile |                | cycle power profile    |                 |
 
 Devices are paired once with `bluetoothctl` (`scan on`, `pair <mac>`, `trust <mac>`);

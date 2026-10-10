@@ -50,6 +50,9 @@
 			"iconYOffset": -2,
 			"spacing": 4
 		},
+		"sunset": {
+			"temperature": 4000
+		},
 		"bluetooth": {
 			"iconSize": 13.5,
 			"iconYOffset": -1,

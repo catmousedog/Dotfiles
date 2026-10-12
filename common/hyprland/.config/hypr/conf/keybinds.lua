@@ -78,7 +78,15 @@ hl.bind("CTRL + SHIFT + " .. mainMod .. " + down", hl.dsp.exec_cmd("~/.config/hy
 
 -- Special workspace (scratchpad)
 hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+-- Toggle: a window in the scratchpad goes to the workspace underneath it
+hl.bind(mainMod .. " + SHIFT + S", function()
+    local win = hl.get_active_window()
+    local target = "special:magic"
+    if win and win.workspace and win.workspace.special then
+        target = hl.get_active_workspace()
+    end
+    hl.dispatch(hl.dsp.window.move({ workspace = target }))
+end)
 
 -- Laptop multimedia keys for volume / brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })

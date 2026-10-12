@@ -1,0 +1,70 @@
+#!/bin/sh
+# Game streaming mode, run by Sunshine when Moonlight connects / disconnects
+# (global_prep_cmd in ~/.config/sunshine/sunshine.conf).
+#
+# start: creates a virtual (headless) monitor with the client's resolution and
+#        turns the real one off, so games render in the client's aspect ratio
+#        and the OLED isn't lit for nothing.
+# stop:  brings the real monitor back and removes the virtual one.
+#        SUPER+SHIFT+O does the same, in case a stream didn't end cleanly.
+#
+# The monitor setup itself is in ~/.config/hypr/host.lua, which reads the state
+# file written here. That keeps it in place across config reloads (theme
+# switches, ...). The state lives in XDG_RUNTIME_DIR, so a reboot always gives
+# the real monitor back.
+#
+# Usage: stream [start | stop | status]
+
+STATE="$XDG_RUNTIME_DIR/stream"
+INHIBIT=stream-inhibit
+
+# Sunshine may have been started without Hyprland's environment
+if [ -z "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
+    HYPRLAND_INSTANCE_SIGNATURE=$(ls -t "$XDG_RUNTIME_DIR/hypr" 2>/dev/null | head -n 1)
+    export HYPRLAND_INSTANCE_SIGNATURE
+fi
+
+outputs() {
+    hyprctl monitors all | sed -n 's/^Monitor \([^ ]*\) (ID.*/\1/p' | sort
+}
+
+start() {
+    mode="${SUNSHINE_CLIENT_WIDTH:-1920}x${SUNSHINE_CLIENT_HEIGHT:-1080}@${SUNSHINE_CLIENT_FPS:-60}"
+
+    # reuse the virtual monitor when a stream is already set up (app switch, reconnect)
+    output=$(head -n 1 "$STATE" 2>/dev/null)
+    if [ -z "$output" ] || ! outputs | grep -qx "$output"; then
+        before=$(outputs)
+        hyprctl output create headless sunshine >/dev/null
+        output=$(outputs | grep -vxF "$before" | head -n 1)
+    fi
+    if [ -z "$output" ]; then
+        # never turn the real monitor off without something to replace it
+        echo "stream: could not create a virtual monitor" >&2
+        exit 1
+    fi
+
+    printf '%s\n%s\n' "$output" "$mode" >"$STATE"
+    hyprctl reload >/dev/null
+
+    # a gamepad doesn't count as activity for hypridle: keep it from blanking and suspending
+    systemctl --user is-active --quiet "$INHIBIT" || systemd-run --user --quiet --unit="$INHIBIT" \
+        systemd-inhibit --what=idle --who=Sunshine --why="Streaming a game" sleep infinity
+}
+
+stop() {
+    output=$(head -n 1 "$STATE" 2>/dev/null)
+    rm -f "$STATE"
+    # real monitor first, so there is never a moment without any
+    hyprctl reload >/dev/null
+    [ -n "$output" ] && hyprctl output remove "$output" >/dev/null
+    systemctl --user stop "$INHIBIT" 2>/dev/null
+    return 0
+}
+
+case "$1" in
+    start) start ;;
+    stop) stop ;;
+    status) [ -f "$STATE" ] && echo "streaming on $(tr '\n' ' ' <"$STATE")" || echo "off" ;;
+    *) echo "Usage: stream [start | stop | status]" >&2; exit 2 ;;
+esac

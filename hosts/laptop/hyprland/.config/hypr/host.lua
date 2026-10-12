@@ -31,3 +31,12 @@ hl.config({
         gaps_out = 9
     },
 })
+
+-- BE, US, RU keyboards
+hl.config({
+    input = {
+        kb_layout = "be,us,ru",
+        kb_variant = ",,phonetic_YAZHERTY",
+        kb_options = "grp:win_space_toggle"
+    },
+})

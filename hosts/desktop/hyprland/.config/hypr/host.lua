@@ -1,4 +1,4 @@
--- # See https://wiki.hypr.land/Configuring/Monitors/
+-- ultrawide screen
 hl.monitor({
     output = "DP-2",
     mode = "3440x1440@174.962006",
@@ -6,7 +6,7 @@ hl.monitor({
     scale = 1,
 })
 
--- https://wiki.hypr.land/Configuring/Basics/Variables/#input
+-- US, RU keyboards
 hl.config({
     input = {
         kb_layout = "us,ru",

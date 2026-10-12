@@ -4,14 +4,14 @@
 #     /var/lib/flatpak/exports/share/applications
 # Anything else: switch to the Run tab (shift+arrow) and type the command.
 # Optional: icon=<icon name or path> after the id replaces the app's own icon.
-# Icons that no package provides live in common/rofi/.local/share/icons (VS Code's is from Papirus).
+# Icons that no package provides live in common/rofi/.local/share/icons (VS Code's and spotify-player's are from Papirus).
 
 firefox
 code-oss icon=visual-studio-code
 steam
 com.moonlight_stream.Moonlight
 com.discordapp.Discord
-com.spotify.Client
+spotify-player
 at.vintagestory.VintageStory
 org.prismlauncher.PrismLauncher
 com.modrinth.ModrinthApp

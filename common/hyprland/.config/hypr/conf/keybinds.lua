@@ -89,7 +89,7 @@ hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"), { locked = true, repeating = true })
 
 -- Media keys (requires playerctl)
-hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl --player=spotify,%any next"), { locked = true })
-hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl --player=spotify,%any play-pause"), { locked = true })
-hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl --player=spotify,%any play-pause"), { locked = true })
-hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl --player=spotify,%any previous"), { locked = true })
+hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl --player=spotify_player,spotify,%any next"), { locked = true })
+hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl --player=spotify_player,spotify,%any play-pause"), { locked = true })
+hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl --player=spotify_player,spotify,%any play-pause"), { locked = true })
+hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl --player=spotify_player,spotify,%any previous"), { locked = true })

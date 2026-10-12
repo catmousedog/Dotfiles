@@ -18,6 +18,8 @@ which the configs read from:
     dunst.conf     dunst, linked as ~/.config/dunst/dunstrc.d/90-theme.conf
     eza/theme.yml  eza (EZA_CONFIG_DIR points here, see config.fish)
     yazi.toml      yazi, linked as ~/.config/yazi/theme.toml (read on start)
+    spotify-player.toml  spotify-player, linked as ~/.config/spotify-player/theme.toml
+    kitty-spotify-player.conf  extra kitty config for spotify-player's own window
 
 Some programs can't read from another location, so their files are written
 directly (they aren't in the repo, edit this script instead):
@@ -64,6 +66,7 @@ SWATCHES = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) 
 VSCODE_SETTINGS = CONFIG / "Code - OSS/User/settings.json"
 DUNST_DROPIN = CONFIG / "dunst/dunstrc.d/90-theme.conf"
 YAZI_THEME = CONFIG / "yazi/theme.toml"
+SPOTIFY_PLAYER_THEME = CONFIG / "spotify-player/theme.toml"
 DATA = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
 ADW_GTK3 = Path("/usr/share/themes")  # adw-gtk3 and adw-gtk3-dark, from adw-gtk-theme
 ADWAITA_PLACES = Path("/usr/share/icons/Adwaita/scalable/places")
@@ -276,6 +279,23 @@ def yazi(p):
     return out
 
 
+# spotify-player only knows the 16 terminal colors or fixed hex values, and reads its theme
+# once. So its progress bar uses two terminal colors nothing else in it uses, and the kitty
+# window it runs in (spotify-player.desktop) redefines those two: switches live with kitty.
+SPOTIFY_PLAYER_SLOTS = {"accent": ("BrightBlue", "color12"), "surface_alt": ("BrightCyan", "color14")}
+
+
+def spotify_player(p):
+    # no palette: everything else keeps the terminal's colors as they are
+    fill, track = (SPOTIFY_PLAYER_SLOTS[role][0] for role in ("accent", "surface_alt"))
+    return ('[[themes]]\nname = "desktop"\n\n[themes.component_style]\n'
+            'playback_progress_bar = { fg = "%s", bg = "%s" }\n' % (fill, track))
+
+
+def kitty_spotify_player(p):
+    return "".join(f"{slot} {p[role]}\n" for role, (_, slot) in SPOTIFY_PLAYER_SLOTS.items())
+
+
 RENDERERS = {
     "colors.json": lambda p: json.dumps(p, indent=4) + "\n",
     # rofi doesn't allow _ in names: bg_alt is @bg-alt there
@@ -287,6 +307,8 @@ RENDERERS = {
     "dunst.conf": dunst,
     "eza/theme.yml": eza,
     "yazi.toml": yazi,
+    "spotify-player.toml": spotify_player,
+    "kitty-spotify-player.conf": kitty_spotify_player,
 }
 
 
@@ -459,6 +481,7 @@ def export(flavor, p):
     vscode(flavor)
     link(DUNST_DROPIN, CURRENT / "dunst.conf")
     link(YAZI_THEME, CURRENT / "yazi.toml")
+    link(SPOTIFY_PLAYER_THEME, CURRENT / "spotify-player.toml")
 
 
 def apply(flavor, p):

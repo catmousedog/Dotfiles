@@ -77,7 +77,7 @@ theme init        # regenerate the current flavor (after editing a palette)
 ```
 
 Hyprland, kitty, rofi, quickshell, dunst, eza, yazi and hyprlock (laptop only) read
-the generated files. GTK apps (Thunar, file dialogs) get a recolored adw-gtk3
+the generated files. spotify-player uses the terminal's colors, so it follows kitty; started from the launcher its progress bar takes the accent color. GTK apps (Thunar, file dialogs) get a recolored adw-gtk3
 theme per flavor and switch live. VS Code gets its color theme written directly. Thunar's folder icons take the theme's accent color. For a wallpaper per theme, put
 `<theme>-<dark|light>.png` (or `<theme>.png`) in `~/.config/backgrounds/`; otherwise
 `background.png` is used. Themes: Catppuccin, Rosé Pine, Tokyo Night, Kanagawa, Gruvbox and Flexoki. To add one, drop `<name>-dark.json`
@@ -89,6 +89,12 @@ and `<name>-light.json` next to the others with the same roles. Run
 SUPER+R shows only the apps listed in `common/rofi/.config/rofi/apps.txt`
 (desktop entry ids; Steam games and tool entries stay out). Edit the list to add
 one. The Run tab (shift+arrow) still runs any command.
+
+## Spotify
+
+`spotify-player` (SUPER+R -> Spotify) runs in kitty and needs Premium. Its config in
+`common/spotify-player` holds the client id of my own Spotify developer app; the
+first start on a machine opens the browser once to log in.
 
 ## Status bar
 

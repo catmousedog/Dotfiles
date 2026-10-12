@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Spotify
+Comment=spotify-player in a terminal
+Exec=kitty --class spotify-player --config /home/arno/.config/kitty/kitty.conf --config /home/arno/.local/state/theme/current/kitty-spotify-player.conf spotify_player
+Icon=spotify-player
+Terminal=false
+Categories=AudioVideo;Audio;Music;Player;
+StartupWMClass=spotify-player

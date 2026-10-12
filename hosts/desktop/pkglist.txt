@@ -76,6 +76,7 @@ slurp
 smartmontools
 socat
 spirv-headers
+spotify-player
 stb
 steam
 stow

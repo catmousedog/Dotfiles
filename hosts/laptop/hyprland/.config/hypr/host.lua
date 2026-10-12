@@ -1,19 +1,33 @@
 hl.bind("SUPER + L", hl.dsp.exec_cmd("loginctl lock-session"))
 
--- TODO: replace with the laptop's real settings (its old hypr/local/*.lua)
--- See https://wiki.hypr.land/Configuring/Monitors/
+-- laptop screen
 hl.monitor({
-    output = "",
+    output = "eDP-1",
     mode = "preferred",
-    position = "auto",
+    position = "0x0",
     scale = 1,
 })
 
--- a little more room between windows than the default (4 / 6)
+-- usb-c screen (above)
+hl.monitor({
+    output = "DP-1",
+    mode = "preferred",
+    position = "auto-center-up",
+    scale = 1,
+})
+
+-- HDMI screen (above)
+hl.monitor({
+    output = "HDMI-1",
+    mode = "preferred",
+    position = "auto-center-up",
+    scale = 1,
+})
+
+-- appearance.lua
 hl.config({
     general = {
-        gaps_in = 6,
-        gaps_out = 9,
-		border_size = 2,
+        gaps_in = 4,
+        gaps_out = 9
     },
 })

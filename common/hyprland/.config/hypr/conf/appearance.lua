@@ -11,6 +11,7 @@ end
 local accent = "rgba(" .. theme.accent .. "ee)"
 local accent2 = "rgba(" .. theme.accent2 .. "ee)"
 local inactive = "rgba(" .. theme.purple .. "aa)"
+local inactiveOpacity = 0.75
 
 hl.config({
     general = {
@@ -23,7 +24,7 @@ hl.config({
             nogroup_border = accent2,
             nogroup_border_active = accent,
         },
-        resize_on_border = true,
+        resize_on_border = false,
         allow_tearing = false,
         layout = "dwindle",
     },
@@ -31,24 +32,33 @@ hl.config({
         rounding = 20,
         rounding_power = 2,
         active_opacity = 1.0,
-        inactive_opacity = 0.8,
+        inactive_opacity = inactiveOpacity,
         shadow = {
             enabled = true,
             range = 4,
             render_power = 3,
             color = 0xee1a1a1a, -- 0xAARRGGBB
         },
+		dim_special = 0.5,
         blur = {
             enabled = true,
             size = 3,
             passes = 1,
             vibrancy = 0.1696,
+            special = true, -- blur what's behind the scratchpad
         },
     },
     animations = {
         enabled = true,
     },
 })
+
+-- Windows behind the scratchpad lose focus and would turn see-through; keep
+-- them opaque while it is open so they are only blurred.
+hl.on("workspace.special_active", function()
+    local open = hl.get_active_special_workspace() ~= nil
+    hl.config({ decoration = { inactive_opacity = open and 1.0 or inactiveOpacity } })
+end)
 
 -- Curves, see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
 hl.curve("easeOutQuint", { type = "bezier", points = { {0.23, 1}, {0.32, 1} } })
@@ -80,7 +90,7 @@ hl.window_rule({ name = "python3-float", match = { class = "python3" }, float = 
 hl.window_rule({ name = "ds9-float", match = { class = "Ds9.tcl" }, float = true })
 
 -- Layouts
-hl.config({ dwindle = { preserve_split = true } })
+hl.config({ dwindle = { preserve_split = true, smart_resizing = false } })
 hl.config({ master = { new_status = "master" } })
 
 -- Misc

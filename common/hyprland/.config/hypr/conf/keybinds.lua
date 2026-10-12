@@ -33,10 +33,10 @@ hl.bind(mainMod .. " + up", hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down", hl.dsp.focus({ direction = "down" }))
 
 -- Resize active window (repeats while held)
-hl.bind("ALT + " .. mainMod .. " + right", hl.dsp.window.resize({ x = 30, y = 0, relative = true }), { repeating = true })
-hl.bind("ALT + " .. mainMod .. " + left", hl.dsp.window.resize({ x = -30, y = 0, relative = true }), { repeating = true })
-hl.bind("ALT + " .. mainMod .. " + up", hl.dsp.window.resize({ x = 0, y = -30, relative = true }), { repeating = true })
-hl.bind("ALT + " .. mainMod .. " + down", hl.dsp.window.resize({ x = 0, y = 30, relative = true }), { repeating = true })
+hl.bind("ALT + " .. mainMod .. " + right", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
+hl.bind("ALT + " .. mainMod .. " + left", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
+hl.bind("ALT + " .. mainMod .. " + up", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
+hl.bind("ALT + " .. mainMod .. " + down", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
 
 -- Move windows
 hl.bind("SHIFT + " .. mainMod .. " + right", hl.dsp.window.move({ direction = "right" }))

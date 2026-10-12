@@ -8,8 +8,8 @@ hl.config({
         touchpad = {
             natural_scroll = true,
         },
-        repeat_rate = 30,
-        repeat_delay = 300,
+        repeat_rate = 40,
+        repeat_delay = 200,
     },
 })
 

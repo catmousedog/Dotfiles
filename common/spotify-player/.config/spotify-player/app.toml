@@ -11,6 +11,9 @@ client_id = "7883cc0171784c0c93cee37db289edfb"
 # By default playlist requests go through ncspot's (also shared) id; use mine.
 ncspot_only_get_endpoints = []
 
+# Disable notifications on next song
+enable_notify = false
+
 [device]
 # Keep played songs in ~/.cache/spotify-player/audio: faster seeking and replays.
 audio_cache = true

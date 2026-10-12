@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Sunshine
+Comment=Start or stop the game stream host
+Exec=/home/arno/.local/bin/sunshine-toggle
+Icon=dev.lizardbyte.app.Sunshine
+Terminal=false
+Categories=Network;

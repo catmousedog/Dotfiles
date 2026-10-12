@@ -9,7 +9,7 @@
 firefox
 code-oss icon=visual-studio-code
 steam
-dev.lizardbyte.app.Sunshine
+sunshine-toggle
 com.discordapp.Discord
 com.spotify.Client
 at.vintagestory.VintageStory

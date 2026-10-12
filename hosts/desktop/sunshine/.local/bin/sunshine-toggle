@@ -1,0 +1,16 @@
+#!/bin/sh
+# Start Sunshine when it's off, stop it when it's on ("Sunshine" in the SUPER+R list).
+
+UNIT=app-dev.lizardbyte.app.Sunshine
+ICON=dev.lizardbyte.app.Sunshine
+
+if systemctl --user is-active --quiet "$UNIT"; then
+    systemctl --user stop "$UNIT"
+    # stopped in the middle of a stream: get the real monitor back
+    [ -f "$XDG_RUNTIME_DIR/stream" ] && ~/.local/bin/stream stop
+    notify-send -i "$ICON" "Sunshine" "Stopped"
+elif systemctl --user start "$UNIT"; then
+    notify-send -i "$ICON" "Sunshine" "Started, ready for Moonlight"
+else
+    notify-send -i "$ICON" -u critical "Sunshine" "Failed to start"
+fi

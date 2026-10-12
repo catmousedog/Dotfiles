@@ -55,9 +55,18 @@ start() {
 stop() {
     output=$(head -n 1 "$STATE" 2>/dev/null)
     rm -f "$STATE"
-    # real monitor first, so there is never a moment without any
     hyprctl reload >/dev/null
-    [ -n "$output" ] && hyprctl output remove "$output" >/dev/null
+    if [ -n "$output" ]; then
+        # the real monitor takes a moment to come back; a moment without any
+        # monitor at all breaks running apps (Steam, games)
+        tries=0
+        until hyprctl monitors | grep '^Monitor ' | grep -qv "^Monitor $output "; do
+            tries=$((tries + 1))
+            [ "$tries" -ge 100 ] && break
+            sleep 0.1
+        done
+        hyprctl output remove "$output" >/dev/null
+    fi
     systemctl --user stop "$INHIBIT" 2>/dev/null
     return 0
 }

@@ -3,6 +3,7 @@
 	"editor.fontSize": 16,
 	"terminal.integrated.fontSize": 16,
 	"debug.console.fontSize": 12,
+	"keyboard.dispatch": "keyCode",
 	// ========== Editor ========== //
 	"editor.stickyScroll.maxLineCount": 3,
 	"editor.formatOnSave": true,
@@ -25,10 +26,16 @@
 		"workbench.debug.action.focusWatchView"
 	],
 	"terminal.integrated.smoothScrolling": true,
+	"terminal.integrated.initialHint": false,
 	// ========== File Explorer ========== //
 	"explorer.autoReveal": false,
 	"explorer.confirmDelete": false,
 	"explorer.confirmDragAndDrop": false,
+	"files.exclude": {
+		"**/__pycache__": true,
+		"**/.git": true,
+		"**/.claude": true
+	},
 	// ========== Window ========== //
 	"window.commandCenter": false,
 	"window.customMenuBarAltFocus": false,
@@ -73,16 +80,6 @@
 	"latex-workshop.formatting.latex": "tex-fmt",
 	// "latex-workshop.view.pdf.color.dark.pageColorsForeground": "#cdd6f4", // text
 	"latex-workshop.view.pdf.color.dark.pageColorsBackground": "#181825", // mantle
-	// QML
-	"qt-qml.qmlls.useQmlImportPathEnvVar": true,
-	"qt-core.additionalQtPaths": [
-		{
-			"name": "Qt-5.15.18-linux-g++_from_PATH",
-			"path": "/usr/bin/qmake"
-		}
-	],
-	"qt-qml.doNotAskForQmllsDownload": true,
-	"qmlFormat.command": "/usr/lib/qt6/bin/qmlformat",
 	// ========== SuperMaven ========== // 
 	"supermaven.otherWarning": false,
 	// ========== Comment Driver ========== //
@@ -91,13 +88,9 @@
 	"comment-driver.subheaderFiller": "=",
 	"comment-driver.subheaderTransform": "uppercase",
 	"comment-driver.mainHeaderFiller": "=",
-	// ========== Newly Added ========== // 
-	"terminal.integrated.initialHint": false,
-	"security.workspace.trust.untrustedFiles": "open",
-	"keyboard.dispatch": "keyCode",
-	"workbench.editorAssociations": {
-		"{git,gitlens,chat-editing-snapshot-text-model,copilot,git-graph,git-graph-3}:/**/*.qrc": "default",
-		"*.qrc": "qt-core.qrcEditor"
-	},
+	// ========== Claude ========== //
 	"claudeCode.hideOnboarding": true,
+	// ========== Security ========== //
+	"security.workspace.trust.untrustedFiles": "open",
+	// ========== Newly Added ========== // 
 }

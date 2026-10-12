@@ -1,14 +1,15 @@
 # Apps shown by SUPER+R, one desktop entry id per line (the .desktop file name).
-# Missing ones are skipped, so this list works on every machine.
+# Each machine has its own list, in hosts/<host>/rofi. Missing ones are skipped.
 # List what's installed: ls /usr/share/applications ~/.local/share/applications \
 #     /var/lib/flatpak/exports/share/applications
 # Anything else: switch to the Run tab (shift+arrow) and type the command.
 # Optional: icon=<icon name or path> after the id replaces the app's own icon.
-# Icons that no package provides live in ../../.local/share/icons (VS Code's is from Papirus).
+# Icons that no package provides live in common/rofi/.local/share/icons (VS Code's is from Papirus).
 
 firefox
 code-oss icon=visual-studio-code
 steam
+dev.lizardbyte.app.Sunshine
 com.discordapp.Discord
 com.spotify.Client
 at.vintagestory.VintageStory

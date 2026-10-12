@@ -52,6 +52,7 @@ mono
 mono-msbuild
 neovim
 networkmanager
+ninja
 npm
 nvtop
 openconnect

@@ -1,5 +1,5 @@
 // NetworkIndicator.qml
-// Hover: connection details and current speed
+// Hover: connection name and signal strength
 
 import QtQuick
 import QtQuick.Layouts
@@ -41,18 +41,6 @@ IconText {
             icon: NetworkService.wired ? "󰈀" : "󰖩"
             text: NetworkService.wifiNetwork?.name ?? NetworkService.device?.name ?? ""
             detail: NetworkService.wired ? `${NetworkService.wired.linkSpeed} Mb/s` : `${Math.round(NetworkService.signal * 100)}%`
-        }
-
-        MenuRow {
-            visible: NetworkService.connected
-            icon: "󰁅"
-            text: NetworkService.formatSpeed(NetworkService.down)
-        }
-
-        MenuRow {
-            visible: NetworkService.connected
-            icon: "󰁝"
-            text: NetworkService.formatSpeed(NetworkService.up)
         }
     }
 }

@@ -10,7 +10,6 @@ clang
 cliphist
 cmake
 code
-docker
 doxygen
 dunst
 efibootmgr
@@ -27,6 +26,7 @@ greetd
 greetd-tuigreet
 grim
 gst-plugin-pipewire
+gvfs
 hypridle
 hyprland
 hyprlock
@@ -38,6 +38,7 @@ jq
 kitty
 less
 lftp
+libnotify
 libpulse
 libva-utils
 linux
@@ -67,9 +68,7 @@ qbittorrent
 quickshell
 rofi
 rsync
-satty
 shader-slang
-slurp
 socat
 spirv-headers
 spotify-player

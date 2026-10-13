@@ -1,11 +1,26 @@
 // shell.qml
 
-import Quickshell
 import QtQuick
+import Quickshell
 import qs.components
+import qs.services
 
-Variants {
-    model: Quickshell.screens
+ShellRoot {
+    Variants {
+        model: Quickshell.screens
 
-    delegate: StatusBar {}
+        delegate: StatusBar {
+        }
+
+    }
+
+    // Only exists while a screenshot is being taken, so it starts clean every time
+    LazyLoader {
+        active: ScreenshotService.active
+
+        ScreenshotOverlay {
+        }
+
+    }
+
 }

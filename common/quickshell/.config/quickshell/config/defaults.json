@@ -16,6 +16,15 @@
 			"weight": 700
 		}
 	},
+	"screenshot": {
+		"directory": "~/Pictures/Screenshots",
+		"dim": 0.5,
+		"borderWidth": 4,
+		"defaultBox": 0.5,
+		"moveSpeed": 1000,
+		"resizeSpeed": 1000,
+		"slowFactor": 0.2
+	},
 	"popup": {
 		"opacity": 0.85
 	},

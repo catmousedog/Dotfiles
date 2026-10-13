@@ -18,3 +18,11 @@ hl.window_rule({
     },
     no_focus = true,
 })
+
+-- The screenshot overlay shows a frozen copy of the screen: always fade it, whatever
+-- the layers animation is set to, so only the dim is seen coming in
+hl.layer_rule({
+    name = "screenshot-fade",
+    match = { namespace = "screenshot" },
+    animation = "fade",
+})

@@ -2,19 +2,27 @@
 local vars = require("conf.variables")
 local mainMod = vars.mainMod
 
--- Main binds
-hl.bind(mainMod .. " + return", hl.dsp.exec_cmd(vars.terminal))
+-- Hyprland
 hl.bind(mainMod .. " + C", hl.dsp.window.close())
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(vars.fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(vars.menu))
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle only
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ action = "toggle" }))
+
+-- Apps
+hl.bind(mainMod .. " + return", hl.dsp.exec_cmd(vars.terminal))
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(vars.fileManager))
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(vars.menu))
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd(vars.clipboard))
+
+-- Watrix reset
 hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix-reset.fish"))
-hl.bind(mainMod .. " + H", hl.dsp.exec_cmd('grim -g "$(slurp)" - | satty --filename -'))
+
+-- Region screenshot, see ScreenshotService.qml in quickshell
+hl.bind(mainMod .. " + H", hl.dsp.global("quickshell:screenshot"))
+
+-- Theme selection
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.local/bin/theme toggle"))
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("~/.local/bin/theme menu"))
-hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd(vars.clipboard))
 
 -- Notifications
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("dunstctl close"))

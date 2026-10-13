@@ -4,7 +4,19 @@ local mainMod = vars.mainMod
 
 -- Hyprland
 hl.bind(mainMod .. " + C", hl.dsp.window.close())
-hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+-- Toggle floating; a window that becomes floating takes half the monitor, centered
+hl.bind(mainMod .. " + V", function()
+    local window = hl.get_active_window()
+    if not window then
+        return
+    end
+    local monitor = not window.floating and window.monitor
+    hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+    if monitor then
+        hl.dispatch(hl.dsp.window.resize({ x = monitor.width / 2, y = monitor.height / 2 }))
+        hl.dispatch(hl.dsp.window.center())
+    end
+end)
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle only
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ action = "toggle" }))
 

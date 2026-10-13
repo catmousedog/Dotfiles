@@ -44,7 +44,9 @@ git-filters:
 # deleted, renamed or moved between packages). Stow can't do this itself: it
 # only looks at files that still exist in the package.
 prune:
-	@find $(HOME)/.config $(HOME)/.local -xtype l \( -lname '*/$(REPO)/common/*' -o -lname '*/$(REPO)/hosts/*' \) -print -delete 2>/dev/null || true
+	@find $(HOME)/.config $(HOME)/.local -type l \
+    \( -lname '*/$(REPO)/common/*' -o -lname '*/$(REPO)/hosts/*' \) \
+    -xtype l -print -delete 2>/dev/null || true
 
 # Files outside $HOME are copied, not symlinked: root-owned services (greetd)
 # should not depend on files inside a user's private home directory.

@@ -2,6 +2,7 @@
 
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 import qs.services
@@ -36,6 +37,10 @@ PanelWindow {
     margins.left: HyprlandService.gapsOut
     // margins.bottom: HyprlandService.gapsIn
     color: "transparent"
+
+    // above fullscreen windows while the overview is open on this screen,
+    // which sits just below the bar, see OverviewOverlay.qml
+    WlrLayershell.layer: OverviewService.active && OverviewService.screen === modelData ? WlrLayer.Overlay : WlrLayer.Top
 
     Left {}
 

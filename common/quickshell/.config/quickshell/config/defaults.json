@@ -26,10 +26,18 @@
 		"slowFactor": 0.2
 	},
 	"overview": {
-		"dim": 0.4,
-		"cellScale": 0.14,
-		"iconSize": 32,
-		"spacing": 10
+		"dim": 0.5,
+		"cellScale": 0.2,
+		"iconSize": 64,
+		"spacing": 10,
+		"appColors": {
+			"code-oss": "blue",
+			"firefox": "red",
+			"spotify-player": "green",
+			"discord": "purple",
+			"steam": "subtle",
+			"kitty": "orange"
+		}
 	},
 	"popup": {
 		"opacity": 0.85

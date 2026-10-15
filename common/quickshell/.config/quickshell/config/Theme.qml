@@ -10,8 +10,9 @@ import QtCore
 Singleton {
     id: root
 
-    function changeAlpha(color: string, alpha: real): string {
-        return Qt.rgba(color.r, color.g, color.b, alpha);
+    // the theme colors are strings, so go through Qt.alpha instead of .r/.g/.b
+    function changeAlpha(color: var, alpha: real): color {
+        return Qt.alpha(color, alpha);
     }
 
     function getColor(name: string): string {

@@ -8,6 +8,7 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
 import QtQuick
+import qs.config
 
 Singleton {
     id: root
@@ -89,13 +90,30 @@ Singleton {
         }
     }
 
-    function appIcon(toplevel: var): string {
-        const appId = toplevel.wayland?.appId || toplevel.lastIpcObject?.class || "";
+    function appId(toplevel: var): string {
+        return toplevel.wayland?.appId || toplevel.lastIpcObject?.class || "";
+    }
+
+    function iconFor(appId: string): string {
         const entry = appId ? DesktopEntries.heuristicLookup(appId) : null;
         const override = iconOverrides[entry?.id ?? appId];
         if (override && /^[~\/]/.test(override))
             return "file://" + override.replace(/^~/, Quickshell.env("HOME"));
         return Quickshell.iconPath(override || entry?.icon || appId, "application-x-executable");
+    }
+
+    function appIcon(toplevel: var): string {
+        return iconFor(appId(toplevel));
+    }
+
+    // Window colors per app id or desktop entry id, as theme roles ("green",
+    // "blue", ...) so they follow the theme. Unlisted apps get the muted color.
+    readonly property var appColors: ConfigService.get("overview.appColors") ?? {}
+
+    function appColor(toplevel: var): color {
+        const id = appId(toplevel);
+        const entryId = id ? DesktopEntries.heuristicLookup(id)?.id : null;
+        return Theme.getColor(appColors[id] ?? appColors[entryId] ?? "") || Theme.muted;
     }
 
     function goTo(id: int): void {

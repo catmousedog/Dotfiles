@@ -26,3 +26,14 @@ hl.layer_rule({
     match = { namespace = "screenshot" },
     animation = "fade",
 })
+
+-- The watrix overview (OverviewOverlay.qml in quickshell) blurs everything behind
+-- it. The bar joins its layer while it is open, this puts the overview below it
+-- so the bar stays sharp.
+hl.layer_rule({
+    name = "overview-blur",
+    match = { namespace = "overview" },
+    blur = true,
+    animation = "fade",
+    order = 1,
+})

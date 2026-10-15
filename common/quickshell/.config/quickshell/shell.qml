@@ -23,4 +23,13 @@ ShellRoot {
 
     }
 
+    // Zoomed out watrix grid, also only exists while open
+    LazyLoader {
+        active: OverviewService.active
+
+        OverviewOverlay {
+        }
+
+    }
+
 }

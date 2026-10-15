@@ -25,6 +25,12 @@
 		"resizeSpeed": 1000,
 		"slowFactor": 0.2
 	},
+	"overview": {
+		"dim": 0.4,
+		"cellScale": 0.14,
+		"iconSize": 32,
+		"spacing": 10
+	},
 	"popup": {
 		"opacity": 0.85
 	},

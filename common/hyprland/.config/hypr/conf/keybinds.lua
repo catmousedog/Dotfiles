@@ -28,9 +28,12 @@ hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd(vars.clipboard))
 
 -- Watrix reset
 hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("~/.config/hypr/scripts/watrix-reset.fish"))
+-- Watrix overview, see OverviewService.qml in quickshell
+hl.bind(mainMod .. " + W", hl.dsp.global("quickshell:overview"))
 
 -- Region screenshot, see ScreenshotService.qml in quickshell
 hl.bind(mainMod .. " + H", hl.dsp.global("quickshell:screenshot"))
+hl.bind("PRINT", hl.dsp.global("quickshell:screenshot"))
 
 -- Theme selection
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.local/bin/theme toggle"))

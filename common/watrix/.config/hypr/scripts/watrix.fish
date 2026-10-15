@@ -2,8 +2,10 @@
 
 if test (count $argv) -lt 1
     echo "Usage: watrix <action> <dir>"
+    echo "       watrix goto <id>"
     echo "Actions: workspace, movetoworkspace"
     echo "Dir: left, right, up, down"
+    echo "Id: logical workspace [0, 9["
     exit 1
 end
 
@@ -11,12 +13,12 @@ set action $argv[1]
 set dir $argv[2]
 
 # Check args
-if test $action != "workspace" -a $action != "movetoworkspace"
+if test $action != "workspace" -a $action != "movetoworkspace" -a $action != "goto"
     echo "Invalid action"
     exit 1
 end
 
-if test $dir != "left" -a $dir != "right" -a $dir != "up" -a $dir != "down"
+if test $action != "goto" -a $dir != "left" -a $dir != "right" -a $dir != "up" -a $dir != "down"
     echo "Invalid direction"
     exit 1
 end
@@ -64,6 +66,16 @@ function move_workspaces
     set hypr_disp "$hypr_disp eval hl.dispatch(hl.dsp.focus({ monitor = '$cur_name' })) ; "
 
     echo $hypr_disp
+end
+
+# Jump straight to a logical id, keeping the default fade animation
+if test "$action" = "goto"
+    if not string match -qr '^[0-9]+$' -- $dir; or test $dir -ge $num_workspaces
+        echo "Invalid id"
+        exit 1
+    end
+    hyprctl --batch "$(move_workspaces $dir)"
+    exit 0
 end
 
 # Current logical workspace index [0, num_workspaces[

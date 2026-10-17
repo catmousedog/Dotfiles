@@ -1,0 +1,25 @@
+{
+  "name": "Ember Forest Dark",
+  "roles": {
+    "bg": "#1d2021",
+    "bg_alt": "#232726",
+    "bg_deep": "#161818",
+    "surface": "#2b302e",
+    "surface_alt": "#374140",
+    "surface_hi": "#45504e",
+    "overlay": "#5c6a66",
+    "muted": "#859289",
+    "subtle": "#a7b0a4",
+    "fg": "#e6e1cf",
+    "accent": "#e69875",
+    "accent2": "#a7c080",
+    "red": "#e67e80",
+    "orange": "#e69875",
+    "yellow": "#dbbc7f",
+    "green": "#a7c080",
+    "cyan": "#83c092",
+    "blue": "#7fbbb3",
+    "purple": "#d699b6",
+    "pink": "#e5a5c6"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "Paper Light",
+  "roles": {
+    "bg": "#faf8f5",
+    "bg_alt": "#f2efe9",
+    "bg_deep": "#ebe7df",
+    "surface": "#e6e1d8",
+    "surface_alt": "#d9d3c7",
+    "surface_hi": "#ccc4b6",
+    "overlay": "#a8a092",
+    "muted": "#7a7266",
+    "subtle": "#625b50",
+    "fg": "#2d2a26",
+    "accent": "#7c5cbf",
+    "accent2": "#c4456a",
+    "red": "#c4384f",
+    "orange": "#b45e18",
+    "yellow": "#8f6e08",
+    "green": "#4a8238",
+    "cyan": "#1f7a80",
+    "blue": "#3b6fc4",
+    "purple": "#7c5cbf",
+    "pink": "#b8508f"
+  }
+}

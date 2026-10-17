@@ -1,0 +1,25 @@
+{
+  "name": "Ember Forest Light",
+  "roles": {
+    "bg": "#f8f4e8",
+    "bg_alt": "#f0ecdc",
+    "bg_deep": "#e8e3d0",
+    "surface": "#e3dec9",
+    "surface_alt": "#d6d0b8",
+    "surface_hi": "#c8c1a7",
+    "overlay": "#a3a58f",
+    "muted": "#737e70",
+    "subtle": "#5a665a",
+    "fg": "#3a4440",
+    "accent": "#b04a22",
+    "accent2": "#5c7a24",
+    "red": "#b33a40",
+    "orange": "#b04a22",
+    "yellow": "#8e680c",
+    "green": "#5c7a24",
+    "cyan": "#277a56",
+    "blue": "#317080",
+    "purple": "#97466f",
+    "pink": "#a24c82"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "Deep Sea Light",
+  "roles": {
+    "bg": "#f2f7fa",
+    "bg_alt": "#e8f0f5",
+    "bg_deep": "#dde8ef",
+    "surface": "#d6e3ec",
+    "surface_alt": "#c4d5e2",
+    "surface_hi": "#b0c5d6",
+    "overlay": "#8aa2b8",
+    "muted": "#5d778f",
+    "subtle": "#455b71",
+    "fg": "#1a2a3a",
+    "accent": "#0f6e65",
+    "accent2": "#b8402f",
+    "red": "#b8402f",
+    "orange": "#a6561f",
+    "yellow": "#7a6612",
+    "green": "#0f6e65",
+    "cyan": "#156f8a",
+    "blue": "#2a5cb0",
+    "purple": "#5650bd",
+    "pink": "#7c46ad"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "Paper Dark",
+  "roles": {
+    "bg": "#1f1d1a",
+    "bg_alt": "#262420",
+    "bg_deep": "#171614",
+    "surface": "#2e2b27",
+    "surface_alt": "#3b3832",
+    "surface_hi": "#4a463f",
+    "overlay": "#6b655a",
+    "muted": "#948c7e",
+    "subtle": "#b3ab9c",
+    "fg": "#ece6da",
+    "accent": "#b39ae6",
+    "accent2": "#e88aa5",
+    "red": "#e87a8a",
+    "orange": "#e8a06a",
+    "yellow": "#e0c06a",
+    "green": "#9cc48a",
+    "cyan": "#7ec4c4",
+    "blue": "#8aaee8",
+    "purple": "#b39ae6",
+    "pink": "#e0a0c8"
+  }
+}

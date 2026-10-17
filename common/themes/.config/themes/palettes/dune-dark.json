@@ -1,0 +1,25 @@
+{
+  "name": "Dune Dark",
+  "roles": {
+    "bg": "#1c1814",
+    "bg_alt": "#221d18",
+    "bg_deep": "#15120f",
+    "surface": "#2a241e",
+    "surface_alt": "#3a3229",
+    "surface_hi": "#4a4036",
+    "overlay": "#6b5e4f",
+    "muted": "#9a8a76",
+    "subtle": "#b8a892",
+    "fg": "#efe3d0",
+    "accent": "#e0a458",
+    "accent2": "#d47a5a",
+    "red": "#d86a5a",
+    "orange": "#e0a458",
+    "yellow": "#ecc878",
+    "green": "#b8b46a",
+    "cyan": "#8ab0a0",
+    "blue": "#8aa0b8",
+    "purple": "#c08a9a",
+    "pink": "#e0a090"
+  }
+}

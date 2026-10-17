@@ -37,10 +37,15 @@ picks another theme with rofi and keeps the current mode.
 Wallpaper: ~/.config/backgrounds/<theme>-<dark|light>.*, else <theme>.*, else
 background.*; `theme wallpaper` sets it (Hyprland runs that at startup).
 
-VS Code gets its color theme written straight into settings.json; its own
-"follow the system theme" option doesn't work reliably here. A git clean
-filter (`theme vscode-clean`, set up by the Makefile) keeps that line at the
-default in the repo, so toggling doesn't leave settings.json modified.
+VS Code can only load color themes from extensions, so the script keeps a tiny
+local one in ~/.vscode-oss/extensions/local.desktop-theme-1.0.0/ with two themes,
+"Desktop Dark" and "Desktop Light", and rewrites their JSON from the palette
+(their "_watch" flag makes VS Code reload them live). settings.json gets
+the matching label; its own "follow the system theme" option doesn't work
+reliably here. A palette listed in VSCODE_THEMES uses that installed theme
+instead. A git clean filter (`theme vscode-clean`, set up by the Makefile)
+keeps that line at the default in the repo, so toggling doesn't leave
+settings.json modified.
 
 Usage: theme [init | toggle | menu | wallpaper | current | list | <theme> | <theme>-<dark|light> | vscode-clean]
 """
@@ -75,10 +80,11 @@ ADWAITA_PLACES = Path("/usr/share/icons/Adwaita/scalable/places")
 ADWAITA_FOLDER = "#62a0ea"  # main color of Adwaita's folder icons
 HEX = re.compile(r"#[0-9a-fA-F]{6}\b")
 BACKGROUNDS = CONFIG / "backgrounds"
-# from the Catppuccin extension; other palettes fall back to Mocha / Latte
-# labels of installed VS Code themes (Catppuccin, Pastel, Rosé Pine extensions)
-VSCODE_THEMES = {"catppuccin-dark": "Catppuccin Mocha", "catppuccin-light": "Catppuccin Latte",
-                 "rose-pine-dark": "Pastel - Theme", "rose-pine-light": "Rosé Pine Dawn"}
+# optional: palettes that use an installed VS Code theme instead of the generated one,
+# e.g. {"catppuccin-dark": "Catppuccin Mocha", "catppuccin-light": "Catppuccin Latte"}
+VSCODE_THEMES = {}
+VSCODE_EXT = Path.home() / ".vscode-oss/extensions/local.desktop-theme-1.0.0"
+VSCODE_LABELS = {"dark": "Desktop Dark", "light": "Desktop Light"}
 VSCODE_KEY = re.compile(r'("workbench\.colorTheme"\s*:\s*)"[^"]*"')
 
 
@@ -103,7 +109,7 @@ ROLES = {
 def load(flavor):
     """The palette's roles as a {role: "#rrggbb"} dict."""
     palette = json.loads((PALETTES / f"{flavor}.json").read_text())
-    colors = palette["colors"]
+    colors = palette.get("colors", {})
     roles = {}
     for role in ROLES:
         value = palette["roles"][role]
@@ -409,18 +415,188 @@ def run(*cmd):
         subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-def set_vscode_theme(text, flavor):
-    # other themes need their own VS Code extension, so use Catppuccin in the same mode
-    name = VSCODE_THEMES.get(flavor) or VSCODE_THEMES["catppuccin-" + split(flavor)[1]]
-    return VSCODE_KEY.sub(lambda m: f'{m.group(1)}"{name}"', text) if name else text
+def vscode_theme(p):
+    """A VS Code color theme (workbench + syntax) from the roles."""
+    dark = is_dark(p)
+    a = lambda role, alpha: p[role] + alpha  # role color with an alpha suffix
+    colors = {
+        "foreground": p["fg"], "descriptionForeground": p["subtle"], "errorForeground": p["red"],
+        "focusBorder": p["accent"], "selection.background": a("accent", "40"),
+        "widget.shadow": "#00000040" if dark else "#00000020",
+        "textLink.foreground": p["accent"], "textLink.activeForeground": p["accent2"],
+        "button.background": p["accent"], "button.foreground": p["bg"],
+        "button.hoverBackground": p["accent2"],
+        "button.secondaryBackground": p["surface"], "button.secondaryForeground": p["fg"],
+        "badge.background": p["accent"], "badge.foreground": p["bg"],
+        "progressBar.background": p["accent"],
+        "input.background": p["bg_alt"], "input.foreground": p["fg"], "input.border": p["surface_alt"],
+        "input.placeholderForeground": p["overlay"],
+        "inputOption.activeBorder": p["accent"], "inputOption.activeBackground": a("accent", "30"),
+        "dropdown.background": p["bg_alt"], "dropdown.border": p["surface_alt"],
+        "checkbox.background": p["bg_alt"], "checkbox.border": p["surface_alt"],
+        "scrollbarSlider.background": a("surface_hi", "80"),
+        "scrollbarSlider.hoverBackground": p["surface_hi"],
+        "scrollbarSlider.activeBackground": p["overlay"],
+        # editor
+        "editor.background": p["bg"], "editor.foreground": p["fg"],
+        "editorCursor.foreground": p["accent"],
+        "editorLineNumber.foreground": p["overlay"], "editorLineNumber.activeForeground": p["accent"],
+        "editor.lineHighlightBackground": p["bg_alt"],
+        "editor.selectionBackground": a("accent", "38"),
+        "editor.inactiveSelectionBackground": a("accent", "1c"),
+        "editor.selectionHighlightBackground": a("accent", "1c"),
+        "editor.wordHighlightBackground": a("surface_hi", "60"),
+        "editor.findMatchBackground": a("yellow", "60"),
+        "editor.findMatchHighlightBackground": a("yellow", "28"),
+        "editorBracketMatch.background": a("accent2", "30"),
+        "editorBracketMatch.border": p["accent2"],
+        "editorIndentGuide.background1": p["surface"],
+        "editorIndentGuide.activeBackground1": p["surface_hi"],
+        "editorWhitespace.foreground": p["surface_alt"], "editorRuler.foreground": p["surface"],
+        "editorCodeLens.foreground": p["overlay"],
+        "editorInlayHint.foreground": p["muted"], "editorInlayHint.background": a("surface", "80"),
+        "editorError.foreground": p["red"], "editorWarning.foreground": p["yellow"],
+        "editorInfo.foreground": p["blue"], "editorHint.foreground": p["cyan"],
+        "editorGutter.addedBackground": p["green"], "editorGutter.modifiedBackground": p["yellow"],
+        "editorGutter.deletedBackground": p["red"],
+        "diffEditor.insertedTextBackground": a("green", "26"),
+        "diffEditor.removedTextBackground": a("red", "26"),
+        "editorWidget.background": p["bg_alt"], "editorWidget.border": p["surface_alt"],
+        "editorHoverWidget.background": p["bg_alt"], "editorHoverWidget.border": p["surface_alt"],
+        "editorSuggestWidget.background": p["bg_alt"], "editorSuggestWidget.border": p["surface_alt"],
+        "editorSuggestWidget.selectedBackground": p["surface_alt"],
+        "editorSuggestWidget.highlightForeground": p["accent"],
+        "peekView.border": p["accent"], "peekViewEditor.background": p["bg_alt"],
+        "peekViewResult.background": p["bg_alt"], "peekViewTitle.background": p["bg_deep"],
+        "minimap.background": p["bg"], "minimapSlider.background": a("surface_hi", "50"),
+        "breadcrumb.foreground": p["muted"], "breadcrumb.focusForeground": p["fg"],
+        "breadcrumb.background": p["bg"],
+        # tabs and frame
+        "editorGroup.border": p["bg_deep"], "editorGroupHeader.tabsBackground": p["bg_deep"],
+        "tab.activeBackground": p["bg"], "tab.activeForeground": p["fg"],
+        "tab.activeBorderTop": p["accent"], "tab.inactiveBackground": p["bg_alt"],
+        "tab.inactiveForeground": p["muted"], "tab.border": p["bg_deep"],
+        "tab.unfocusedActiveForeground": p["subtle"],
+        "titleBar.activeBackground": p["bg_deep"], "titleBar.activeForeground": p["fg"],
+        "titleBar.inactiveBackground": p["bg_deep"], "titleBar.inactiveForeground": p["overlay"],
+        "titleBar.border": p["bg_deep"],
+        "activityBar.background": p["bg_deep"], "activityBar.foreground": p["accent"],
+        "activityBar.inactiveForeground": p["overlay"], "activityBar.activeBorder": p["accent"],
+        "activityBar.border": p["bg_deep"],
+        "activityBarBadge.background": p["accent"], "activityBarBadge.foreground": p["bg"],
+        "sideBar.background": p["bg_alt"], "sideBar.foreground": p["subtle"],
+        "sideBar.border": p["bg_deep"], "sideBarTitle.foreground": p["fg"],
+        "sideBarSectionHeader.background": p["bg_alt"], "sideBarSectionHeader.foreground": p["fg"],
+        "list.activeSelectionBackground": p["surface_alt"], "list.activeSelectionForeground": p["fg"],
+        "list.inactiveSelectionBackground": p["surface"], "list.hoverBackground": p["surface"],
+        "list.focusOutline": p["accent"], "list.highlightForeground": p["accent"],
+        "list.errorForeground": p["red"], "list.warningForeground": p["yellow"],
+        "tree.indentGuidesStroke": p["surface_alt"],
+        "gitDecoration.addedResourceForeground": p["green"],
+        "gitDecoration.untrackedResourceForeground": p["green"],
+        "gitDecoration.modifiedResourceForeground": p["yellow"],
+        "gitDecoration.deletedResourceForeground": p["red"],
+        "gitDecoration.conflictingResourceForeground": p["orange"],
+        "gitDecoration.ignoredResourceForeground": p["overlay"],
+        "statusBar.background": p["bg_deep"], "statusBar.foreground": p["subtle"],
+        "statusBar.border": p["bg_deep"], "statusBar.noFolderBackground": p["bg_deep"],
+        "statusBar.debuggingBackground": p["orange"], "statusBar.debuggingForeground": p["bg"],
+        "statusBarItem.remoteBackground": p["accent"], "statusBarItem.remoteForeground": p["bg"],
+        "panel.background": p["bg_alt"], "panel.border": p["surface_alt"],
+        "panelTitle.activeBorder": p["accent"], "panelTitle.activeForeground": p["fg"],
+        "panelTitle.inactiveForeground": p["muted"],
+        "quickInput.background": p["bg_alt"], "quickInputList.focusBackground": p["surface_alt"],
+        "menu.background": p["bg_alt"], "menu.foreground": p["fg"],
+        "menu.selectionBackground": p["surface_alt"], "menu.separatorBackground": p["surface_alt"],
+        "notifications.background": p["bg_alt"], "notifications.border": p["surface_alt"],
+        "notificationCenterHeader.background": p["bg_deep"],
+        # terminal, same slots as kitty
+        "terminal.background": p["bg"], "terminal.foreground": p["fg"],
+        "terminalCursor.foreground": p["fg"], "terminal.selectionBackground": a("accent", "40"),
+        "terminal.ansiBlack": p["surface_alt"] if dark else p["subtle"],
+        "terminal.ansiBrightBlack": p["surface_hi"] if dark else p["muted"],
+        "terminal.ansiWhite": p["subtle"] if dark else p["surface_hi"],
+        "terminal.ansiBrightWhite": p["fg"] if dark else p["surface_alt"],
+    }
+    for name, role in [("Red", "red"), ("Green", "green"), ("Yellow", "yellow"),
+                       ("Blue", "blue"), ("Magenta", "purple"), ("Cyan", "cyan")]:
+        colors[f"terminal.ansi{name}"] = colors[f"terminal.ansiBright{name}"] = p[role]
+
+    def tok(scope, role, style=None):
+        settings = {"foreground": p[role]}
+        if style:
+            settings["fontStyle"] = style
+        return {"scope": scope, "settings": settings}
+
+    # same choices as the micro colorscheme
+    tokens = [
+        tok(["comment", "punctuation.definition.comment"], "overlay", "italic"),
+        tok(["string", "punctuation.definition.string"], "green"),
+        tok(["constant.character.escape", "string.regexp"], "pink"),
+        tok(["constant.numeric", "constant.language", "constant.other", "support.constant"], "orange"),
+        tok(["keyword", "storage.type", "storage.modifier", "keyword.control"], "purple"),
+        tok(["keyword.operator", "punctuation.separator", "punctuation.accessor"], "subtle"),
+        tok(["punctuation", "meta.brace"], "muted"),
+        tok(["entity.name.function", "support.function", "meta.function-call.generic"], "blue"),
+        tok(["entity.name.type", "entity.name.class", "support.type", "support.class",
+             "entity.other.inherited-class"], "yellow"),
+        tok(["variable", "meta.definition.variable"], "fg"),
+        tok(["variable.parameter"], "fg", "italic"),
+        tok(["variable.language", "variable.language.this", "variable.language.self"], "red", "italic"),
+        tok(["entity.name.function.decorator", "meta.decorator", "meta.preprocessor",
+             "keyword.control.directive"], "pink"),
+        tok(["support.type.property-name", "meta.object-literal.key", "variable.other.property",
+             "entity.name.tag.yaml", "support.type.property-name.toml"], "cyan"),
+        tok(["entity.name.tag"], "blue"),
+        tok(["entity.other.attribute-name"], "yellow"),
+        tok(["markup.heading", "entity.name.section"], "accent", "bold"),
+        tok(["markup.bold"], "fg", "bold"),
+        tok(["markup.italic"], "fg", "italic"),
+        tok(["markup.underline.link", "string.other.link"], "cyan", "underline"),
+        tok(["markup.inline.raw", "markup.fenced_code"], "green"),
+        tok(["markup.inserted"], "green"), tok(["markup.deleted"], "red"),
+        tok(["markup.changed"], "yellow"),
+        tok(["invalid"], "red"),
+    ]
+    return {"name": VSCODE_LABELS["dark" if dark else "light"], "type": "dark" if dark else "light",
+            "semanticHighlighting": True, "colors": colors, "tokenColors": tokens}
 
 
-def vscode(flavor):
+def vscode_extension(p):
+    """Write the generated theme into the local extension; returns its label."""
+    mode = "dark" if is_dark(p) else "light"
+    (VSCODE_EXT / "themes").mkdir(parents=True, exist_ok=True)
+    package = {
+        "name": "desktop-theme", "displayName": "Desktop theme", "publisher": "local",
+        "version": "1.0.0", "engines": {"vscode": "^1.60.0"}, "categories": ["Themes"],
+        "description": "generated by ~/.local/bin/theme",
+        "contributes": {"themes": [
+            {"label": VSCODE_LABELS[m], "uiTheme": "vs-dark" if m == "dark" else "vs",
+             # internal flag: VS Code watches the file and reloads the theme when it changes
+             "path": f"./themes/{m}.json", "_watch": True} for m in MODES]},
+    }
+    (VSCODE_EXT / "package.json").write_text(json.dumps(package, indent=2) + "\n")
+    # in place (same inode), so VS Code's watcher on the current theme file sees the change
+    with open(VSCODE_EXT / "themes" / f"{mode}.json", "w") as f:
+        f.write(json.dumps(vscode_theme(p), indent=2) + "\n")
+    return VSCODE_LABELS[mode]
+
+
+def vscode_label(flavor, p):
+    return VSCODE_THEMES.get(flavor) or VSCODE_LABELS["dark" if is_dark(p) else "light"]
+
+
+def set_vscode_theme(text, name):
+    return VSCODE_KEY.sub(lambda m: f'{m.group(1)}"{name}"', text)
+
+
+def vscode(flavor, p):
+    vscode_extension(p)
     try:
         text = VSCODE_SETTINGS.read_text()
     except FileNotFoundError:
         return
-    new = set_vscode_theme(text, flavor)
+    new = set_vscode_theme(text, vscode_label(flavor, p))
     if new != text:
         # write through the symlink, in place; VS Code picks it up live
         with open(VSCODE_SETTINGS, "w") as f:
@@ -536,7 +712,7 @@ def gtk(flavor, p):
 
 def export(flavor, p):
     """Write the files that live outside $XDG_STATE_HOME/theme."""
-    vscode(flavor)
+    vscode(flavor, p)
     link(DUNST_DROPIN, CURRENT / "dunst.conf")
     link(YAZI_THEME, CURRENT / "yazi.toml")
     link(SPOTIFY_PLAYER_THEME, CURRENT / "spotify-player.toml")
@@ -615,7 +791,7 @@ def main(args):
         wallpaper(current(), transition=False)
     elif cmd == "vscode-clean":
         # git clean filter: stdin -> stdout with the default theme
-        sys.stdout.write(set_vscode_theme(sys.stdin.read(), DEFAULT))
+        sys.stdout.write(set_vscode_theme(sys.stdin.read(), vscode_label(DEFAULT, load(DEFAULT))))
     else:
         print(__doc__.strip().splitlines()[-1], file=sys.stderr)
         print("themes: " + ", ".join(themes()), file=sys.stderr)

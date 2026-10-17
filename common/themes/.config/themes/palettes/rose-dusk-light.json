@@ -1,0 +1,25 @@
+{
+  "name": "Ros\u00e9 Dusk Light",
+  "roles": {
+    "bg": "#faf4ed",
+    "bg_alt": "#f4ede8",
+    "bg_deep": "#ede4dc",
+    "surface": "#ebe2dc",
+    "surface_alt": "#dfd5d0",
+    "surface_hi": "#d1c6c4",
+    "overlay": "#a59cae",
+    "muted": "#7d7590",
+    "subtle": "#625d7a",
+    "fg": "#3b3552",
+    "accent": "#7e5cb3",
+    "accent2": "#a85570",
+    "red": "#a83f58",
+    "orange": "#ad5a2c",
+    "yellow": "#946412",
+    "green": "#3f7350",
+    "cyan": "#2f7380",
+    "blue": "#3a62a0",
+    "purple": "#7e5cb3",
+    "pink": "#a85570"
+  }
+}

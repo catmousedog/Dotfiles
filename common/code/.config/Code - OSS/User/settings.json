@@ -2,7 +2,7 @@
 	// ========== Fonts ========== //
 	"editor.fontSize": 16,
 	"terminal.integrated.fontSize": 16,
-	"debug.console.fontSize": 12,
+	"debug.console.fontSize": 16,
 	"keyboard.dispatch": "keyCode",
 	// ========== Editor ========== //
 	"editor.stickyScroll.maxLineCount": 3,
@@ -27,6 +27,7 @@
 	],
 	"terminal.integrated.smoothScrolling": true,
 	"terminal.integrated.initialHint": false,
+	"debug.console.wordWrap": false,
 	// ========== File Explorer ========== //
 	"explorer.autoReveal": false,
 	"explorer.confirmDelete": false,
@@ -41,11 +42,13 @@
 	"window.customMenuBarAltFocus": false,
 	"window.openFilesInNewWindow": "off",
 	"window.openFoldersInNewWindow": "off",
+	"chat.titleBar.signIn.enabled": false,
+	"chat.titleBar.openInAgentsWindow.enabled": false,
 	// ========== Workbench ========== //
 	"workbench.panel.opensMaximized": "never",
 	"workbench.secondarySideBar.defaultVisibility": "hidden",
 	// switched by ~/.local/bin/theme (always committed as Mocha, see .gitattributes)
-	"workbench.colorTheme": "Catppuccin Mocha",
+	"workbench.colorTheme": "Desktop Dark",
 	"workbench.startupEditor": "none",
 	"workbench.tree.indent": 16,
 	"workbench.list.smoothScrolling": true,

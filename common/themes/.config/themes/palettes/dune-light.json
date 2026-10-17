@@ -1,0 +1,25 @@
+{
+  "name": "Dune Light",
+  "roles": {
+    "bg": "#fbf6ee",
+    "bg_alt": "#f4ede2",
+    "bg_deep": "#ece3d4",
+    "surface": "#e6dccb",
+    "surface_alt": "#d9ccb7",
+    "surface_hi": "#cbbca3",
+    "overlay": "#a8987f",
+    "muted": "#7a6a56",
+    "subtle": "#625444",
+    "fg": "#3a2e22",
+    "accent": "#99580e",
+    "accent2": "#a3422a",
+    "red": "#a8392c",
+    "orange": "#99580e",
+    "yellow": "#7d650f",
+    "green": "#5e6622",
+    "cyan": "#2f6e5e",
+    "blue": "#365c82",
+    "purple": "#86445e",
+    "pink": "#9c4c61"
+  }
+}

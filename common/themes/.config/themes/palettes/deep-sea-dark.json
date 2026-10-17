@@ -1,0 +1,25 @@
+{
+  "name": "Deep Sea Dark",
+  "roles": {
+    "bg": "#0e1621",
+    "bg_alt": "#121c29",
+    "bg_deep": "#0a1018",
+    "surface": "#182433",
+    "surface_alt": "#223247",
+    "surface_hi": "#2d415a",
+    "overlay": "#44597a",
+    "muted": "#7088a8",
+    "subtle": "#94a9c4",
+    "fg": "#d8e4f0",
+    "accent": "#5fd4c4",
+    "accent2": "#ff8a7a",
+    "red": "#ff8a7a",
+    "orange": "#ffb48a",
+    "yellow": "#e8d9a0",
+    "green": "#5fd4c4",
+    "cyan": "#7ad8f0",
+    "blue": "#6aa8ff",
+    "purple": "#9a9cff",
+    "pink": "#c49cff"
+  }
+}

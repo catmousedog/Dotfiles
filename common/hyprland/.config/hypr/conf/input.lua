@@ -5,6 +5,9 @@ hl.config({
         follow_mouse = 1,
         sensitivity = 0.5, -- -1.0 to 1.0, 0 means no modification
         numlock_by_default = false,
+        -- binds follow the active layout, so SUPER+W is the key that types w,
+        -- not wherever w sits on the first layout (AZERTY vs QWERTY keyboards)
+        resolve_binds_by_sym = true,
         touchpad = {
             natural_scroll = true,
         },

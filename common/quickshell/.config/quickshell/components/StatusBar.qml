@@ -38,9 +38,9 @@ PanelWindow {
     // margins.bottom: HyprlandService.gapsIn
     color: "transparent"
 
-    // above fullscreen windows while the overview is open on this screen,
+    // above fullscreen windows while the overview is open (on every screen),
     // which sits just below the bar, see OverviewOverlay.qml
-    WlrLayershell.layer: OverviewService.active && OverviewService.screen === modelData ? WlrLayer.Overlay : WlrLayer.Top
+    WlrLayershell.layer: OverviewService.active ? WlrLayer.Overlay : WlrLayer.Top
 
     Left {}
 

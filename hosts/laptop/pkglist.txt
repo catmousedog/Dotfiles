@@ -82,6 +82,7 @@ texlive-fontsrecommended
 texlive-langeuropean
 texlive-latex
 texlive-latexextra
+texlive-mathscience
 texlive-plaingeneric
 texlive-xetex
 thunar
@@ -106,6 +107,5 @@ wpa_supplicant
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
 yazi
-zettlr
 zip
 zram-generator

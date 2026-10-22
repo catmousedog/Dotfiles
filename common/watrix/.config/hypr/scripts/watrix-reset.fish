@@ -2,7 +2,11 @@
 
 source (dirname (status --current-filename))/watrix-common.fish
 
-# Move every window back into monitor 0's workspace range
+# Rules first, so workspaces created by the moves below land on monitor 0
+watrix_rules
+
+# Move every window back into monitor 0's workspace range, keeping its place
+# in the grid (e.g. workspace 12, top right of monitor 1, becomes 3)
 set clients (hyprctl clients -j)
 hyprctl eval "hl.animation({ leaf = 'workspaces', enabled = true, speed = $speed, bezier = 'almostLinear', style = 'fade' })"
 set -l hypr_disp ""
@@ -22,5 +26,5 @@ end
 
 hyprctl --batch $hypr_disp
 
-# Re-sync every monitor to its correct workspace range/center (not just primary)
-watrix_sync
+# Every monitor back to its center workspace, ending on monitor 0
+watrix_center

@@ -23,11 +23,16 @@ ShellRoot {
 
     }
 
-    // Zoomed out watrix grid, also only exists while open
+    // Zoomed out watrix grid on every monitor, also only exists while open
     LazyLoader {
         active: OverviewService.active
 
-        OverviewOverlay {
+        Variants {
+            model: Quickshell.screens
+
+            delegate: OverviewOverlay {
+            }
+
         }
 
     }

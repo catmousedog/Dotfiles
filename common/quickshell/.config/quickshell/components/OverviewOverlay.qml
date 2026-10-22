@@ -1,11 +1,11 @@
 // OverviewOverlay.qml
-// The watrix grid zoomed out: one cell per logical workspace, split per
-// monitor. Each monitor box shows its windows scaled down to where they sit,
-// with their icon, colored per app (overview.appColors in the config). A fullscreen window fills
-// its whole monitor box, which is the whole cell on a single monitor; other
-// windows there are drawn over it.
+// The watrix grid zoomed out, one per monitor: a cell per logical workspace,
+// showing that monitor's windows scaled down to where they sit, with their
+// icon, colored per app (overview.appColors in the config). A fullscreen
+// window fills the whole cell; other windows there are drawn over it.
+// The selection is shared, watrix moves every monitor to the same cell.
 //
-//   arrows                move the selection
+//   arrows                move the selection (keys go to the focused monitor)
 //   enter / click         go to the selected workspace
 //   1-9                   go to that workspace, counted left to right, top to bottom
 //   escape / right click  close, as does clicking outside the grid or the keybind again
@@ -23,7 +23,9 @@ import qs.services
 PanelWindow {
     id: win
 
-    screen: OverviewService.screen
+    required property var modelData
+
+    screen: modelData
     color: "transparent"
 
     anchors.top: true
@@ -37,7 +39,11 @@ PanelWindow {
     // everything but the bar gets dimmed and blurred, fullscreen windows too.
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "overview"
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+    WlrLayershell.keyboardFocus: modelData === OverviewService.focusedScreen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+
+    // this screen's place in OverviewService.monitors, which picks its workspaces
+    readonly property int monIndex: OverviewService.monitorIndex(modelData)
+    readonly property var monitor: OverviewService.monitors[monIndex] ?? null
 
     readonly property int matrix: OverviewService.matrix
     readonly property real dim: ConfigService.get("overview.dim")
@@ -53,9 +59,6 @@ PanelWindow {
     readonly property var arrows: ["󰁛", "󰁝", "󰁜", "󰁍", "", "󰁔", "󰁂", "󰁅", "󰁃"]
 
 
-    // the cell enter would go to, starts on the current one
-    property int selected: Math.max(0, OverviewService.current)
-
     // Where the pointer last selected from. Hovering only selects once the
     // pointer really moves away from there: opening keeps the current cell, and
     // cells shifting under a still pointer (after an arrow key) don't count.
@@ -70,12 +73,6 @@ PanelWindow {
             return false;
         lastPointer = p;
         return true;
-    }
-
-    function move(dx: int, dy: int): void {
-        const row = Math.max(0, Math.min(matrix - 1, Math.floor(selected / matrix) + dy));
-        const col = Math.max(0, Math.min(matrix - 1, selected % matrix + dx));
-        selected = row * matrix + col;
     }
 
     // the tint over an opaque base, so overlapping windows don't mix
@@ -162,15 +159,11 @@ PanelWindow {
                     required property int index
 
                     readonly property bool isCurrent: index === OverviewService.current
-                    readonly property bool isSelected: index === win.selected
-                    readonly property int count: {
-                        let n = 0;
-                        for (let m = 0; m < OverviewService.monitors.length; m++)
-                            n += OverviewService.toplevels(index, m).length;
-                        return n;
-                    }
+                    readonly property bool isSelected: index === OverviewService.selected
+                    readonly property var toplevels: OverviewService.toplevels(index, win.monIndex)
+                    readonly property int count: toplevels.length
 
-                    implicitWidth: monitorRow.implicitWidth + 2 * borderWidth
+                    implicitWidth: monitorBox.implicitWidth + 2 * borderWidth
                     implicitHeight: win.cellHeight
                     radius: win.spacing * 1.2
                     borderWidth: win.borderWidth
@@ -200,70 +193,54 @@ PanelWindow {
                         font.weight: 1000
                     }
 
-                    Row {
-                        id: monitorRow
+                    // The monitor, filling the cell's height with its rounded
+                    // corners. Windows sit inset from its edges, in an area
+                    // shaped like the monitor; fullscreen ones fill it all.
+                    Rectangle {
+                        id: monitorBox
+
+                        readonly property var logical: win.monitor ? OverviewService.logicalSize(win.monitor) : ({ w: 16, h: 9 })
+                        readonly property real inset: win.spacing
+                        // box pixels per layout pixel, inside the inset
+                        readonly property real scale: (height - 2 * inset) / Math.max(1, logical.h)
+
+                        function stack(t: var): int {
+                            return win.isFullscreen(t) ? 0 : t.lastIpcObject.floating ? 2 : 1;
+                        }
 
                         anchors.centerIn: parent
-                        spacing: win.spacing
+                        implicitHeight: win.cellHeight - 2 * cell.borderWidth
+                        implicitWidth: (implicitHeight - 2 * inset) * (logical.w / Math.max(1, logical.h)) + 2 * inset
+                        radius: Math.max(0, cell.radius - cell.borderWidth)
+                        color: "transparent"
+                        clip: true
 
                         Repeater {
-                            model: OverviewService.monitors
+                            // fullscreen first, then tiled, then floating, so the
+                            // right ones end up on top
+                            model: cell.toplevels.filter(t => t.lastIpcObject?.at).sort((a, b) => monitorBox.stack(a) - monitorBox.stack(b))
 
-                            // One box per monitor, filling the cell's height with its
-                            // rounded corners. Windows sit inset from its edges, in an
-                            // area shaped like the monitor; fullscreen ones fill it all.
                             delegate: Rectangle {
-                                id: monitorBox
+                                id: windowBox
 
                                 required property var modelData
-                                required property int index
+                                readonly property var ipc: modelData.lastIpcObject
+                                readonly property bool fullscreen: win.isFullscreen(modelData)
 
-                                readonly property var toplevels: OverviewService.toplevels(cell.index, index)
-                                readonly property var logical: OverviewService.logicalSize(modelData)
-                                readonly property real inset: win.spacing
-                                // box pixels per layout pixel, inside the inset
-                                readonly property real scale: (height - 2 * inset) / Math.max(1, logical.h)
+                                x: fullscreen ? 0 : monitorBox.inset + (ipc.at[0] - win.monitor.x) * monitorBox.scale
+                                y: fullscreen ? 0 : monitorBox.inset + (ipc.at[1] - win.monitor.y) * monitorBox.scale
+                                width: fullscreen ? monitorBox.width : Math.max(2, ipc.size[0] * monitorBox.scale)
+                                height: fullscreen ? monitorBox.height : Math.max(2, ipc.size[1] * monitorBox.scale)
+                                radius: fullscreen ? monitorBox.radius : 4
+                                color: win.windowFill(modelData)
+                                border.color: win.windowBorder(modelData)
+                                border.width: Math.max(1, win.borderWidth / 2)
 
-                                function stack(t: var): int {
-                                    return win.isFullscreen(t) ? 0 : t.lastIpcObject.floating ? 2 : 1;
-                                }
-
-                                implicitHeight: win.cellHeight - 2 * cell.borderWidth
-                                implicitWidth: (implicitHeight - 2 * inset) * (logical.w / Math.max(1, logical.h)) + 2 * inset
-                                radius: Math.max(0, cell.radius - cell.borderWidth)
-                                color: "transparent"
-                                border.color: Theme.changeAlpha(Theme.overlay, 0.5)
-                                border.width: OverviewService.monitors.length > 1 ? 1 : 0
-                                clip: true
-
-                                Repeater {
-                                    // fullscreen first, then tiled, then floating, so the
-                                    // right ones end up on top
-                                    model: monitorBox.toplevels.filter(t => t.lastIpcObject?.at).sort((a, b) => monitorBox.stack(a) - monitorBox.stack(b))
-
-                                    delegate: Rectangle {
-                                        id: windowBox
-
-                                        required property var modelData
-                                        readonly property var ipc: modelData.lastIpcObject
-                                        readonly property bool fullscreen: win.isFullscreen(modelData)
-
-                                        x: fullscreen ? 0 : monitorBox.inset + (ipc.at[0] - monitorBox.modelData.x) * monitorBox.scale
-                                        y: fullscreen ? 0 : monitorBox.inset + (ipc.at[1] - monitorBox.modelData.y) * monitorBox.scale
-                                        width: fullscreen ? monitorBox.width : Math.max(2, ipc.size[0] * monitorBox.scale)
-                                        height: fullscreen ? monitorBox.height : Math.max(2, ipc.size[1] * monitorBox.scale)
-                                        radius: fullscreen ? monitorBox.radius : 4
-                                        color: win.windowFill(modelData)
-                                        border.color: win.windowBorder(modelData)
-                                        border.width: Math.max(1, win.borderWidth / 2)
-
-                                        IconImage {
-                                            anchors.centerIn: parent
-                                            implicitSize: Math.min(win.iconSize, windowBox.width - 6, windowBox.height - 6)
-                                            visible: implicitSize > 6
-                                            source: OverviewService.appIcon(windowBox.modelData)
-                                        }
-                                    }
+                                IconImage {
+                                    anchors.centerIn: parent
+                                    implicitSize: Math.min(win.iconSize, windowBox.width - 6, windowBox.height - 6)
+                                    visible: implicitSize > 6
+                                    source: OverviewService.appIcon(windowBox.modelData)
                                 }
                             }
                         }
@@ -275,7 +252,7 @@ PanelWindow {
                         cursorShape: Qt.PointingHandCursor
                         onPositionChanged: mouse => {
                             if (win.pointerMoved(mapToItem(null, mouse.x, mouse.y)))
-                                win.selected = cell.index;
+                                OverviewService.selected = cell.index;
                         }
                         onClicked: OverviewService.goTo(cell.index)
                     }
@@ -293,15 +270,15 @@ PanelWindow {
             if (k === Qt.Key_Escape)
                 OverviewService.close();
             else if (k === Qt.Key_Return || k === Qt.Key_Enter || k === Qt.Key_Space)
-                OverviewService.goTo(win.selected);
+                OverviewService.goTo(OverviewService.selected);
             else if (k === Qt.Key_Left)
-                win.move(-1, 0);
+                OverviewService.move(-1, 0);
             else if (k === Qt.Key_Right)
-                win.move(1, 0);
+                OverviewService.move(1, 0);
             else if (k === Qt.Key_Up)
-                win.move(0, -1);
+                OverviewService.move(0, -1);
             else if (k === Qt.Key_Down)
-                win.move(0, 1);
+                OverviewService.move(0, 1);
             else if (k >= Qt.Key_1 && k <= Qt.Key_9)
                 OverviewService.goTo(k - Qt.Key_1);
             event.accepted = true;

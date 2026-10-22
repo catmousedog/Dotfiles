@@ -1,6 +1,6 @@
 // OverviewService.qml
-// Zoomed out view of the watrix grid, see OverviewOverlay. Every cell shows
-// the windows of that logical workspace on each monitor, so empty ones stand out.
+// Zoomed out view of the watrix grid, see OverviewOverlay. It opens on every
+// monitor, each showing its own 3x3 block of workspaces, so empty ones stand out.
 
 pragma Singleton
 
@@ -19,10 +19,12 @@ Singleton {
 
     // true while the overlay is open
     property bool active: false
-    // the monitor it opened on
-    property string monitor: ""
+    // the screen focused when it opened, its overlay takes the keyboard
+    property var focusedScreen: null
 
-    readonly property var screen: Quickshell.screens.find(s => s.name === monitor) ?? null
+    // The cell enter would go to, starts on the current one. Shared by every
+    // monitor, since watrix moves them all to the same cell together.
+    property int selected: 0
 
     // Same order as get_monitors in watrix-common.fish: built-in panels first,
     // then alphabetical. Index i owns workspaces [i * 9 + 1, i * 9 + 9].
@@ -42,7 +44,9 @@ Singleton {
             active = false;
             return;
         }
-        monitor = Hyprland.focusedMonitor?.name ?? Quickshell.screens[0].name;
+        const name = Hyprland.focusedMonitor?.name;
+        focusedScreen = Quickshell.screens.find(s => s.name === name) ?? Quickshell.screens[0];
+        selected = Math.max(0, current);
         // window classes and positions come from hyprctl clients, monitor
         // rotation from hyprctl monitors: make sure they are up to date
         Hyprland.refreshToplevels();
@@ -54,8 +58,21 @@ Singleton {
         active = false;
     }
 
+    function move(dx: int, dy: int): void {
+        const row = Math.max(0, Math.min(matrix - 1, Math.floor(selected / matrix) + dy));
+        const col = Math.max(0, Math.min(matrix - 1, selected % matrix + dx));
+        selected = row * matrix + col;
+    }
+
+    // Index of a screen in monitors, which decides its workspaces
+    function monitorIndex(screen: var): int {
+        return monitors.findIndex(m => m.name === screen?.name);
+    }
+
     // Windows on logical workspace id of monitor index mon
     function toplevels(id: int, mon: int): var {
+        if (mon < 0)
+            return [];
         const actual = id + mon * numWorkspaces + 1;
         const ws = Hyprland.workspaces.values.find(w => w.id === actual);
         return ws ? ws.toplevels.values : [];

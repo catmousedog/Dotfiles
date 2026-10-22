@@ -61,11 +61,25 @@ hl.bind("ALT + " .. mainMod .. " + left", hl.dsp.window.resize({ x = -50, y = 0,
 hl.bind("ALT + " .. mainMod .. " + up", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
 hl.bind("ALT + " .. mainMod .. " + down", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
 
--- Move windows
-hl.bind("SHIFT + " .. mainMod .. " + right", hl.dsp.window.move({ direction = "right" }))
-hl.bind("SHIFT + " .. mainMod .. " + left", hl.dsp.window.move({ direction = "left" }))
-hl.bind("SHIFT + " .. mainMod .. " + up", hl.dsp.window.move({ direction = "up" }))
-hl.bind("SHIFT + " .. mainMod .. " + down", hl.dsp.window.move({ direction = "down" }))
+-- Move windows. Fullscreen (or maximized) windows can't move, so they leave it
+-- for the move and get the same mode back where they land.
+for _, dir in ipairs({ "left", "right", "up", "down" }) do
+    hl.bind("SHIFT + " .. mainMod .. " + " .. dir, function()
+        local window = hl.get_active_window()
+        if not window then
+            return
+        end
+        local fs = window.fullscreen or 0
+        local mode = fs >= 2 and "fullscreen" or fs == 1 and "maximized" or nil
+        if mode then
+            hl.dispatch(hl.dsp.window.fullscreen({ mode = mode, action = "unset" }))
+        end
+        hl.dispatch(hl.dsp.window.move({ direction = dir }))
+        if mode then
+            hl.dispatch(hl.dsp.window.fullscreen({ mode = mode, action = "set" }))
+        end
+    end)
+end
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 

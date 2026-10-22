@@ -16,12 +16,13 @@ hl.monitor({
     scale = 1,
 })
 
--- HDMI screen (above)
+-- HDMI screen (mirror)
 hl.monitor({
-    output = "HDMI-1",
+    output = "HDMI-A-1",
     mode = "preferred",
     position = "auto-center-up",
     scale = 1,
+    mirror = "eDP-1",
 })
 
 -- appearance.lua

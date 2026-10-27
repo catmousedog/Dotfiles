@@ -42,6 +42,7 @@ less
 libc++
 libnotify
 libpulse
+libresprite
 linux
 linux-firmware
 linux-lts

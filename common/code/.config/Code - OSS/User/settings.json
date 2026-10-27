@@ -3,6 +3,7 @@
 	"editor.fontSize": 16,
 	"terminal.integrated.fontSize": 16,
 	"debug.console.fontSize": 16,
+	"chat.fontSize": 16,
 	"keyboard.dispatch": "keyCode",
 	// ========== Editor ========== //
 	"editor.stickyScroll.maxLineCount": 3,
@@ -72,6 +73,13 @@
 	"[cpp]": {
 		"editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
 	},
+	// Slang
+	"[slang]": {
+		"editor.defaultFormatter": "shader-slang.slang-language-extension",
+		"editor.formatOnSave": true
+	},
+	"slang.format.clangFormatLocation": "/usr/bin/clang-format",
+	"slang.format.clangFormatStyle": "file",
 	// LaTeX
 	"latex-workshop.latex.outDir": "pdf",
 	"latex-workshop.latex.auxDir": "build",

@@ -37,3 +37,11 @@ hl.layer_rule({
     animation = "fade",
     order = 1,
 })
+
+-- Make any window with class "float" float, centered
+hl.window_rule({
+    name = "misc-float",
+    match = { class = "^float$" },
+    float = true,
+    center = true,
+})

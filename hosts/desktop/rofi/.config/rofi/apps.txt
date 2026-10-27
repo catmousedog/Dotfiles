@@ -13,6 +13,7 @@ sunshine-toggle
 com.discordapp.Discord
 spotify-player
 com.spotify.Client
+libresprite
 at.vintagestory.VintageStory
 org.prismlauncher.PrismLauncher
 com.modrinth.ModrinthApp

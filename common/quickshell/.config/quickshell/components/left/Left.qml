@@ -15,5 +15,7 @@ RowLayout {
 
     WorkspaceIndicator {}
 
+    TemperatureIndicator {}
+
     TrayIndicator {}
 }

@@ -46,6 +46,11 @@
 		"tray": {
 			"iconSize": 20,
 			"spacing": 8
+		},
+		"temperature": {
+			"interval": 3000,
+			"warn": 85,
+			"spacing": 6
 		}
 	},
 	"center": {

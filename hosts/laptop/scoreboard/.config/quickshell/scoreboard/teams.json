@@ -1,0 +1,7 @@
+{
+	"teams": [
+		{ "id": "a", "name": "The Quizzards", "short": "QZ", "color": "red" },
+		{ "id": "b", "name": "Team Two", "short": "T2", "color": "#4aa3ff" },
+		{ "id": "c", "name": "Team Three", "short": "T3", "color": "green" }
+	]
+}

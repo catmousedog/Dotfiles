@@ -41,3 +41,12 @@ hl.config({
         kb_options = "grp:win_space_toggle"
     },
 })
+
+-- Quiz scoreboard (temporary), see hosts/laptop/scoreboard
+-- Keycodes 10-13 are the 1-4 keys: on the Belgian layout they only type digits with shift
+for i = 1, 4 do
+    hl.bind("SUPER + ALT + code:" .. (9 + i), hl.dsp.global("quickshell:scoreUp" .. i))
+    hl.bind("SUPER + ALT + SHIFT + code:" .. (9 + i), hl.dsp.global("quickshell:scoreDown" .. i))
+end
+hl.bind("SUPER + ALT + Z", hl.dsp.global("quickshell:scoreUndo"))
+hl.bind("SUPER + ALT + S", hl.dsp.global("quickshell:scoreToggle"))

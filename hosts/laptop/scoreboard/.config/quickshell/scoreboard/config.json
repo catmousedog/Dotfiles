@@ -1,0 +1,16 @@
+{
+	"monitors": ["HDMI-A-1", "eDP-1"],
+	"screenScale": {
+		"eDP-1": 0.6
+	},
+	"vertical": "top",
+	"horizontal": "center",
+	"margins": {
+		"x": 32,
+		"y": 32
+	},
+	"labels": "name",
+	"scoreSize": 96,
+	"opacity": 0.9,
+	"spacing": 20
+}

@@ -1,0 +1,17 @@
+#!/bin/sh
+# Quiz scoreboard from the command line (or KDE Connect), see
+# ~/.config/quickshell/scoreboard/README.md. Teams by id, number or short label.
+#
+#   score <team> [n]      add n points (default 1, may be negative)
+#   score set <team> <v>  set a score
+#   score undo | reset | toggle | show | hide | status
+
+# "--": without it qs reads "show" as its own command and lists the target
+ipc() { exec qs ipc call -- score "$@"; }
+
+case "$1" in
+    "" | -h | --help) sed -n '2,8s/^# \{0,1\}//p' "$0" ;;
+    undo | reset | toggle | show | hide | status) ipc "$1" ;;
+    set) ipc set "$2" "$3" ;;
+    *) ipc add "$1" "${2:-1}" ;;
+esac

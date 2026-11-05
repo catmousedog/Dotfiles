@@ -5,6 +5,13 @@ hl.window_rule({
     suppress_event = "maximize",
 })
 
+-- Disable auto enabling hdr
+hl.config({
+    render = {
+        cm_auto_hdr = 0,
+    },
+})
+
 -- Fix some dragging issues with XWayland
 hl.window_rule({
     name = "fix-xwayland-drags",

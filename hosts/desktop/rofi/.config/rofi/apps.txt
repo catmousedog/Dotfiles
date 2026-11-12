@@ -14,7 +14,7 @@ com.discordapp.Discord
 spotify-player
 com.spotify.Client
 aseprite
-at.vintagestory.VintageStory
+vintagestory
 org.prismlauncher.PrismLauncher
 com.modrinth.ModrinthApp
 ckan icon=ckan

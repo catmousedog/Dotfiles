@@ -45,6 +45,16 @@ hl.layer_rule({
     order = 1,
 })
 
+--- Float Thunar rename pop-up
+hl.window_rule({
+    name = "thunar-rename-float",
+    match = {
+        class = "^Thunar$",
+        title = "^Rename.*",
+    },
+    float = true,
+})
+
 -- Make any window with class "float" float, centered
 hl.window_rule({
     name = "misc-float",

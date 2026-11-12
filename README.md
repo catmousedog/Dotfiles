@@ -21,6 +21,7 @@ Anything that differs per machine lives in `hosts/<host>/` and is committed:
 | what                    | file                                                    |
 | ----------------------- | ------------------------------------------------------- |
 | monitors, keyboard, ... | `hyprland/.config/hypr/host.lua` (loaded last)          |
+| what each screen does   | `display.screen{...}` in `host.lua`, see [Displays](#displays) |
 | idle / lock / suspend   | `hypridle/.config/hypr/hypridle.conf`                   |
 | status bar overrides    | `quickshell/.config/quickshell/host/config.json`        |
 | fish                    | `fish/.config/fish/conf.d/*.fish`                       |
@@ -103,6 +104,7 @@ first start on a machine opens the browser once to log in.
 | workspace  | move in the grid (shift: sideways) |       |                 |
 | volume     | volume            | pick output device     | mute            |
 | bluetooth  |                   | connect paired devices | power on / off  |
+| display    |                   | per screen: extend / mirror / off | mirror <-> extend |
 | night light |                  | on / off (hyprsunset)  |                 |
 | power profile |                | cycle power profile    |                 |
 
@@ -112,6 +114,28 @@ names with `right.audio.names` in the host's `config.json`, e.g.
 `{"right": {"audio": {"names": {"JBL": "Speaker"}}}}` (part of the device name -> label).
 On the laptop the volume menu also lists HDMI card profiles (`right.audio.profiles`),
 which is what `pactl set-card-profile` did before.
+
+## Displays
+
+SUPER+P (or `display`) picks an external screen, then what it does: **extend**,
+**mirror** (copies the laptop screen) or **off**. Screens that aren't plugged in are
+greyed out. The choice is remembered per connector in
+`~/.local/state/display/modes`, so a screen gets its mode back when it's plugged
+in again. The laptop screen itself always stays on.
+
+Every change puts the windows back in the watrix grid and recenters, like
+SUPER+U: mirroring, turning a screen on or off, and plugging one in or out.
+
+The screens are declared in the host's `host.lua` with `display.screen{...}`: a
+normal `hl.monitor` spec plus a `label`, and `internal = true` for the laptop
+screen (what mirror copies), then `display.apply()`. Position, scale etc. stay
+there; with two external screens extended, give one its own `position`. Hosts
+without `display.screen` keep plain `hl.monitor` and the bar item stays hidden.
+
+```sh
+display set HDMI-A-1 mirror   # same as picking it in the menu
+display toggle                # every connected screen mirror <-> extend
+```
 
 ## Adding a machine
 

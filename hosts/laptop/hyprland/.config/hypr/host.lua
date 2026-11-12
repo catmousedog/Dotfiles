@@ -1,29 +1,35 @@
 hl.bind("SUPER + L", hl.dsp.exec_cmd("loginctl lock-session"))
 
--- laptop screen
-hl.monitor({
+-- Screens: what each external one does (extend / mirror / off) is picked with
+-- SUPER+P or the bar and remembered per connector, see conf/display.lua. With two
+-- external screens extended, give one of them its own position here.
+local display = require("conf.display")
+
+display.screen({
     output = "eDP-1",
+    internal = true, -- always on, what mirror copies
     mode = "preferred",
     position = "0x0",
     scale = 1,
 })
 
--- usb-c screen (above)
-hl.monitor({
+display.screen({
     output = "DP-1",
+    label = "USB-C",
     mode = "preferred",
     position = "auto-center-up",
     scale = 1,
 })
 
--- HDMI screen (mirror)
-hl.monitor({
+display.screen({
     output = "HDMI-A-1",
+    label = "HDMI",
     mode = "preferred",
     position = "auto-center-up",
     scale = 1,
-    mirror = "eDP-1",
 })
+
+display.apply()
 
 -- appearance.lua
 hl.config({
@@ -41,12 +47,3 @@ hl.config({
         kb_options = "grp:win_space_toggle"
     },
 })
-
--- Quiz scoreboard (temporary), see hosts/laptop/scoreboard
--- Keycodes 10-13 are the 1-4 keys: on the Belgian layout they only type digits with shift
-for i = 1, 4 do
-    hl.bind("SUPER + ALT + code:" .. (9 + i), hl.dsp.global("quickshell:scoreUp" .. i))
-    hl.bind("SUPER + ALT + SHIFT + code:" .. (9 + i), hl.dsp.global("quickshell:scoreDown" .. i))
-end
-hl.bind("SUPER + ALT + Z", hl.dsp.global("quickshell:scoreUndo"))
-hl.bind("SUPER + ALT + S", hl.dsp.global("quickshell:scoreToggle"))

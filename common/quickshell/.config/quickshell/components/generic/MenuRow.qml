@@ -13,21 +13,24 @@ Rectangle {
     property string detail: ""
     property bool active: false
     property bool dimmed: false
+    // false for a heading: no hover, no click
+    property bool clickable: true
+    property int indent: 0
 
     signal clicked
 
     readonly property color foreground: active ? Theme.accent : dimmed ? Theme.muted : Theme.fg
 
     Layout.fillWidth: true
-    implicitWidth: row.implicitWidth + 2 * row.anchors.leftMargin
+    implicitWidth: row.implicitWidth + row.anchors.leftMargin + row.anchors.rightMargin
     implicitHeight: row.implicitHeight + 10
     radius: height / 2
-    color: mouse.containsMouse ? Theme.surface : "transparent"
+    color: clickable && mouse.containsMouse ? Theme.surface : "transparent"
 
     RowLayout {
         id: row
         anchors.fill: parent
-        anchors.leftMargin: 10
+        anchors.leftMargin: 10 + root.indent
         anchors.rightMargin: 10
         spacing: 10
 
@@ -56,6 +59,7 @@ Rectangle {
     MouseArea {
         id: mouse
         anchors.fill: parent
+        enabled: root.clickable
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: root.clicked()

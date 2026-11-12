@@ -45,11 +45,11 @@ hl.layer_rule({
     order = 1,
 })
 
---- Float Thunar rename pop-up
+-- Float Thunar rename pop-up
 hl.window_rule({
     name = "thunar-rename-float",
     match = {
-        class = "^Thunar$",
+        class = "^[Tt]hunar$",
         title = "^Rename.*",
     },
     float = true,

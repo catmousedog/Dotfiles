@@ -28,9 +28,9 @@ Barbox {
 
         NetworkIndicator {}
 
-        SunsetIndicator {}
+        DisplayIndicator {}
 
-        PowerProfileIndicator {}
+        SunsetIndicator {}
 
         KeyBoardIndicator {}
     }

@@ -11,3 +11,6 @@ common/backgrounds/.config/backgrounds/*
 
 # Theme preview scratch output
 __pycache__/
+
+# Local-only archive of retired configs
+/archive/

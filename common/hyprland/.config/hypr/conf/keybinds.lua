@@ -38,6 +38,7 @@ hl.bind("PRINT", hl.dsp.global("quickshell:screenshot"))
 -- Theme selection
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.local/bin/theme toggle"))
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("~/.local/bin/theme menu"))
+hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("~/.local/bin/display menu"))
 
 -- Notifications
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("dunstctl close"))

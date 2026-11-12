@@ -32,7 +32,7 @@ Barbox {
 
         Bartext {
             text: temperature.value + "°"
-            color: temperature.value >= root.warn ? Theme.red : ConfigService.getColor("common.font.color")
+            color: temperature.value >= root.warn ? Theme.red : defaultColor
         }
     }
 

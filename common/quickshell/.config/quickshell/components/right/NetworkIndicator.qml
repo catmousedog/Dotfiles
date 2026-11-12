@@ -21,7 +21,7 @@ IconText {
         return icons[6];
     }
     iconYOffset: -1
-    color: NetworkService.connected ? ConfigService.getColor("common.font.color") : Theme.red
+    color: NetworkService.connected ? null : Theme.red
 
     MouseArea {
         anchors.fill: parent

@@ -24,3 +24,13 @@ end)
 -- Runs on every config (re)load: a reload drops the workspace rules watrix
 -- creates at runtime, so re-apply them without moving any monitor.
 hl.exec_cmd("~/.config/hypr/scripts/watrix-init.fish --rules")
+
+-- A screen plugged in, unplugged, or turned on/off (`display`): its workspaces
+-- move to another monitor, outside that monitor's part of the watrix grid.
+-- Put every window back in the grid and recenter.
+hl.on("monitor.added", function()
+    hl.exec_cmd("~/.config/hypr/scripts/watrix-reset.fish")
+end)
+hl.on("monitor.removed", function()
+    hl.exec_cmd("~/.config/hypr/scripts/watrix-reset.fish")
+end)

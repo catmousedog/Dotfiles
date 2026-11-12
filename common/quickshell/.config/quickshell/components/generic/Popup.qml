@@ -76,17 +76,7 @@ PopupWindow {
             radius: box.radius
             visible: false
             layer.enabled: true
-            gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop {
-                    position: 0.0
-                    color: Theme.accent2
-                }
-                GradientStop {
-                    position: 1.0
-                    color: Theme.accent
-                }
-            }
+            gradient: Theme.accentGradient
         }
 
         Item {
@@ -129,12 +119,9 @@ PopupWindow {
             anchors.margins: root.padding
             spacing: 2
 
-            Bartext {
+            SectionHeader {
                 visible: root.title !== ""
                 text: root.title
-                color: Theme.subtle
-                Layout.leftMargin: 8
-                Layout.bottomMargin: 4
             }
         }
     }

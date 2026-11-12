@@ -106,7 +106,8 @@ first start on a machine opens the browser once to log in.
 | bluetooth  |                   | connect paired devices | power on / off  |
 | display    |                   | per screen: extend / mirror / off | mirror <-> extend |
 | night light |                  | on / off (hyprsunset)  |                 |
-| power profile |                | cycle power profile    |                 |
+| battery    |                   | details, power profile |                 |
+| keyboard   |                   | pick a layout          | next layout     |
 
 Devices are paired once with `bluetoothctl` (`scan on`, `pair <mac>`, `trust <mac>`);
 after that they show up in the bluetooth menu. Output devices can get nicer

@@ -2,7 +2,6 @@
 
 import QtQuick
 import QtQuick.Layouts
-import qs.services
 
 Item {
     id: root
@@ -33,12 +32,9 @@ Item {
     property string text: ""
     property real textSize: -1
 
-    Bartext {
+    Icon {
         id: iconText
         text: root.icon
-        // named explicitly: fontconfig's fallback can pick another font that has
-        // something else at the same private-use codepoint (gsfonts, U+EFCF)
-        font.family: ConfigService.get("common.font.iconFamily")
         anchors.left: root.left
         width: root.iconWidth
         horizontalAlignment: Text.AlignHCenter

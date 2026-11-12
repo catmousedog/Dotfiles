@@ -256,17 +256,7 @@ PanelWindow {
         component Edge: Rectangle {
             width: outline.width
             height: win.borderWidth
-            gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop {
-                    position: 0.0
-                    color: Theme.accent2
-                }
-                GradientStop {
-                    position: 1.0
-                    color: Theme.accent
-                }
-            }
+            gradient: Theme.accentGradient
         }
 
         Edge {}
@@ -306,13 +296,9 @@ PanelWindow {
             return above >= gap ? above : win.sy + win.sh - height - gap;
         }
 
-        Text {
+        Bartext {
             id: labelText
             anchors.centerIn: parent
-            color: ConfigService.getColor("common.font.color")
-            font.pointSize: ConfigService.get("common.font.size")
-            font.family: ConfigService.get("common.font.family")
-            font.weight: ConfigService.get("common.font.weight")
             text: win.hasSelection ? Math.round(win.sw * win.pixelScale) + " × " + Math.round(win.sh * win.pixelScale) : "Drag or Tab to select  ·  Enter to copy  ·  Shift+Enter to save  ·  Esc to cancel"
         }
     }

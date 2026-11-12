@@ -32,8 +32,6 @@ Barbox {
 
         SunsetIndicator {}
 
-        PowerProfileIndicator {}
-
         KeyBoardIndicator {}
     }
 }

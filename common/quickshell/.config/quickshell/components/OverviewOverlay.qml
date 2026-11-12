@@ -77,11 +77,11 @@ PanelWindow {
 
     // the tint over an opaque base, so overlapping windows don't mix
     function windowFill(toplevel: var): color {
-        return Qt.tint(Theme.bg_deep, Theme.changeAlpha(OverviewService.appColor(toplevel), toplevel.activated ? 0.35 : 0.2));
+        return Qt.tint(Theme.bg_deep, Qt.alpha(OverviewService.appColor(toplevel), toplevel.activated ? 0.35 : 0.2));
     }
 
     function windowBorder(toplevel: var): color {
-        return Theme.changeAlpha(OverviewService.appColor(toplevel), 0.8);
+        return Qt.alpha(OverviewService.appColor(toplevel), 0.8);
     }
 
     function isFullscreen(toplevel: var): bool {
@@ -90,7 +90,7 @@ PanelWindow {
 
     Rectangle {
         anchors.fill: parent
-        color: Theme.changeAlpha(Theme.bg_deep, win.dim)
+        color: Qt.alpha(Theme.bg_deep, win.dim)
     }
 
     // clicks that miss the grid close it
@@ -168,7 +168,7 @@ PanelWindow {
                     radius: win.spacing * 1.2
                     borderWidth: win.borderWidth
                     lit: isCurrent
-                    borderColor: isSelected ? Theme.changeAlpha(Theme.accent, 0.6) : count > 0 ? Theme.surface_alt : Theme.surface
+                    borderColor: isSelected ? Qt.alpha(Theme.accent, 0.6) : count > 0 ? Theme.surface_alt : Theme.surface
                     fill: isSelected ? Theme.surface_alt : count > 0 ? Theme.surface : Theme.bg_alt
 
                     // the selection lifts a little above its neighbours

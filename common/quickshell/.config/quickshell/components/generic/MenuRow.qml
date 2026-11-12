@@ -38,7 +38,8 @@ Rectangle {
             text: root.icon
             color: root.foreground
             horizontalAlignment: Text.AlignHCenter
-            Layout.preferredWidth: font.pointSize * 1.6
+            // wide enough for a layout code ("BE") too
+            Layout.preferredWidth: Math.max(font.pointSize * 1.6, implicitWidth)
         }
 
         Bartext {

@@ -10,9 +10,17 @@ import QtCore
 Singleton {
     id: root
 
-    // the theme colors are strings, so go through Qt.alpha instead of .r/.g/.b
-    function changeAlpha(color: var, alpha: real): color {
-        return Qt.alpha(color, alpha);
+    // the accent2 -> accent gradient of every border: `gradient: Theme.accentGradient`
+    readonly property Gradient accentGradient: Gradient {
+        orientation: Gradient.Horizontal
+        GradientStop {
+            position: 0.0
+            color: root.accent2
+        }
+        GradientStop {
+            position: 1.0
+            color: root.accent
+        }
     }
 
     function getColor(name: string): string {

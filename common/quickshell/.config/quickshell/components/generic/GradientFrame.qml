@@ -27,17 +27,7 @@ Rectangle {
         radius: root.radius
         opacity: root.lit ? 1 : 0
 
-        gradient: Gradient {
-            orientation: Gradient.Horizontal
-            GradientStop {
-                position: 0.0
-                color: Theme.accent2
-            }
-            GradientStop {
-                position: 1.0
-                color: Theme.accent
-            }
-        }
+        gradient: Theme.accentGradient
 
         Behavior on opacity {
             NumberAnimation {

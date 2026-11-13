@@ -64,7 +64,6 @@
 		"margin": 0,
 		"spacing": 12,
 		"battery": {
-			"showTime": true,
 			"iconSize": 13.5,
 			"iconYOffset": -1,
 			"spacing": 3

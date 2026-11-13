@@ -1,5 +1,4 @@
 // BatteryIndicator.qml
-// Shows the time left while on battery ("right.battery.showTime").
 // Click: battery details and the power profile
 
 import QtQuick
@@ -146,11 +145,9 @@ Loader {
             return "󰂑";
         }
 
+        // time left is only in the popup
         function getText() {
-            const percent = Math.round(BatteryService.percentage * 100) + "%";
-            if (ConfigService.get("right.battery.showTime") && BatteryService.discharging && BatteryService.timeToEmpty > 0)
-                return percent + " " + BatteryService.formatTime(BatteryService.timeToEmpty, true);
-            return percent;
+            return Math.round(BatteryService.percentage * 100) + "%";
         }
 
         function getColor() {

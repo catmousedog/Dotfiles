@@ -111,8 +111,15 @@ Singleton {
         return toplevel.wayland?.appId || toplevel.lastIpcObject?.class || "";
     }
 
+    // DesktopEntries fills in after startup; reading `values` makes bindings that
+    // call this re-run then, instead of keeping the raw app id as icon name
+    function lookup(appId: string): var {
+        DesktopEntries.applications.values;
+        return appId ? DesktopEntries.heuristicLookup(appId) : null;
+    }
+
     function iconFor(appId: string): string {
-        const entry = appId ? DesktopEntries.heuristicLookup(appId) : null;
+        const entry = lookup(appId);
         const override = iconOverrides[entry?.id ?? appId];
         if (override && /^[~\/]/.test(override))
             return "file://" + override.replace(/^~/, Quickshell.env("HOME"));
@@ -129,7 +136,7 @@ Singleton {
 
     function appColor(toplevel: var): color {
         const id = appId(toplevel);
-        const entryId = id ? DesktopEntries.heuristicLookup(id)?.id : null;
+        const entryId = lookup(id)?.id;
         return Theme.getColor(appColors[id] ?? appColors[entryId] ?? "") || Theme.muted;
     }
 

@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""What each external screen does: extend, mirror (the laptop screen) or off.
+"""What each external screen does: extend, mirror (the laptop screen) or off,
+and per-screen settings (HDR) for every screen.
 
 The screens are declared in the host's host.lua (see ~/.config/hypr/conf/display.lua),
-which also applies the modes. This script only stores the choice per connector in
-~/.local/state/display/modes and asks Hyprland to apply it again.
+which also applies the modes and settings. This script only stores the choices per
+connector in ~/.local/state/display/{modes,settings} and asks Hyprland to apply them.
 
-Usage: display [menu | status | set <output> <mode> | toggle]
-  menu     pick a screen, then its mode, with rofi (default, SUPER+P)
-  status   JSON for the status bar
-  set      e.g. `display set HDMI-A-1 mirror`
-  toggle   switch every connected screen between mirror and extend
+Usage: display [menu | status | set <output> <mode> | toggle | settings | hdr <output> [on|off]]
+  menu      pick a screen, then its mode, with rofi (default, SUPER+P)
+  status    JSON for the status bar
+  set       e.g. `display set HDMI-A-1 mirror`
+  toggle    switch every connected screen between mirror and extend
+  settings  pick a screen, then toggle its settings, with rofi (SUPER+SHIFT+P)
+  hdr       turn HDR on, off, or toggle it (no argument)
 """
 import json
 import os
@@ -17,7 +20,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-STATE = Path(os.environ.get("XDG_STATE_HOME") or Path.home() / ".local/state") / "display" / "modes"
+STATE_DIR = Path(os.environ.get("XDG_STATE_HOME") or Path.home() / ".local/state") / "display"
+STATE = STATE_DIR / "modes"
+SETTINGS = STATE_DIR / "settings"
 MODES = ["extend", "mirror", "off"]
 NAMES = {"extend": "Extend", "mirror": "Mirror", "off": "Off"}
 MARK = {True: "󰐾", False: "󰐽"}  # radio on / off
@@ -39,17 +44,51 @@ def hyprctl(*args):
     return subprocess.run(["hyprctl", *args], capture_output=True, text=True).stdout
 
 
-def screens():
-    """The external screens host.lua declared, in its order, with their mode."""
+def all_screens():
+    """Every screen host.lua declared, in its order, with its mode and whether the
+    hardware can do HDR. Internal screens are always on and have no mode menu."""
     out = hyprctl("repl", 'return require("conf.display").list()')
-    connected = {m["name"] for m in json.loads(hyprctl("-j", "monitors", "all") or "[]")}
+    monitors = {m["name"]: m for m in json.loads(hyprctl("-j", "monitors", "all") or "[]")}
     result = []
     for line in out.splitlines():
         parts = line.split("\t")
-        if len(parts) == 3:
-            name, label, mode = parts
-            result.append({"name": name, "label": label, "mode": mode, "connected": name in connected})
+        if len(parts) == 4:
+            name, label, mode, internal = parts
+            monitor = monitors.get(name)
+            result.append({
+                "name": name, "label": label, "mode": mode, "internal": internal == "true",
+                "connected": monitor is not None,
+                "enabled": monitor is not None and not monitor.get("disabled", False),
+                "hdr_capable": bool(monitor and monitor.get("hardwareDetails", {}).get("hdr")),
+            })
     return result
+
+
+def screens():
+    """The external screens, the ones with a mode."""
+    return [{k: s[k] for k in ("name", "label", "mode", "connected")}
+            for s in all_screens() if not s["internal"]]
+
+
+def load_settings():
+    """{output: {key: value}}"""
+    settings = {}
+    if SETTINGS.exists():
+        for line in SETTINGS.read_text().splitlines():
+            parts = line.split()
+            if len(parts) == 3:
+                settings.setdefault(parts[0], {})[parts[1]] = parts[2]
+    return settings
+
+
+def set_setting(name, key, value):
+    settings = load_settings()
+    settings.setdefault(name, {})[key] = value
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    SETTINGS.write_text("".join(f"{n} {k} {v}\n"
+                                for n, own in sorted(settings.items())
+                                for k, v in sorted(own.items())))
+    hyprctl("eval", 'require("conf.display").apply()')
 
 
 def save(changes, old):
@@ -79,6 +118,21 @@ def set_mode(name, mode):
         sys.exit(f"display: mode is one of {', '.join(MODES)}")
     if mode != screen["mode"]:
         save({name: mode}, {name: screen["mode"]})
+
+
+def set_hdr(name, value=None):
+    screen = next((s for s in all_screens() if s["name"] == name), None)
+    if screen is None:
+        sys.exit(f"display: {name} is not declared in host.lua")
+    if not screen["hdr_capable"]:
+        sys.exit(f"display: {name} can't do HDR")
+    on = load_settings().get(name, {}).get("hdr") == "on"
+    if value is None:
+        value = "off" if on else "on"
+    if value not in ("on", "off"):
+        sys.exit("display: hdr is on or off")
+    if (value == "on") != on:
+        set_setting(name, "hdr", value)
 
 
 def toggle():
@@ -128,6 +182,43 @@ def menu():
             return
 
 
+def settings_menu():
+    """Screen first (skipped when only one is on), then its settings; picking a
+    setting toggles it and keeps the list open. Escape goes back to the screens."""
+    selected = 0
+    while True:
+        on = [s for s in all_screens() if s["enabled"]]
+        if not on:
+            sys.exit("display: no declared screen is on")
+        if len(on) == 1:
+            screen = on[0]
+        else:
+            rows = [f"󰍹  {s['label']:<8} {s['name']}" for s in on]
+            picked = rofi("settings", rows, selected=selected)
+            if picked is None:
+                return
+            selected = picked
+            screen = on[picked]
+
+        row = 0
+        while True:
+            hdr = load_settings().get(screen["name"], {}).get("hdr") == "on"
+            if screen["hdr_capable"]:
+                rows = [f"{MARK[hdr]}  HDR"]
+                grey = []
+            else:
+                rows = [f"{MARK[False]}  HDR (not supported)"]
+                grey = [0]
+            picked = rofi(screen["label"], rows, current=[0] if hdr else [], grey=grey, selected=row)
+            if picked is None:
+                break
+            row = picked
+            if picked == 0 and screen["hdr_capable"]:
+                set_hdr(screen["name"])
+        if len(on) == 1:
+            return
+
+
 def main():
     args = sys.argv[1:] or ["menu"]
     cmd = args[0]
@@ -139,6 +230,10 @@ def main():
         set_mode(args[1], args[2])
     elif cmd == "toggle":
         toggle()
+    elif cmd == "settings":
+        settings_menu()
+    elif cmd == "hdr" and len(args) in (2, 3):
+        set_hdr(args[1], args[2] if len(args) == 3 else None)
     else:
         sys.exit(__doc__)
 

@@ -17,13 +17,18 @@ if streamOutput and streamMode then
         scale = 1,
     })
 else
-    -- ultrawide screen
-    hl.monitor({
+    -- ultrawide screen; HDR is toggled with SUPER+SHIFT+P, see conf/display.lua
+    local display = require("conf.display")
+    display.screen({
         output = "DP-2",
+        label = "OLED",
+        internal = true, -- always on
         mode = "3440x1440@174.962006",
         position = "0x0",
         scale = 1,
+        bitdepth = 10,
     })
+    display.apply()
 end
 
 -- Back to the real monitor, for when a stream didn't end cleanly

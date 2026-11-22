@@ -7,6 +7,7 @@ local display = require("conf.display")
 
 display.screen({
     output = "eDP-1",
+    label = "Laptop",
     internal = true, -- always on, what mirror copies
     mode = "preferred",
     position = "0x0",

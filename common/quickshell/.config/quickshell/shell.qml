@@ -1,3 +1,4 @@
+//@ pragma IconTheme Adwaita
 // shell.qml
 
 import QtQuick

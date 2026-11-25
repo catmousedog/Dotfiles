@@ -8,10 +8,11 @@
 		"audio": {
 			"hidden": [
 				"hdmi",
-				"USB Audio"
+				"USB Audio",
+				"alsa_output.usb-HP__Inc_HyperX"
 			],
 			"names": {
-				"Kraken": "Razer Kraken"
+				"hyperx_eq": "HyperX Cloud III"
 			}
 		}
 	}

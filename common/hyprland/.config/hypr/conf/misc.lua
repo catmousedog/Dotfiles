@@ -62,3 +62,10 @@ hl.window_rule({
     float = true,
     center = true,
 })
+
+-- Remove the not responding popup
+hl.config({
+    misc = {
+        enable_anr_dialog = false
+    },
+})

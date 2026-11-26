@@ -11,7 +11,7 @@ code-oss icon=visual-studio-code
 steam
 com.moonlight_stream.Moonlight
 com.discordapp.Discord
-spotify-player
+spotify-launcher
 at.vintagestory.VintageStory
 org.prismlauncher.PrismLauncher
 com.modrinth.ModrinthApp

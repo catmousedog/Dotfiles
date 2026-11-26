@@ -11,7 +11,7 @@ code-oss icon=visual-studio-code
 steam
 sunshine-toggle
 com.discordapp.Discord
-spotify-player
+spotify-launcher
 com.spotify.Client
 aseprite
 vintagestory
